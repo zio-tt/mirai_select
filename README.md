@@ -89,4 +89,4 @@
   - キャラ画像はユーザーが用意する
 
 ## 画面遷移図
-https://www.figma.com/file/YADccED86hHFMbZHh1NUje/Mirai-Select?type=design&node-id=0-1&mode=design&t=e3Tm1UJtoDIsN1h9-01
+https://www.figma.com/file/YADccED86hHFMbZHh1NUje/Mirai-Select?type=design&node-id=0%3A1&mode=design&t=e0jiAWiLDCinPZFv-1
