@@ -87,3 +87,6 @@
   - ユーザーが自由にキャラクターを追加できる様になる機能
   - 口調はアプリ側で用意されたものから選択する
   - キャラ画像はユーザーが用意する
+
+## 画面遷移図
+https://www.figma.com/file/YADccED86hHFMbZHh1NUje/Mirai-Select?type=design&node-id=0%3A1&mode=design&t=e0jiAWiLDCinPZFv-1
