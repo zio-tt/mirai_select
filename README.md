@@ -90,3 +90,6 @@
 
 ## 画面遷移図
 https://www.figma.com/file/YADccED86hHFMbZHh1NUje/Mirai-Select?type=design&node-id=0%3A1&mode=design&t=e0jiAWiLDCinPZFv-1
+
+## ER図
+<img src="./mirai_select_ER図.webp">
