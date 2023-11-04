@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  decision_conversation: one
+  character: one
+  response: MyText
+
+two:
+  decision_conversation: two
+  character: two
+  response: MyText
