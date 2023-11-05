@@ -1,8 +1,5 @@
 class User < ApplicationRecord
-
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
-         :omniauthable, omniauth_providers: %i[google_oauth2]
+  devise :omniauthable, omniauth_providers: [:google_oauth2]
 
   validates :uid, uniqueness: { scope: :provider }
 

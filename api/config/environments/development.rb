@@ -26,6 +26,7 @@ Rails.application.configure do
     }
   else
     config.action_controller.perform_caching = false
+    # config.action_controller.forgery_protection_origin_check = false
 
     config.cache_store = :null_store
   end
