@@ -10,7 +10,6 @@ export default function Home() {
   const [contentOpacity, setContentOpacity] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [debugInfo, setDebugInfo] = useState(null)
   const [csrfTokenDebug, setCsrfTokenDebug] = useState('');
   const router = useRouter();
 
@@ -67,7 +66,7 @@ export default function Home() {
   useEffect(() => {
     const hasVisited = sessionStorage.getItem('hasVisited');
 
-    if (hasVisited === 'true') {
+    if (hasVisited === 'false') {
       visitedAnimate()
       return
     }
@@ -78,7 +77,6 @@ export default function Home() {
 
   const handleGoogleSignIn = async () => {
     setError('');
-    setDebugInfo(null); // 以前のデバッグ情報をクリア
 
     try {
       const csrfToken = await getCsrfToken();
@@ -91,18 +89,14 @@ export default function Home() {
         credentials: 'include'
       });
 
-      if (response.ok) {
-        const data = await response.json(); // もしくはresponse.urlからリダイレクト先のURLを取得
-        // Google認証ページへのリダイレクトを実行
+      if ( response.ok || response.status == 302 ) {
+        const data = await response.json();
         window.location.href = data.redirectUrl;
       } else {
-        // エラー処理
         const errorData = await response.json();
         setError(errorData.message || 'Google認証に失敗しました。');
-        setDebugInfo(errorData);
       }
     } catch (error) {
-      // ネットワークエラーなど、リクエスト自体が失敗した場合の処理
       setError('リクエストに失敗しました。');
     }
   };
@@ -115,7 +109,7 @@ export default function Home() {
           style={{ display: showContent ? 'none' : 'block', opacity: logoOpacity }}
         >
           {showLogo && (
-            <Image src="/images/logo_ilust.png" alt="Logo" width={500} height={500} style = {{ objectFit: "contain" }} />
+            <Image src="/images/logo_image.png" alt="Logo" width={500} height={500} style = {{ objectFit: "contain" }} />
           )}
         </div>
 
@@ -135,12 +129,6 @@ export default function Home() {
               <div>
                 <h2>CSRF_Token:</h2>
                 <p>{csrfTokenDebug}</p>
-              </div>
-            )}
-            {debugInfo && (
-              <div>
-                <h2>Debug_Info:</h2>
-                <p>{debugInfo}</p>
               </div>
             )}
           </div>
