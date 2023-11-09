@@ -44,6 +44,7 @@ export default function Home() {
   }
 
   useEffect(() => {
+    logger.log(session?.user.image)
     let hasVisited = sessionStorage.getItem('hasVisited');
     if (hasVisited == null && status == 'unauthenticated') {
       VisitAnimate();
