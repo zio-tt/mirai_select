@@ -2,20 +2,21 @@ import * as jose from 'jose';
 import type { DefaultSession, DefaultUser, NextAuthOptions, Session, User } from 'next-auth';
 import type { DefaultJWT, JWT } from 'next-auth/jwt';
 import GoogleProvider from 'next-auth/providers/google';
+import axios from 'axios';
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
     appAccessToken: string;
   }
   interface Session {
-    user: User & DefaultUser & { id: string; provider?: OidcProvider };
+    user: User & DefaultUser & { id: string; provider?: 'google' };
   }
   interface User {
     id: string;
     name?: string;
     email?: string;
     image?: string;
-    provider?: OidcProvider;
+    provider?: 'google';
   }
 }
 
@@ -25,39 +26,30 @@ declare module 'next-auth/jwt' {
     exp: number;
     jti: string;
     id?: string;
-    provider?: OidcProvider;
+    provider?: 'google';
   }
 }
-
-type OidcProvider = 'google' | 'line';
-
-const isOidcProvider = (value: unknown): value is OidcProvider => {
-  if (typeof value !== 'string') {
-    return false;
-  }
-  return value === 'google' || value === 'line';
-};
 
 export const options: NextAuthOptions = {
   debug: true,
   providers: [
     GoogleProvider({
-      clientId: String(process.env.GOOGLE_CLIENT_ID),
-      clientSecret: String(process.env.GOOGLE_CLIENT_SECRET),
+      clientId: String(process.env.GOOGLE_CLIENT_ID) ?? '',
+      clientSecret: String(process.env.GOOGLE_CLIENT_SECRET) ?? '',
     }),
   ],
   callbacks: {
     session: async ({ session, token, }: { session: Session; user: User; token: JWT; }) => {
       // session.userが存在することを確認する
       if (!session.user) {
-        session.user = { id: '', name: '', email: '' } as User; // ここで適切な型アサーションを行うか、または必要なプロパティを持つ空のオブジェクトを割り当てます
+        session.user = { id: '', name: '', email: ''} as User; // ここで適切な型アサーションを行うか、または必要なプロパティを持つ空のオブジェクトを割り当てます
       }
 
       // 必要なプロパティをsession.userに割り当てる
       session.user.id = token.sub ?? session.user.id; // token.subがundefinedでない場合のみ割り当てる
       session.user.name = token.name ?? session.user.name; // 同上
       session.user.email = token.email ?? session.user.email; // 同上
-      if (isOidcProvider(token.provider)) {
+      if (token.provider === 'google') {
         session.user.provider = token.provider; // isOidcProvider関数を通して割り当てる
       }
 
@@ -86,7 +78,7 @@ export const options: NextAuthOptions = {
     jwt: async ({ token, account, profile }) => {
       if (account && profile) {
         // isOidcProviderを使ってproviderの型を確認する
-        if (isOidcProvider(account.provider)) {
+        if (account.provider === 'google') {
           token.provider = account.provider;
         }
         token.sub = profile.sub; // profileから適切なプロパティを割り当てる
@@ -95,6 +87,31 @@ export const options: NextAuthOptions = {
       }
 
       return token;
+    },
+    async signIn({ user, account }) {
+      const provider = account?.provider;
+      const uid = user?.id;
+      const name = user?.name;
+      const email = user?.email;
+      const avatar = user?.image;
+
+      try {
+        const response = await axios.post(
+          `${process.env.RAILS_API_URL}/auth/${provider}/callback`,
+          {
+            uid,
+            provider,
+            name,
+            email,
+            avatar,
+          }
+        );
+
+        return response.status === 200;
+      } catch (error) {
+        console.error('エラー', error);
+        return false;
+      }
     },
   },
 };

@@ -2,8 +2,6 @@
 
 import { signIn } from 'next-auth/react';
 import type { JSX, MouseEvent } from 'react';
-/* Debug */
-import { useSession } from 'next-auth/react';
 
 const handleLogin = async (event: MouseEvent<HTMLButtonElement>) => {
   event.preventDefault();
