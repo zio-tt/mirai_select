@@ -1,2 +1,3 @@
 compose.yaml
-./container/web/nginx
+./container/web/nginx/log/
+.gitignore

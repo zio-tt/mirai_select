@@ -44,12 +44,10 @@ export default function Home() {
   }
 
   useEffect(() => {
-    logger.log(status);
-    logger.log(session?.user)
     let hasVisited = sessionStorage.getItem('hasVisited');
-    if (hasVisited == null && (status == 'unauthenticated' || status == null)) {
+    if (hasVisited == null && (status == 'unauthenticated' || !status)) {
       VisitAnimate();
-    } else if (hasVisited && status == 'unauthenticated') {
+    } else if (hasVisited && (status == 'unauthenticated' || !status)) {
       setShowButton(true);
       setShowLogo(false);
       setButtonOpacity(1);
