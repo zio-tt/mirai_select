@@ -66,7 +66,7 @@ export default function Home() {
   return (
     <>
       { !showContent && (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+        <div className="flex flex-col items-center justify-center">
           <div
             className={'transform transition-opacity duration-1000'}
             style={{ display: showLogo ? 'block' : 'none', opacity: logoOpacity }}
@@ -85,8 +85,8 @@ export default function Home() {
         </div>
       )}
       { showContent && (
-        <div className="flex flex-col items-center justify-start min-h-screen bg-white">
-          <div className='w-[70%]'>
+        <div className="flex items-start">
+          <div className='w-max'>
             <div className="flex items-center gap-8 p-4 flex-grow mx-10 my-4">
               {/* キャラクターアイコン */}
               <div className="w-36 h-36 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">

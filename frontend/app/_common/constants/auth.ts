@@ -9,7 +9,13 @@ declare module 'next-auth' {
     appAccessToken: string;
   }
   interface Session {
-    user: User & DefaultUser & { id: string; provider?: 'google' };
+    user: User & DefaultUser & {
+      id: string;
+      name?: string;
+      email?: string;
+      image?: string;
+      provider?: 'google';
+    };
   }
   interface User {
     id: string;
@@ -31,7 +37,7 @@ declare module 'next-auth/jwt' {
 }
 
 export const options: NextAuthOptions = {
-  debug: true,
+  // debug: true,
   providers: [
     GoogleProvider({
       clientId: String(process.env.GOOGLE_CLIENT_ID) ?? '',
