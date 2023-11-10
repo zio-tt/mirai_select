@@ -2367,3 +2367,15 @@
 2023/11/10 00:51:46 [notice] 1#1: start worker process 30
 2023/11/10 00:51:46 [notice] 1#1: start worker process 31
 2023/11/10 00:51:46 [notice] 1#1: start worker process 32
+2023/11/10 20:52:36 [notice] 1#1: using the "epoll" event method
+2023/11/10 20:52:36 [notice] 1#1: nginx/1.21.6
+2023/11/10 20:52:36 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6) 
+2023/11/10 20:52:36 [notice] 1#1: OS: Linux 5.15.49-linuxkit
+2023/11/10 20:52:36 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2023/11/10 20:52:36 [notice] 1#1: start worker processes
+2023/11/10 20:52:36 [notice] 1#1: start worker process 30
+2023/11/10 20:52:36 [notice] 1#1: start worker process 31
+2023/11/10 20:52:36 [notice] 1#1: start worker process 32
+2023/11/10 20:52:36 [notice] 1#1: start worker process 33
+2023/11/10 20:52:45 [crit] 31#31: *3 connect() to unix:///backend/tmp/sockets/puma.sock failed (2: No such file or directory) while connecting to upstream, client: 172.18.0.1, server: localhost, request: "GET /manage/ HTTP/1.1", upstream: "http://unix:///backend/tmp/sockets/puma.sock:/manage/", host: "localhost"
+2023/11/10 20:52:46 [crit] 31#31: *3 connect() to unix:///backend/tmp/sockets/puma.sock failed (2: No such file or directory) while connecting to upstream, client: 172.18.0.1, server: localhost, request: "GET /manage/ HTTP/1.1", upstream: "http://unix:///backend/tmp/sockets/puma.sock:/manage/", host: "localhost"

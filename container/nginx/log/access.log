@@ -3772,3 +3772,6 @@
 172.30.0.1 - - [10/Nov/2023:17:46:31 +0900] "GET /api/auth/csrf HTTP/1.1" 200 91 "http://localhost/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
 172.30.0.1 - - [10/Nov/2023:17:46:31 +0900] "POST /api/auth/signout HTTP/1.1" 200 42 "http://localhost/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
 172.30.0.1 - - [10/Nov/2023:17:46:31 +0900] "GET /_next/webpack-hmr HTTP/1.1" 101 130 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+172.18.0.1 - - [10/Nov/2023:20:52:45 +0900] "GET / HTTP/1.1" 499 0 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+172.18.0.1 - - [10/Nov/2023:20:52:45 +0900] "GET /manage/ HTTP/1.1" 502 559 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+172.18.0.1 - - [10/Nov/2023:20:52:46 +0900] "GET /manage/ HTTP/1.1" 502 559 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
