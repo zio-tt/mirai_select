@@ -62,4 +62,7 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
+  Rails.application.config.relative_url_root = "/manage"
+  config.allow_origins = ['http://localhost', 'http://localhost:3000', 'http://localhost:80']
+  config.hosts << "web"
 end
