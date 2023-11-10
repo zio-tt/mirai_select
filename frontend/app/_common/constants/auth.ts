@@ -2,6 +2,7 @@ import * as jose from 'jose';
 import type { DefaultSession, DefaultUser, NextAuthOptions, Session, User } from 'next-auth';
 import type { DefaultJWT, JWT } from 'next-auth/jwt';
 import GoogleProvider from 'next-auth/providers/google';
+import axios from 'axios';
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
@@ -33,8 +34,8 @@ export const options: NextAuthOptions = {
   debug: true,
   providers: [
     GoogleProvider({
-      clientId: String(process.env.GOOGLE_CLIENT_ID),
-      clientSecret: String(process.env.GOOGLE_CLIENT_SECRET),
+      clientId: String(process.env.GOOGLE_CLIENT_ID) ?? '',
+      clientSecret: String(process.env.GOOGLE_CLIENT_SECRET) ?? '',
     }),
   ],
   callbacks: {
@@ -86,6 +87,31 @@ export const options: NextAuthOptions = {
       }
 
       return token;
+    },
+    async signIn({ user, account }) {
+      const provider = account?.provider;
+      const uid = user?.id;
+      const name = user?.name;
+      const email = user?.email;
+      const avatar = user?.image;
+
+      try {
+        const response = await axios.post(
+          `${process.env.RAILS_API_URL}/auth/${provider}/callback`,
+          {
+            uid,
+            provider,
+            name,
+            email,
+            avatar,
+          }
+        );
+
+        return response.status === 200;
+      } catch (error) {
+        console.error('エラー', error);
+        return false;
+      }
     },
   },
 };

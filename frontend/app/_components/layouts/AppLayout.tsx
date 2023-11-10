@@ -1,12 +1,11 @@
 "use client"
 
 import { Inter } from 'next/font/google'
+import { Suspense } from 'react';
 import { SessionProvider } from 'next-auth/react';
-import { useSession } from 'next-auth/react';
 import Footer from './footer/layout';
-
-import React from "react";
 import Header from './header/layout';
+import Loading from './loading/layout';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,9 +18,11 @@ export default function AppLayout({children}: AppLayoutProps) {
     <html lang="en">
       <body className={inter.className}>
         <SessionProvider>
-          <Header />
-          {children}
-          <Footer />
+          <Suspense fallback={<Loading />}>
+            <Header />
+            {children}
+            <Footer />
+          </Suspense>
         </SessionProvider>
       </body>
     </html>
