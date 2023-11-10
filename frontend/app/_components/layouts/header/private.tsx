@@ -10,7 +10,7 @@ import type { MouseEvent } from 'react';
 const handleLogout = async (event: MouseEvent<HTMLElement>) => {
   event.preventDefault();
 
-  await signOut();
+  await signOut({ callbackUrl: 'http://localhost/' });
 };
 
 export default function PublicHeader() {
@@ -20,7 +20,6 @@ export default function PublicHeader() {
   useEffect(() => {
     const user_image = session?.user.image ? session.user.image : '';
     setAvatar(user_image);
-    console.log(avatar)
   },[])
 
   return (
