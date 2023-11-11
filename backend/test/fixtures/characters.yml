@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  avatar: MyString
+  mbti_type: 1
+  tone: 1
+  first_person: MyString
+  second_person: MyString
+  expression: 1
+  values: MyString
+  dialogue_style: 1
+
+two:
+  name: MyString
+  avatar: MyString
+  mbti_type: 1
+  tone: 1
+  first_person: MyString
+  second_person: MyString
+  expression: 1
+  values: MyString
+  dialogue_style: 1
