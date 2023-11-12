@@ -8,21 +8,15 @@ declare module 'next-auth' {
   interface Session extends DefaultSession {
     appAccessToken: string;
   }
-  interface Session {
-    user: User & DefaultUser & {
-      id: string;
-      name?: string;
-      email?: string;
-      image?: string;
-      provider?: 'google';
-    };
-  }
   interface User {
     id: string;
     name?: string;
     email?: string;
     image?: string;
     provider?: 'google';
+  }
+  interface Session {
+    user: User & DefaultUser;
   }
 }
 

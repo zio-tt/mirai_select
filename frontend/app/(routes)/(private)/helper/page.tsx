@@ -109,7 +109,7 @@ export default function Helper() {
                   <div className={`${message.sender === "user" ? "mr-2" : "ml-2"} chat-header`}>
                     {message.sender}
                   </div>
-                  <div className={`${message.sender === "user" ? "chat-bubble-info" : "chat-bubble-success"} chat-bubble`}>
+                  <div className={`${message.sender === "user" ? "chat-bubble-info" : "chat-bubble-success"} chat-bubble break-words whitespace-normal`}>
                     {message.message}
                   </div>
                 </div>
