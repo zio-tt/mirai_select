@@ -40,7 +40,7 @@ function LayoutContent( {children}: AppLayoutProps ){
       <Header />
       <div className='flex-grow flex justify-center'>
         { isRoot != "/" && <AuthGuard children={children} /> }
-        {children}
+        { isRoot == "/" && children}
       </div>
       <Footer />
     </div>
