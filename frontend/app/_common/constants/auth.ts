@@ -8,21 +8,15 @@ declare module 'next-auth' {
   interface Session extends DefaultSession {
     appAccessToken: string;
   }
-  interface Session {
-    user: User & DefaultUser & {
-      id: string;
-      name?: string;
-      email?: string;
-      image?: string;
-      provider?: 'google';
-    };
-  }
   interface User {
     id: string;
     name?: string;
     email?: string;
     image?: string;
     provider?: 'google';
+  }
+  interface Session {
+    user: User & DefaultUser;
   }
 }
 
@@ -45,19 +39,18 @@ export const options: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    session: async ({ session, token, }: { session: Session; user: User; token: JWT; }) => {
+    session: async ({ session, token, }: { session: Session; token: JWT; }) => {
       // session.userが存在することを確認する
       if (!session.user) {
-        session.user = { id: '', name: '', email: ''} as User; // ここで適切な型アサーションを行うか、または必要なプロパティを持つ空のオブジェクトを割り当てます
+        session.user = { id: '', name: '', email: ''} as User;
       }
 
       // 必要なプロパティをsession.userに割り当てる
-      session.user.id = token.sub ?? session.user.id; // token.subがundefinedでない場合のみ割り当てる
-      session.user.name = token.name ?? session.user.name; // 同上
-      session.user.email = token.email ?? session.user.email; // 同上
-      if (token.provider === 'google') {
-        session.user.provider = token.provider; // isOidcProvider関数を通して割り当てる
-      }
+      session.user.id = token.id ?? session.user.id;
+      session.user.name = token.name ?? session.user.name;
+      session.user.email = token.email ?? session.user.email;
+      session.user.image = token.picture ?? session.user.image;
+      session.user.provider = token.provider;
 
       if (token.sub != null && token.provider != null) {
         const payload = {
@@ -81,36 +74,38 @@ export const options: NextAuthOptions = {
       return session;
     },
     // eslint-disable-next-line @typescript-eslint/require-await
-    jwt: async ({ token, account, profile }) => {
-      if (account && profile) {
-        // isOidcProviderを使ってproviderの型を確認する
+    jwt: async ({ token, user, account }) => {
+      if (account && user) {
         if (account.provider === 'google') {
           token.provider = account.provider;
         }
-        token.sub = profile.sub; // profileから適切なプロパティを割り当てる
-        token.name = profile.name; // 同上
-        token.email = profile.email; // 同上
+        token.id = user.id; // profileから適切なプロパティを割り当てる
+        token.name = user.name; // 同上
+        token.email = user.email; // 同上
+        token.picture = user.image;
       }
 
       return token;
     },
     async signIn({ user, account }) {
-      const provider = account?.provider;
-      const uid = user?.id;
-      const name = user?.name;
-      const email = user?.email;
-      const avatar = user?.image;
+      // JWTトークンを生成する
+      const tokenPayload = {
+        provider: account?.provider,
+        uid: user?.id,
+        name: user?.name,
+        email: user?.email,
+        avatar: user?.image,
+      };
+      const secretKey = new TextEncoder().encode(process.env.APP_ACCESS_TOKEN_SECRET || '');
+      // JWTトークンを署名する
+      const token = await new jose.SignJWT(tokenPayload)
+                                  .setProtectedHeader({ alg: 'HS256' })
+                                  .sign(secretKey);
 
       try {
         const response = await axios.post(
-          `${process.env.RAILS_API_URL}/auth/${provider}/callback`,
-          {
-            uid,
-            provider,
-            name,
-            email,
-            avatar,
-          }
+          `${process.env.RAILS_API_URL}/auth/${account?.provider}/callback`,
+          { token }
         );
 
         return response.status === 200;
