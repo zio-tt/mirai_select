@@ -48,3 +48,4 @@ end
 
 gem 'dotenv-rails'
 gem 'ruby-openai'
+gem 'jwt'
