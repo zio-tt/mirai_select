@@ -103,12 +103,25 @@ export const options: NextAuthOptions = {
                                   .sign(secretKey);
 
       try {
-        const response = await axios.post(
+        // UsersController#createを呼び出し、ユーザー作成または確認
+        const userCreateResponse = await axios.post(
           `${process.env.RAILS_API_URL}/auth/${account?.provider}/callback`,
           { token }
         );
 
-        return response.status === 200;
+        // ユーザー作成が成功した場合（ステータスコード200）
+        if (userCreateResponse.status === 200) {
+          // UserSessionsController#createを呼び出してログイン処理
+          const loginResponse = await axios.post(
+            `${process.env.RAILS_API_URL}/auth/${account?.provider}/login`,
+            { token }
+          );
+
+          // ログイン処理が成功したかチェック
+          return loginResponse.status === 200;
+        } else {
+          return false;
+        }
       } catch (error) {
         console.error('エラー', error);
         return false;

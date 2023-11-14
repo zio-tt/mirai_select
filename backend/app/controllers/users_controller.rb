@@ -2,8 +2,7 @@ class UsersController < ApplicationController
   def create
     # JWTトークンの受け取りと検証
     token = params[:token]
-    secret_key = ENV['APP_ACCESS_TOKEN_SECRET']
-    decoded_token = JWT.decode(token, secret_key, true, { algorithm: 'HS256' })
+    decoded_token = decode_token(token)
 
     # ユーザー情報の取得
     user_info = decoded_token[0]
@@ -18,7 +17,7 @@ class UsersController < ApplicationController
     if user
       head :ok
     else
-      render json: { error: "ログインに失敗しました" }, status: :unprocessable_entity
+      render json: { error: "ユーザーの作成に失敗しました" }, status: :unprocessable_entity
     end
   rescue StandardError => e
     render json: { error: e.message }, status: :internal_server_error

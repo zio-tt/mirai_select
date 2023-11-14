@@ -49,3 +49,5 @@ end
 gem 'dotenv-rails'
 gem 'ruby-openai'
 gem 'jwt'
+gem 'devise'
+gem 'devise-jwt'

@@ -30,6 +30,7 @@ export default function AppLayout({children}: AppLayoutProps) {
 function LayoutContent( {children}: AppLayoutProps ){
   const { status } = useSession();
   const isRoot = usePathname();
+  console.log(status)
 
   if (status === 'loading') {
     return <Loading />;
@@ -39,8 +40,8 @@ function LayoutContent( {children}: AppLayoutProps ){
     <div className='flex flex-col h-screen bg-white'>
       <Header />
       <div className='flex-grow flex justify-center'>
+        { isRoot == "/" && children }
         { isRoot != "/" && <AuthGuard children={children} /> }
-        { isRoot == "/" && children}
       </div>
       <Footer />
     </div>
