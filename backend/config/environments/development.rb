@@ -65,4 +65,5 @@ Rails.application.configure do
   Rails.application.config.relative_url_root = "/manage"
   config.allow_origins = ['http://localhost', 'http://localhost:3000', 'http://localhost:80']
   config.hosts << "web"
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 end
