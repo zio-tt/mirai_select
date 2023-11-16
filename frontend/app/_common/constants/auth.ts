@@ -31,7 +31,7 @@ declare module 'next-auth/jwt' {
 }
 
 export const options: NextAuthOptions = {
-  // debug: true,
+  debug: true,
   providers: [
     GoogleProvider({
       clientId: String(process.env.GOOGLE_CLIENT_ID) ?? '',
@@ -104,21 +104,27 @@ export const options: NextAuthOptions = {
 
       try {
         // UsersController#createを呼び出し、ユーザー作成または確認
-        const userCreateResponse = await axios.post(
-          `${process.env.RAILS_API_URL}/auth/${account?.provider}/callback`,
-          { token }
-        );
+        const userCreateResponse = await axios({
+          method: 'post',
+          url: `${process.env.NEXT_PUBLIC_API_URL}/auth/${account?.provider}/callback`,
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          data: { token },
+          withCredentials: true,
+        });
 
         // ユーザー作成が成功した場合（ステータスコード200）
         if (userCreateResponse.status === 200) {
           // UserSessionsController#createを呼び出してログイン処理
-          const loginResponse = await axios.post(
-            `${process.env.RAILS_API_URL}/auth/${account?.provider}/login`,
-            { token }
-          );
-
+          const loginResponse = await axios({
+            method: 'post',
+            url: `${process.env.NEXT_PUBLIC_API_URL}/auth/${account?.provider}/login`,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            data: { token },
+            withCredentials: true,
+          });
           // ログイン処理が成功したかチェック
           return loginResponse.status === 200;
+
         } else {
           return false;
         }

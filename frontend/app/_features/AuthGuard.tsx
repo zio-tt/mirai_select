@@ -9,7 +9,7 @@ const AuthGuard = ({ children }: { children: React.ReactNode }): any => {
   const router = useRouter();
   const unAuthenticatedPath = usePathname();
   useEffect(() => {
-    if (status === "unauthenticated" || status === null && unAuthenticatedPath != "/privacy-policy" && unAuthenticatedPath != "/terms-of/service")
+    if (status === "unauthenticated" || status === null && ( unAuthenticatedPath != "/privacy-policy" || "/terms-of/service"))
       router.replace("/");
   }, [router, status]);
   if (status === "loading") return <Loading />;

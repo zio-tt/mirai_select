@@ -49,5 +49,6 @@ end
 gem 'dotenv-rails'
 gem 'ruby-openai'
 gem 'jwt'
-gem 'devise'
-gem 'devise-jwt'
+gem 'pry-rails'
+gem 'pry-nav'
+gem 'pundit'

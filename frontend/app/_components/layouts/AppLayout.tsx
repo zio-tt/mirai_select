@@ -31,19 +31,19 @@ function LayoutContent( {children}: AppLayoutProps ){
   const { status } = useSession();
   const isRoot = usePathname();
   console.log(status)
-
-  if (status === 'loading') {
-    return <Loading />;
-  }
-
   return(
     <div className='flex flex-col h-screen bg-white'>
-      <Header />
-      <div className='flex-grow flex justify-center'>
-        { isRoot == "/" && children }
-        { isRoot != "/" && <AuthGuard children={children} /> }
-      </div>
-      <Footer />
+      { isRoot == "/" && status == 'loading' && <Loading /> }
+      { status != 'loading' && (
+        <>
+          <Header />
+          <div className='flex-grow flex justify-center'>
+            { isRoot == "/" && children }
+            { isRoot != "/" && <AuthGuard children={children} /> }
+          </div>
+          <Footer />
+        </>
+      )}
     </div>
-  )
+  );
 }
