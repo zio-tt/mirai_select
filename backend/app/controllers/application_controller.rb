@@ -1,5 +1,16 @@
 class ApplicationController < ActionController::API
-  def decode_token(token)
-    JWT.decode(token, ENV['APP_ACCESS_TOKEN_SECRET'], true, { algorithm: 'HS256' })
+  include ActionController::Cookies
+  include Authentication
+  rescue_from Pundit::NotAuthorizedError, with: :render_403
+  before_action :check_xhr_header
+  before_action :current_user
+
+  def check_xhr_header
+    return if request.xhr?
+    render json: { error: 'forbidden' }, status: :forbidden
+  end
+
+  def render_403
+    render status: 403, json: { message: "You don't have permission." }
   end
 end

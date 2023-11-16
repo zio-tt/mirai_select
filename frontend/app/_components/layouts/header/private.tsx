@@ -5,12 +5,30 @@ import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import type { MouseEvent } from 'react';
-
+import axios from 'axios';
 
 const handleLogout = async (event: MouseEvent<HTMLElement>) => {
   event.preventDefault();
+  try {
+    // signOut 関数を呼び出す
+    await signOut();
 
-  await signOut({ callbackUrl: 'http://localhost/' });
+    // axios を使用してセッションを破棄する
+    const destroySession = await axios({
+      method: 'post',
+      url: `${process.env.NEXT_PUBLIC_API_URL}/auth/google/logout`,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      withCredentials: true,
+    });
+
+    if (destroySession.status === 200) {
+      console.log('Session destroyed successfully');
+    } else {
+      console.error('Error destroying session', destroySession);
+    }
+  } catch (error) {
+    console.error('Catch error', error);
+  }
 };
 
 export default function PublicHeader() {
@@ -31,7 +49,9 @@ export default function PublicHeader() {
         <a href="/helper" className="text-base text-gray-600 hover:underline mr-2 ml-4">決断ヘルパー</a>
         <a href="/index" className="text-base text-gray-600 hover:underline mr-2 ml-4">みんなの悩みごと</a>
         <a href="#" onClick={handleLogout} className="w-12 h-12 bg-gray-200 rounded-full items-center justify-center overflow-hidden flex-shrink-0">
-          <Image src={avatar} alt="アバター画像" width={144} height={144} className="object-cover" />
+          {avatar.length > 0 && (
+            <Image src={avatar} alt="アバター画像" width={144} height={144} className="object-cover" />
+          )}
         </a>
       </div>
     </>
