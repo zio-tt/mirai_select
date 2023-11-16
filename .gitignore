@@ -1,5 +1,5 @@
 compose.yaml
-./container/web/nginx/log/
+./container/nginx/log/
 .gitignore
 ./backend/.env
 ./frontend/.env

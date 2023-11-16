@@ -15,6 +15,7 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
+    binding.pry
     session.delete(:current_user)
     @current_user = nil
 

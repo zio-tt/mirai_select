@@ -10,9 +10,73 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_10_122903) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_11_084820) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "characters", force: :cascade do |t|
+    t.string "name"
+    t.string "avatar"
+    t.integer "mbti_type"
+    t.integer "tone"
+    t.string "first_person"
+    t.string "second_person"
+    t.integer "expression"
+    t.string "values"
+    t.integer "dialogue_style"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "characters_responses", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.bigint "character_id", null: false
+    t.text "response"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_characters_responses_on_character_id"
+    t.index ["conversation_id"], name: "index_characters_responses_on_conversation_id"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "decision_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["decision_id"], name: "index_comments_on_decision_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "conversations", force: :cascade do |t|
+    t.bigint "decision_id", null: false
+    t.integer "user_decision"
+    t.text "query_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["decision_id"], name: "index_conversations_on_decision_id"
+  end
+
+  create_table "decisions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.boolean "public"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_decisions_on_user_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "templates", force: :cascade do |t|
+    t.string "name"
+    t.text "query_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "uid", null: false
@@ -26,4 +90,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_10_122903) do
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 
+  create_table "users_characters", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "character_id", null: false
+    t.integer "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_users_characters_on_character_id"
+    t.index ["user_id"], name: "index_users_characters_on_user_id"
+  end
+
+  add_foreign_key "characters_responses", "characters"
+  add_foreign_key "characters_responses", "conversations"
+  add_foreign_key "comments", "decisions"
+  add_foreign_key "comments", "users"
+  add_foreign_key "conversations", "decisions"
+  add_foreign_key "decisions", "users"
+  add_foreign_key "users_characters", "characters"
+  add_foreign_key "users_characters", "users"
 end

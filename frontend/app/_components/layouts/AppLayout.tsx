@@ -7,6 +7,7 @@ import Footer from './footer/layout';
 import Header from './header/layout';
 import Loading from './loading/layout';
 import AuthGuard from '@/app/_features/AuthGuard';
+import { useState, useEffect } from 'react';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -28,12 +29,19 @@ export default function AppLayout({children}: AppLayoutProps) {
 }
 
 function LayoutContent( {children}: AppLayoutProps ){
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const [hasVisited, setHasVisited] = useState<string>('');
   const isRoot = usePathname();
   console.log(status)
+
+  useEffect(() => {
+    let hasVisited = sessionStorage.getItem('hasVisited');
+    return;
+  }, [session, status])
+
   return(
     <div className='flex flex-col h-screen bg-white'>
-      { isRoot == "/" && status == 'loading' && <Loading /> }
+      { isRoot == "/" && hasVisited != null && status == 'loading' && <Loading /> }
       { status != 'loading' && (
         <>
           <Header />
