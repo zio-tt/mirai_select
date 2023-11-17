@@ -7,7 +7,7 @@ export default function Header() {
   const { data: session, status } = useSession();
 
   return (
-    <header className='h-12 items-center justify-center'>
+    <header className='flex fixed h-16 w-screen items-center justify-center z-10' data-theme="fantasy">
       {status === 'authenticated' ? <PrivateHeader /> : <PublicHeader />}
     </header>
   );

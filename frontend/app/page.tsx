@@ -70,7 +70,7 @@ export default function Home() {
             style={{ display: showLogo ? 'block' : 'none', opacity: logoOpacity }}
           >
             {showLogo && (
-              <Image src="/images/logo_image.png" alt="Logo" width={500} height={500} style = {{ objectFit: "contain" }} />
+              <Image src="/images/logo.png" alt="Logo" width={500} height={500} style = {{ objectFit: "contain" }} />
             )}
           </div>
           { showButton && (

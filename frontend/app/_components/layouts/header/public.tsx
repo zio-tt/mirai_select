@@ -12,10 +12,11 @@ const handleLogin = async (event: MouseEvent<HTMLElement>) => {
 export default function PublicHeader() {
   return (
     <>
-      <div className="fixed top-3 left-4">
-        <a href="/" className="text-bs text-gray-600 hover:underline ml-2">ミライセレクト</a>
+      <div className="fixed left-4 justify-center">
+        <a href="/" className="text-xl text-gray-600 hover:underline ml-2">ミライセレクト</a>
+        <p className='text-xs'>あなたの選択をサポートする</p>
       </div>
-      <div className="fixed top-3 right-4">
+      <div className="fixed right-4">
         <a href="#" onClick={handleLogin} className="text-bs text-gray-600 hover:underline mr-2 ml-4">Google認証</a>
       </div>
     </>

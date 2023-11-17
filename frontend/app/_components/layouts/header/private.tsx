@@ -10,10 +10,7 @@ import axios from 'axios';
 const handleLogout = async (event: MouseEvent<HTMLElement>) => {
   event.preventDefault();
   try {
-    // signOut 関数を呼び出す
     await signOut();
-
-    // axios を使用してセッションを破棄する
     const destroySession = await axios({
       method: 'post',
       url: `${process.env.NEXT_PUBLIC_API_URL}/auth/google/logout`,
@@ -42,10 +39,11 @@ export default function PublicHeader() {
 
   return (
     <>
-      <div className="fixed top-3 left-4 z-10 items-center">
-        <a href="/" className="text-base text-gray-600 hover:underline ml-2">ミライセレクト</a>
+      <div className="fixed left-4 justify-center">
+        <a href="/" className="text-xl text-gray-600 hover:underline ml-2">ミライセレクト</a>
+        <p className='text-xs'>あなたの選択をサポートする</p>
       </div>
-      <div className="fixed right-4 z-10 flex items-center">
+      <div className="fixed right-4 flex items-center">
         <a href="/helper" className="text-base text-gray-600 hover:underline mr-2 ml-4">決断ヘルパー</a>
         <a href="/index" className="text-base text-gray-600 hover:underline mr-2 ml-4">みんなの悩みごと</a>
         <a href="#" onClick={handleLogout} className="w-12 h-12 bg-gray-200 rounded-full items-center justify-center overflow-hidden flex-shrink-0">

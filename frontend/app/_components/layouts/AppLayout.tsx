@@ -19,6 +19,9 @@ export default function AppLayout({children}: AppLayoutProps) {
 
   return (
     <html lang="en">
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&display=swap" rel="stylesheet" />
+      </head>
       <body className={inter.className}>
         <SessionProvider>
           <LayoutContent children={children} />
@@ -45,7 +48,7 @@ function LayoutContent( {children}: AppLayoutProps ){
       { status != 'loading' && (
         <>
           <Header />
-          <div className='flex-grow flex justify-center'>
+          <div className='pt-16 flex-grow flex justify-center' data-theme="fantasy">
             { isRoot == "/" && children }
             { isRoot != "/" && <AuthGuard children={children} /> }
           </div>
