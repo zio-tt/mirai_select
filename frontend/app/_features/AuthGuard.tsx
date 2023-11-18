@@ -8,11 +8,11 @@ const AuthGuard = ({ children }: { children: React.ReactNode }): any => {
   const router = useRouter();
   const unAuthenticatedPath = usePathname();
   useEffect(() => {
-    if ((status === 'unauthenticated' || status === null) && ( unAuthenticatedPath != '/privacy-policy' && unAuthenticatedPath != '/terms-of-service' && unAuthenticatedPath != '/test'))
+    if ((status === 'unauthenticated' || status === null) && ( unAuthenticatedPath != '/privacy-policy' && unAuthenticatedPath != '/terms-of-service' && unAuthenticatedPath != '/about'))
       router.replace('/');
   }, [router, status]);
   if (status === 'loading') return <Loading />;
-  if ((status === 'unauthenticated' || status === null) && ( unAuthenticatedPath == '/privacy-policy' || unAuthenticatedPath == '/terms-of-service' || unAuthenticatedPath == '/test')) { return children };
+  if ((status === 'unauthenticated' || status === null) && ( unAuthenticatedPath == '/privacy-policy' || unAuthenticatedPath == '/terms-of-service' || unAuthenticatedPath == '/about')) { return children };
   if (status === 'authenticated') return children;
 };
 

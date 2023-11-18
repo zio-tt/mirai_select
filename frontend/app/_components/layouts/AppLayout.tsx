@@ -43,7 +43,7 @@ function LayoutContent( {children}: AppLayoutProps ){
   }, [session, status])
 
   return(
-    <div className='flex flex-col h-screen bg-white'>
+    <div className='flex flex-col h-screen' data-theme="dark">
       { isRoot == "/" && hasVisited != null && status == 'loading' && <Loading /> }
       { status != 'loading' && (
         <>
