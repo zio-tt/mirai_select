@@ -21,9 +21,16 @@ const config: Config = {
       animation: {
         fadeIn:  'fadeIn 1s forwards',
         fadeOut: 'fadeOut 1s forwards'
-      }
+      },
+      fontFamily: {
+        kiwi: ['Kiwi Maru'],
+      },
     },
   },
   plugins: [require("daisyui")],
+  daisyui: {
+    themes: ["fantasy", "dark", "valentine"],
+  },
 }
+
 export default config
