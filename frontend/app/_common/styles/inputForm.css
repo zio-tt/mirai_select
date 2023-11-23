@@ -1,0 +1,36 @@
+.thought-bubble {
+  position: relative;
+  padding: 20px;
+  background-color: white;
+  border-radius: 30px;
+  box-shadow: 0px 10px 10px -6px rgba(0, 0, 0, 0.3);
+  border: 1px solid #000;
+}
+
+.thought-bubble::before {
+  content: '';
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background-color: white;
+  right: -30px;
+  bottom: -15px;
+  width: 30px;
+  height: 30px;
+  box-shadow: 0px 10px 10px -6px rgba(0, 0, 0, 0.3);
+  border: 1px solid #000;
+}
+
+.thought-bubble::after {
+  content: '';
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background-color: white;
+  right: -40px;
+  bottom: -30px;
+  width: 15px;
+  height: 15px;
+  box-shadow: 0px 10px 10px -6px rgba(0, 0, 0, 0.3);
+  border: 1px solid #000;
+}
