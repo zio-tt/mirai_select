@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import type { MouseEvent } from 'react';
 import axios from 'axios';
@@ -30,7 +31,8 @@ const handleLogout = async (event: MouseEvent<HTMLElement>) => {
 
 export default function PublicHeader() {
   const [ avatar, setAvatar ]= useState<string>('');
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
+  const isRoot = usePathname();
 
   useEffect(() => {
     const user_image = session?.user.image ? session.user.image : '';

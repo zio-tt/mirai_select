@@ -1,5 +1,5 @@
 import "@/app/_common/styles/inputForm.css";
-import React from 'react';
+import { useHelper } from "@/app/_features/helper/HelperContext";
 import { useAutoResizeTextArea } from '@/app/_common/hooks/useAutoResizeTextArea';
 
 type InputFormProps = {
@@ -9,7 +9,8 @@ type InputFormProps = {
 };
 
 const InputForm = ({ remainingChars, onSubmit, isLoading }: InputFormProps) => {
-  const { value, setValue, textAreaRef } = useAutoResizeTextArea();
+  const { textAreaRef } = useAutoResizeTextArea();
+  const { inputText, setInputText } = useHelper();
 
   return (
     <div className="thought-bubble w-[30%] flex flex-col items-center justify-center mr-10">
@@ -18,8 +19,8 @@ const InputForm = ({ remainingChars, onSubmit, isLoading }: InputFormProps) => {
           ref={textAreaRef}
           placeholder="悩みごとを入力してください（最大50文字）"
           className="input resize-none p-2 w-full max-w-full h-8 text-base leading-normal"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
         />
       </div>
       <div className="h-full items-start justify-start ml-4">

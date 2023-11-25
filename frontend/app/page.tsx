@@ -1,18 +1,17 @@
 "use client"
 
 import Image from 'next/image';
-import React, { useEffect, useState, MouseEvent } from 'react';
+import { useState, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { logger } from '@/app/_common/utils/logger'
 
 export default function Home() {
   const router = useRouter();
 
 
-  const [ helperImageURL, setHelperImageURL ] = React.useState<string>("/images/top/sample1.jpeg");
-  const [ indexImageURL, setIndexImageURL ] = React.useState<string>("/images/top/sample1.jpeg");
-  const [ helperText, setHelperText ] = React.useState<string>("1. あなたの悩みごとを入力");
-  const [ indexText, setIndexText ] = React.useState<string>("1. あなたの悩みごとを入力");
+  const [ helperImageURL, setHelperImageURL ] = useState<string>("/images/top/sample1.jpeg");
+  const [ indexImageURL, setIndexImageURL ] = useState<string>("/images/top/sample1.jpeg");
+  const [ helperText, setHelperText ] = useState<string>("1. あなたの悩みごとを入力");
+  const [ indexText, setIndexText ] = useState<string>("1. あなたの悩みごとを入力");
 
   const switchHelper = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();

@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Loading from '../_components/layouts/loading/layout';
 
 const AuthGuard = ({ children }: { children: React.ReactNode }): any => {
