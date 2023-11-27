@@ -3,12 +3,10 @@ import { useHelper } from "@/app/_features/helper/HelperContext";
 import { useAutoResizeTextArea } from '@/app/_common/hooks/useAutoResizeTextArea';
 
 type InputFormProps = {
-  remainingChars: number;
-  onSubmit: (value: string) => void;  // onSubmitにvalueを渡す
   isLoading: boolean;
 };
 
-const InputForm = ({ remainingChars, onSubmit, isLoading }: InputFormProps) => {
+const InputForm = ({ isLoading }: InputFormProps) => {
   const { textAreaRef } = useAutoResizeTextArea();
   const { inputText, setInputText } = useHelper();
 

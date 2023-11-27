@@ -3,20 +3,26 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
-    // Server Schema
+    // サーバー側でのみ使用する環境変数
+    APP_ACCESS_TOKEN_SECRET: z.string().min(1),
+    GOOGLE_CLIENT_ID: z.string().min(1),
+    GOOGLE_CLIENT_SECRET: z.string().min(1),
   },
   client: {
-    // Client Schema
-    // NextAuth Environment Variable
-    /* NextAuth Secret Key */
-    NEXTAUTH_SECRET: z.string().min(1),
-    /* NextAuth URL */
+    // クライアント側でのみ使用する環境変数
+    NEXT_PUBLIC_WEB_URL: z.string().url(),
+    NEXT_PUBLIC_API_URL: z.string().url(),
     NEXTAUTH_URL: z.string().url(),
+    NEXTAUTH_SECRET: z.string().min(1),
   },
-
   runtimeEnv: {
-    // Mapping Environment Variable
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    // ランタイム環境変数のマッピング
+    APP_ACCESS_TOKEN_SECRET: process.env.APP_ACCESS_TOKEN_SECRET,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    NEXT_PUBLIC_WEB_URL: process.env.NEXT_PUBLIC_WEB_URL,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },
 });

@@ -34,12 +34,13 @@ export default function AppLayout({children}: AppLayoutProps) {
 
 function LayoutContent( {children}: AppLayoutProps ){
   const { data: session, status } = useSession();
-  const [hasVisited, setHasVisited] = useState<string>('');
+  const [ hasVisited, setHasVisited] = useState<string>('');
   const isRoot = usePathname();
   console.log(status)
 
   useEffect(() => {
-    let hasVisited = sessionStorage.getItem('hasVisited');
+    const storedHasVisited = sessionStorage.getItem('hasVisited');
+    setHasVisited(storedHasVisited!);
     return;
   }, [session, status])
 

@@ -1,11 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  user: one
-  character: one
-  role: 1
+  template: one
+  tag: one
 
 two:
-  user: two
-  character: two
-  role: 1
+  template: two
+  tag: two

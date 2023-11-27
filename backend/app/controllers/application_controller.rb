@@ -1,9 +1,8 @@
 class ApplicationController < ActionController::API
   include ActionController::Cookies
+  include ErrorHandler
   include Authentication
-  rescue_from Pundit::NotAuthorizedError, with: :render_403
   before_action :check_xhr_header
-  before_action :current_user
 
   def check_xhr_header
     return if request.xhr?
