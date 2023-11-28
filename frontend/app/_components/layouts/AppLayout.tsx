@@ -45,12 +45,12 @@ function LayoutContent( {children}: AppLayoutProps ){
   }, [session, status])
 
   return(
-    <div className='flex flex-col h-screen' data-theme="dark">
+    <div className='flex flex-col h-screen w-screen' data-theme="dark">
       { isRoot == "/" && hasVisited != null && status == 'loading' && <Loading /> }
       { status != 'loading' && (
         <>
           <Header />
-          <div className='pt-16 flex-grow flex justify-center' data-theme="fantasy">
+          <div className='pt-16 mx-16 flex-grow flex justify-center' data-theme="fantasy">
             { isRoot == "/" && children }
             { isRoot != "/" && <AuthGuard children={children} /> }
           </div>

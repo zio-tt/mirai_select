@@ -132,20 +132,24 @@ export default function decisionHelperFirstInput () {
       { !isComing && !resultFlag && <Modal onClose={closeModal} />}
       {/* 2回目以降訪れたとき */}
       { isComing && !resultFlag && (
-        <div className="container my-10 flex flex-col items-center justify-center">
-          <div className="w-full flex flex-col items-center justify-center">
-            {/* 文字数オーバーの警告 */}
-            { alertFlag && ( <div className="text-xl" style={{color: 'red'}}>文字数がオーバーしています。入力する悩みごとは<span className="underline">50文字以内</span>にしてください。</div> )}
-            {/* 入力フォーム */}
-            <InputForm
-              isLoading={isLoading}
-            />
-            <div className="w-full flex items-center justify-end">
-              <div className="flex flex-col items-center justify-center">
-                <Image src="/images/helper/man.png" alt="avatar" width={200} height={200} />
-                <button className="btn btn-sm" onClick={sendText}>Tiny</button>
+        <div className="flex flex-col items-center">
+          <div className="container my-10 py-10 bg-white border-gray-300 border-1 shadow-lg flex flex-col items-center justify-center">
+            <div className="w-full flex flex-col items-center justify-center">
+              {/* 文字数オーバーの警告 */}
+              { alertFlag && ( <div className="text-xl" style={{color: 'red'}}>文字数がオーバーしています。入力する悩みごとは<span className="underline">50文字以内</span>にしてください。</div> )}
+              {/* 入力フォーム */}
+              <InputForm
+                isLoading={isLoading}
+              />
+              <div className="w-full flex items-center justify-end">
+                <div className="flex flex-col items-center justify-center">
+                  <Image src="/images/helper/man.png" alt="avatar" width={200} height={200} />
+                </div>
               </div>
             </div>
+          </div>
+          <div>
+            <button className="btn btn-sm" onClick={sendText}>Tiny</button>
           </div>
         </div>
       )}

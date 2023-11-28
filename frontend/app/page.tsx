@@ -47,10 +47,15 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-start pt-16 min-h-screen w-screen bg-white">
+    {/* 2023-11-28 16:00 */}
+    {/* TopPageのレイアウト変更案（レスポンシブデザイン） */}
+    {/* アイコンによる画像表示をやめ、swiperなどによるスライダー実装 */}
+    {/* タブレット（縦）以下の画面幅であれば画像表示と説明文を縦で表示 */}
+    {/* 画像表示はvwで割合表示させる */}
+      <div className="flex flex-col items-center justify-start pt-16 min-h-screen w-full bg-white">
         <div className="w-[80%] flex flex-col items-center justify-center">
           {/* 1段目のコンテンツ */}
-          <div className="flex flex-row items-center justify-center mb-10"> {/* mb-10 は下のマージン */}
+          <div className="flex lg:flex-row flex-col items-center justify-center mb-10"> {/* mb-10 は下のマージン */}
             {/* 左側のテキストとボタン */}
             <div className="flex flex-col items-center justify-center mr-20">
               <div className="text-center min-w-[50%] lg:text-left">
@@ -74,7 +79,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="relative max-w-[100%] w-[500px] h-[400px]">
+              <div className="relative max-w-[100%] w-[30vw] h-[20vw]">
                 <Image src={helperImageURL} className="border-2 border-gray-600" alt="Image" layout="fill" />
               </div>
               <div className="underline text-lg text-center mt-3">{helperText}</div>
