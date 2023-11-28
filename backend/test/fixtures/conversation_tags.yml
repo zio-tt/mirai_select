@@ -2,10 +2,8 @@
 
 one:
   conversation: one
-  character: one
-  response: MyText
+  tag: one
 
 two:
   conversation: two
-  character: two
-  response: MyText
+  tag: two

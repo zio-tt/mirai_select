@@ -1,52 +1,17 @@
 "use client"
 
 import Image from 'next/image';
-import { useSession } from 'next-auth/react';
-import React, { useEffect, useState, MouseEvent } from 'react';
+import { useState, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { GoogleLoginButton} from '@/app/_components/ui-elements';
-import { logger } from '@/app/_common/utils/logger'
 
 export default function Home() {
-  const [ showLogo, setShowLogo] = useState(true);
-  const [ showButton, setShowButton] = useState(false);
-  const [ logoOpacity, setLogoOpacity] = useState(0);
-  const [ buttonOpacity, setButtonOpacity] = useState(0);
-  const [ showContent , setShowContent ] = useState(false);
-  const { data: session, status } = useSession();
   const router = useRouter();
 
-  const VisitAnimate = () => {
-    const fadeInLogoTimer = setTimeout(() => {
-      setLogoOpacity(1);
-    }, 500);
 
-    const fadeOutLogoTimer = setTimeout(() => {
-      setLogoOpacity(0);
-    }, 1500);
-
-    const ShowButtonTimer = setTimeout(() => {
-      setShowLogo(false);
-      setShowButton(true);
-    }, 2000);
-
-    const fadeInButtonTimer = setTimeout(() => {
-      setButtonOpacity(1);
-      sessionStorage.setItem('hasVisited', 'visited');
-    }, 2500);
-
-    return () => {
-      clearTimeout(fadeInLogoTimer);
-      clearTimeout(fadeOutLogoTimer);
-      clearTimeout(ShowButtonTimer);
-      clearTimeout(fadeInButtonTimer);
-    };
-  }
-
-  const [ helperImageURL, setHelperImageURL ] = React.useState<string>("/images/top/sample1.jpeg");
-  const [ indexImageURL, setIndexImageURL ] = React.useState<string>("/images/top/sample1.jpeg");
-  const [ helperText, setHelperText ] = React.useState<string>("1. あなたの悩みごとを入力");
-  const [ indexText, setIndexText ] = React.useState<string>("1. あなたの悩みごとを入力");
+  const [ helperImageURL, setHelperImageURL ] = useState<string>("/images/top/sample1.jpeg");
+  const [ indexImageURL, setIndexImageURL ] = useState<string>("/images/top/sample1.jpeg");
+  const [ helperText, setHelperText ] = useState<string>("1. あなたの悩みごとを入力");
+  const [ indexText, setIndexText ] = useState<string>("1. あなたの悩みごとを入力");
 
   const switchHelper = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
@@ -79,24 +44,6 @@ export default function Home() {
       setIndexText("3. あなたの決断をサポート");
     }
   };
-
-  useEffect(() => {
-    let hasVisited = sessionStorage.getItem('hasVisited');
-    if (hasVisited == null && (status == 'unauthenticated' || !status)) {
-      VisitAnimate();
-    } else if (hasVisited && (status == 'unauthenticated' || !status)) {
-      setShowButton(true);
-      setShowLogo(false);
-      setButtonOpacity(1);
-    } else if (status == 'authenticated') {
-      setShowButton(false);
-      setShowLogo(false);
-      setShowContent(true);
-    }
-
-    return;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, status]);
 
   return (
     <>

@@ -3,11 +3,12 @@
 import { Inter } from 'next/font/google'
 import { useSession, SessionProvider } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import Footer from './footer/layout';
 import Header from './header/layout';
+import Footer from './footer/layout';
 import Loading from './loading/layout';
 import AuthGuard from '@/app/_features/AuthGuard';
 import { useState, useEffect } from 'react';
+import HelperProvider from '@/app/_features/helper/HelperContext';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,9 +24,9 @@ export default function AppLayout({children}: AppLayoutProps) {
         <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&display=swap" rel="stylesheet" />
       </head>
       <body className={inter.className}>
-        <SessionProvider>
+        <SessionProvider><HelperProvider>
           <LayoutContent children={children} />
-        </SessionProvider>
+        </HelperProvider></SessionProvider>
       </body>
     </html>
   )
@@ -33,12 +34,13 @@ export default function AppLayout({children}: AppLayoutProps) {
 
 function LayoutContent( {children}: AppLayoutProps ){
   const { data: session, status } = useSession();
-  const [hasVisited, setHasVisited] = useState<string>('');
+  const [ hasVisited, setHasVisited] = useState<string>('');
   const isRoot = usePathname();
   console.log(status)
 
   useEffect(() => {
-    let hasVisited = sessionStorage.getItem('hasVisited');
+    const storedHasVisited = sessionStorage.getItem('hasVisited');
+    setHasVisited(storedHasVisited!);
     return;
   }, [session, status])
 

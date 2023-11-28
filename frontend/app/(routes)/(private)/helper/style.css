@@ -8,3 +8,8 @@
 }
 .text-window:before { left: 10px; }
 .text-window:after { right: 10px; }
+
+.container {
+  width: 60vw;
+  height: auto;
+}

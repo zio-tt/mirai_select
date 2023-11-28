@@ -1,6 +1,6 @@
 require "test_helper"
 
-class UsersCharacterTest < ActiveSupport::TestCase
+class ConversationTagTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

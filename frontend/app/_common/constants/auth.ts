@@ -106,28 +106,14 @@ export const options: NextAuthOptions = {
         // UsersController#createを呼び出し、ユーザー作成または確認
         const userCreateResponse = await axios({
           method: 'post',
-          url: `${process.env.NEXT_PUBLIC_API_URL}/auth/${account?.provider}/callback`,
+          url: `${process.env.NEXT_PUBLIC_WEB_URL}/auth/${account?.provider}/callback`,
           headers: { 'X-Requested-With': 'XMLHttpRequest' },
           data: { token },
           withCredentials: true,
         });
 
         // ユーザー作成が成功した場合（ステータスコード200）
-        if (userCreateResponse.status === 200) {
-          // UserSessionsController#createを呼び出してログイン処理
-          const loginResponse = await axios({
-            method: 'post',
-            url: `${process.env.NEXT_PUBLIC_API_URL}/auth/${account?.provider}/login`,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            data: { token },
-            withCredentials: true,
-          });
-          // ログイン処理が成功したかチェック
-          return loginResponse.status === 200;
-
-        } else {
-          return false;
-        }
+        return userCreateResponse.status === 200
       } catch (error) {
         console.error('エラー', error);
         return false;

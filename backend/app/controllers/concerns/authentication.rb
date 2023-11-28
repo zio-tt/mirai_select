@@ -1,6 +1,8 @@
 module Authentication
   def current_user
-    @current_user ||= User.find(session[:current_user]) if session[:current_user]
+    token = request.headers['Authorization'].split(' ').last
+    decoded_token = decode_token(token)
+    User.find_by(uid: decoded_token[0]['sub'])
   end
 
   def logged_in?

@@ -1,26 +1,28 @@
-// InputForm.tsx
-import React from 'react';
+import "@/app/_common/styles/inputForm.css";
+import { useHelper } from "@/app/_features/helper/HelperContext";
+import { useAutoResizeTextArea } from '@/app/_common/hooks/useAutoResizeTextArea';
 
-const InputForm = ({ inputText, onInputChange, remainingChars, onSubmit, isLoading }) => {
+type InputFormProps = {
+  isLoading: boolean;
+};
+
+const InputForm = ({ isLoading }: InputFormProps) => {
+  const { textAreaRef } = useAutoResizeTextArea();
+  const { inputText, setInputText } = useHelper();
+
   return (
-    <div className="flex flex-row w-screen items-center justify-center">
-      <div className="form-control w-full max-w-lg">
-        <input
-          type="text"
+    <div className="thought-bubble w-[30%] flex flex-col items-center justify-center mr-10">
+      <div className="form-control w-full max-w-lg bg-white p-4">
+        <textarea
+          ref={textAreaRef}
           placeholder="悩みごとを入力してください（最大50文字）"
-          className="input input-bordered border-black w-full max-w-full"
+          className="input resize-none p-2 w-full max-w-full h-8 text-base leading-normal"
           value={inputText}
-          onChange={onInputChange}
+          onChange={(e) => setInputText(e.target.value)}
         />
-        <label
-          className="label text-sm text-base-100"
-          style={{ color: remainingChars < 0 ? 'red' : 'black' }}
-        >
-          残り{remainingChars}文字
-        </label>
       </div>
       <div className="h-full items-start justify-start ml-4">
-        { !isLoading && <button onClick={onSubmit} className="btn btn-outline">Send</button> }
+        { /* !isLoading && <button onClick={() => onSubmit(value)} className="btn btn-outline">Send</button> */ }
         { isLoading && <button className="btn btn-outline"><span className="loading loading-spinner"></span>loading</button> }
       </div>
     </div>
