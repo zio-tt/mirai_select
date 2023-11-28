@@ -1,13 +1,14 @@
 "use client"
 
 import Image from 'next/image';
-import { useState, MouseEvent } from 'react';
+import { useState, MouseEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function Home() {
   const router = useRouter();
 
-
+  const [ hasVisited, setHasVisited ] = useState<boolean>(false);
   const [ helperImageURL, setHelperImageURL ] = useState<string>("/images/top/sample1.jpeg");
   const [ indexImageURL, setIndexImageURL ] = useState<string>("/images/top/sample1.jpeg");
   const [ helperText, setHelperText ] = useState<string>("1. あなたの悩みごとを入力");
@@ -45,6 +46,10 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+
+  }, []);
+
   return (
     <>
     {/* 2023-11-28 16:00 */}
@@ -52,11 +57,18 @@ export default function Home() {
     {/* アイコンによる画像表示をやめ、swiperなどによるスライダー実装 */}
     {/* タブレット（縦）以下の画面幅であれば画像表示と説明文を縦で表示 */}
     {/* 画像表示はvwで割合表示させる */}
+
+      {/* ヒーローページ */}
+      {/* サイトの説明とGoogle認証/体験ページへのリンク */}
+      {/* 画像はPCとスマホの2種類用意 */}
+      <div>
+
+      </div>
+
+      {/*}
       <div className="flex flex-col items-center justify-start pt-16 min-h-screen w-full bg-white">
         <div className="w-[80%] flex flex-col items-center justify-center">
-          {/* 1段目のコンテンツ */}
-          <div className="flex lg:flex-row flex-col items-center justify-center mb-10"> {/* mb-10 は下のマージン */}
-            {/* 左側のテキストとボタン */}
+          <div className="flex lg:flex-row flex-col items-center justify-center mb-10">
             <div className="flex flex-col items-center justify-center mr-20">
               <div className="text-center min-w-[50%] lg:text-left">
                 <h1 className="text-2xl font-bold underline overflow-hidden"><span className="text-3xl text-blue-500">決断ヘルパー機能</span>であなたの決断をサポート</h1>
@@ -92,7 +104,6 @@ export default function Home() {
               </div>
               <div className="underline text-lg text-center mt-3">{indexText}</div>
             </div>
-            {/* ここからテキストと画像を右寄せにしたい */}
             <div className="flex flex-col items-center justify-center">
               <div className="text-center min-w-[50%] lg:text-left">
                 <h1 className="text-2xl font-bold underline overflow-hidden"><span className="text-3xl text-green-500">みんなの悩みごと</span>でさまざまな事例を共有</h1>
@@ -117,6 +128,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      */}
     </>
   );
 }

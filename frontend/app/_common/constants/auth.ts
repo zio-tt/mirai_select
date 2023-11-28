@@ -101,15 +101,20 @@ export const options: NextAuthOptions = {
       const token = await new jose.SignJWT(tokenPayload)
                                   .setProtectedHeader({ alg: 'HS256' })
                                   .sign(secretKey);
+      const https = require('https');
+      const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
       try {
         // UsersController#createを呼び出し、ユーザー作成または確認
         const userCreateResponse = await axios({
           method: 'post',
           url: `${process.env.NEXT_PUBLIC_WEB_URL}/auth/${account?.provider}/callback`,
-          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          headers: { 'X-Requested-With': 'XMLHttpRequest',
+                     'Authorization': `Bearer ${token}`,
+                     'Content-Type': 'application/json' },
           data: { token },
           withCredentials: true,
+          httpsAgent,
         });
 
         // ユーザー作成が成功した場合（ステータスコード200）
