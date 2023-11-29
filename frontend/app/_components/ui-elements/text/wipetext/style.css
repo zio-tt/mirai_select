@@ -1,0 +1,13 @@
+.wipe-animation {
+  display: inline-block;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: wipeEffect 0.2s ease forwards;
+}
+
+@keyframes wipeEffect {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

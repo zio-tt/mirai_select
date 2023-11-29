@@ -1,134 +1,151 @@
 "use client"
 
 import Image from 'next/image';
+import { kiwimaru } from './_components/layouts/AppLayout';
 import { useState, MouseEvent, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { motion } from 'framer-motion';
+import Header from './_components/layouts/header/layout';
+import Footer from './_components/layouts/footer/layout';
+import { useTopPage } from './_features/top/TopPageContext';
 
 export default function Home() {
-  const router = useRouter();
+  const { isViewing, setIsViewing } = useTopPage();
+  const { isViewed, setIsViewed } = useTopPage();
 
-  const [ hasVisited, setHasVisited ] = useState<boolean>(false);
-  const [ helperImageURL, setHelperImageURL ] = useState<string>("/images/top/sample1.jpeg");
-  const [ indexImageURL, setIndexImageURL ] = useState<string>("/images/top/sample1.jpeg");
-  const [ helperText, setHelperText ] = useState<string>("1. あなたの悩みごとを入力");
-  const [ indexText, setIndexText ] = useState<string>("1. あなたの悩みごとを入力");
-
-  const switchHelper = (event: MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    const key = event.currentTarget.getAttribute('data-key');
-
-    if (key === "helper-talk") {
-      setHelperImageURL("/images/top/sample1.jpeg");
-      setHelperText("1. あなたの悩みごとを入力");
-    } else if (key === "helper-discussion") {
-      setHelperImageURL("/images/top/sample2.webp");
-      setHelperText("2. AIが悩みごとを分析");
-    } else if (key === "helper-happy") {
-      setHelperImageURL("/images/top/sample3.jpeg");
-      setHelperText("3. あなたの決断をサポート");
-    }
-  };
-
-  const switchIndex = (event: MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    const key = event.currentTarget.getAttribute('data-key');
-
-    if (key === "index-talk") {
-      setIndexImageURL("/images/top/sample1.jpeg");
-      setIndexText("1. あなたの悩みごとを入力");
-    } else if (key === "index-discussion") {
-      setIndexImageURL("/images/top/sample2.webp");
-      setIndexText("2. AIが悩みごとを分析");
-    } else if (key === "index-happy") {
-      setIndexImageURL("/images/top/sample3.jpeg");
-      setIndexText("3. あなたの決断をサポート");
-    }
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
   };
 
   useEffect(() => {
-
+    const movingTimer = setTimeout(() => {
+      setIsViewing(true);
+    }, 1000);
+    const movedTimer = setTimeout(() => {
+      setIsViewed(true);
+    }, 2000);
+    return () => {
+      clearTimeout(movingTimer);
+      clearTimeout(movedTimer);
+    };
   }, []);
 
   return (
     <>
-    {/* 2023-11-28 16:00 */}
-    {/* TopPageのレイアウト変更案（レスポンシブデザイン） */}
-    {/* アイコンによる画像表示をやめ、swiperなどによるスライダー実装 */}
-    {/* タブレット（縦）以下の画面幅であれば画像表示と説明文を縦で表示 */}
-    {/* 画像表示はvwで割合表示させる */}
-
-      {/* ヒーローページ */}
-      {/* サイトの説明とGoogle認証/体験ページへのリンク */}
-      {/* 画像はPCとスマホの2種類用意 */}
-      <div>
-
-      </div>
-
-      {/*}
-      <div className="flex flex-col items-center justify-start pt-16 min-h-screen w-full bg-white">
-        <div className="w-[80%] flex flex-col items-center justify-center">
-          <div className="flex lg:flex-row flex-col items-center justify-center mb-10">
-            <div className="flex flex-col items-center justify-center mr-20">
-              <div className="text-center min-w-[50%] lg:text-left">
-                <h1 className="text-2xl font-bold underline overflow-hidden"><span className="text-3xl text-blue-500">決断ヘルパー機能</span>であなたの決断をサポート</h1>
-                <div className="py-6 text-bs font-bold overflow-hidden">
-                  <p>2人のキャラクターがそれぞれの視点に立ってあなたの悩みごとに対する選択肢を提示します。</p>
-                  <p>会話にはタグをつけて、「みんなの悩みごと」で公開することができます。</p>
-                  <p>今後、キャラクターカスタマイズ機能を追加予定！</p>
-                </div>
-                <p>各アイコンをクリックして画像を表示</p>
-                <div className="flex w-[80%] p-3 border-2 border-black rounded-lg items-center justify-center">
-                  <a href="#" onClick={switchHelper} data-key="helper-talk"><Image src="/images/talk.png" alt="Talk" width={100} height={100} /></a>
-                  <Image src="/images/arrow.png" alt="Arrow" width={80} height={80} />
-                  <a href="#" onClick={switchHelper} data-key="helper-discussion"><div>
-                    <Image src="/images/discussion.png" alt="Discussion" width={80} height={80} />
-                    <Image src="/images/pc.png" alt="PC" width={80} height={80} />
-                  </div></a>
-                  <Image src="/images/arrow.png" alt="Arrow" width={80} height={80} />
-                  <a href="#" onClick={switchHelper} data-key="helper-happy"><Image src="/images/happy.png" alt="Happy" width={100} height={100} /></a>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="relative max-w-[100%] w-[30vw] h-[20vw]">
-                <Image src={helperImageURL} className="border-2 border-gray-600" alt="Image" layout="fill" />
-              </div>
-              <div className="underline text-lg text-center mt-3">{helperText}</div>
-            </div>
-          </div>
-          <div className="flex flex-row items-center justify-center mt-10 mb-20">
-            <div className="flex flex-col mr-20">
-              <div className="relative max-w-[100%] w-[500px] h-[400px]">
-                <Image src={indexImageURL} className="border-2 border-gray-600 max-w-[100%] h-auto" alt="Image" layout="fill" />
-              </div>
-              <div className="underline text-lg text-center mt-3">{indexText}</div>
-            </div>
-            <div className="flex flex-col items-center justify-center">
-              <div className="text-center min-w-[50%] lg:text-left">
-                <h1 className="text-2xl font-bold underline overflow-hidden"><span className="text-3xl text-green-500">みんなの悩みごと</span>でさまざまな事例を共有</h1>
-                <div className="py-6 text-bs font-bold overflow-hidden">
-                  <p>2人のキャラクターがそれぞれの視点に立ってあなたの悩みごとに対する選択肢を提示します。</p>
-                  <p>会話にはタグをつけて、「みんなの悩みごと」で公開することができます。</p>
-                  <p>今後、キャラクターカスタマイズ機能を追加予定！</p>
-                </div>
-                <p>各アイコンをクリックして画像を表示</p>
-                <div className="flex w-[80%] p-3 border-2 border-black rounded-lg items-center justify-center">
-                  <a href="#" onClick={switchIndex} data-key="index-talk"><Image src="/images/talk.png" alt="Talk" width={100} height={100} /></a>
-                  <Image src="/images/arrow.png" alt="Arrow" width={80} height={80} />
-                  <a href="#" onClick={switchIndex} data-key="index-discussion"><div>
-                    <Image src="/images/discussion.png" alt="Discussion" width={80} height={80} />
-                    <Image src="/images/pc.png" alt="PC" width={80} height={80} />
-                  </div></a>
-                  <Image src="/images/arrow.png" alt="Arrow" width={80} height={80} />
-                  <a href="#" onClick={switchIndex} data-key="index-happy"><Image src="/images/happy.png" alt="Happy" width={100} height={100} /></a>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className='flex flex-col w-screen h-screen z-10 relative overflow-auto'>
+      { !isViewed && (
+        <div className='flex w-screen h-screen z-10 relative'>
+          <motion.div
+            initial="hidden"
+            animate={isViewing ? "hidden" : "visible"}
+            variants={containerVariants}
+            className='flex flex-col items-center justify-center w-full h-full absolute'
+          >
+            <h1 className={`${kiwimaru.className} text-gray-300 text-3xl md:text-5xl lg:text-7xl`}>ミライセレクト</h1>
+            <h2 className={`${kiwimaru.className} text-gray-500 text-lg md:text-2xl lg:text-4xl mt-3`}>あなたの決断をサポートする</h2>
+          </motion.div>
         </div>
+      )}
+
+      {isViewed && (
+        <>
+          <div className='flex flex-col w-full h-full items-center justify-start mt-[17vh]'>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 1 }}
+              className='flex flex-col items-center justify-start w-full h-full'>
+              <div className='flex flex-col items-center justify-start w-[90%] h-[75%]'>
+                <div className='flex flex-col lg:flex-row items-center justify-center w-full mb-10'>
+                  <div className='relative w-[30vw] min-h-[40vh] overflow-hidden left-0 mr-5'>
+                    <Image src="/images/top/worried-woman.png"
+                            alt="worried"
+                            layout='fill'
+                            className='absolute min-w-full min-h-full object-cover opacity-80' />
+                  </div>
+                  <div className='flex flex-col items-center justify-center right-0 ml-5
+                                  w-[40vw] min-h-[40vh]'>
+                    <div className="h-full w-full bg-gray-200/30 backdrop-blur-lg
+                      rounded-md border border-gray-200/30 shadow-lg
+                      flex flex-col items-center justify-center p-10">
+                      <h3 className='flex text-gray-500 text-lg md:text-2xl lg:text-4xl'>悩みごと、ありませんか？</h3>
+                      <p className='flex text-gray-500 text-xs md:text-md lg:text-lg mt-2'>
+                        「今度の休みはどこにいこうかな？」<br/>
+                        「ボーナスの使い道、どうしよう？」<br/>
+                        「将来の進路、決められない…」<br/>
+                        <br/>
+                        日常はさまざまな悩みにあふれています。<br/>
+                        いろんな情報があふれているからこそ、<br/>
+                        何かを決めるのは難しいものです。<br/>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className='flex flex-col lg:flex-row items-center justify-center w-full mb-10'>
+                  <div className='flex items-center justify-center w-[30vw] min-h-[40vh] overflow-hidden left-0 mr-5'>
+                    <div className='flex flex-row w-full h-full items-center justify-center'>
+                      <div className='flex items-center justify-center left-0'>
+                        <Image src="/images/top/devil.png"
+                              alt="devil"
+                              width={200}
+                              height={200}
+                              className='opacity-80'/>
+                        </div>
+                      <div className='flex items-center justify-center right-0'>
+                        <Image src="/images/top/angel.png"
+                              alt="angel"
+                              width={200}
+                              height={200}
+                              className='opacity-80'/>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='flex flex-col items-center justify-center right-0 ml-5
+                                  w-[40vw] min-h-[40vh]'>
+                    <div className="h-full w-full bg-gray-200/30 backdrop-blur-lg
+                      rounded-md border border-gray-200/30 shadow-lg
+                      flex flex-col items-center justify-center p-10">
+                      <h3 className='flex text-gray-500 text-lg md:text-2xl lg:text-4xl'>私たちがサポートします。</h3>
+                      <p className='flex text-center text-gray-500 text-xs md:text-md lg:text-lg mt-2'>
+                        漫画やアニメでよく見かける、<br/>
+                        天使と悪魔の脳内会議。<br/>
+                        2人のキャラクターがそれぞれの視点に立って、<br/>
+                        あなたにとってより良い選択をサポートします。<br/>
+                        ※ 今後、キャラクターカスタマイズ機能を追加予定！<br/>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className='flex flex-col lg:flex-row items-center justify-center w-full mb-10'>
+                  <div className='relative w-[30vw] min-h-[40vh] overflow-hidden left-0 mr-5'>
+                    <Image src="/images/top/inspiration-girl-1.png"
+                            alt="inspiration"
+                            layout='fill'
+                            className='absolute min-w-full min-h-full object-cover opacity-80' />
+                  </div>
+                  <div className='flex flex-col items-center justify-center right-0 ml-5
+                                  w-[40vw] min-h-[40vh]'>
+                    <div className="h-full w-full bg-gray-200/30 backdrop-blur-lg
+                      rounded-md border border-gray-200/30 shadow-lg
+                      flex flex-col items-center justify-center p-10">
+                      <h3 className='flex text-gray-500 text-lg md:text-2xl lg:text-4xl'>気づきを得る</h3>
+                      <p className='flex text-center text-gray-500 text-xs md:text-md lg:text-lg mt-2'>
+                        「決断ヘルパー」で悩みごとを解決するもよし。<br/>
+                        「みんなの悩みごと」で他人の悩みごとを見るのもよし。<br/>
+                        <br/>
+                        さまざまな視点・方法で気づきを得て、<br/>
+                        自分の決断に役立ててください。<br/>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <Footer />
+              </div>
+            </motion.div>
+          </div>
+        </>
+      )}
       </div>
-      */}
     </>
   );
 }
