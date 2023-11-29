@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      spacing: {
+        '15': '15vh'
+      },
       keyframes: {
         fadeIn: {
           '0%':   { opacity: '0' },
@@ -23,7 +26,6 @@ const config: Config = {
         fadeOut: 'fadeOut 1s forwards'
       },
       fontFamily: {
-        kiwi: ['Kiwi Maru'],
       },
     },
   },
