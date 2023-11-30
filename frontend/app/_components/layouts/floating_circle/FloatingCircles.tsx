@@ -9,7 +9,6 @@ type Circle = {
   opacity: number;
 };
 
-
 const colors = ["red", "blue", "green", "yellow", "purple"];
 const sizeRange = [70, 250];
 const maxCircles = 10;
@@ -53,7 +52,7 @@ export const FloatingCircles = () => {
   }, []);
 
   return (
-    <div className="absolute top-0 left-0 w-full h-full z-1">
+    <div className="absolute top-0 left-0 w-full h-full z-1 overflow-hidden">
       {circles.map((circle) => (
         <motion.div
           key={circle.id}

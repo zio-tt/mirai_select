@@ -2,14 +2,20 @@
 
 import { signIn } from 'next-auth/react';
 import type { MouseEvent } from 'react';
-
-const handleLogin = async (event: MouseEvent<HTMLElement>) => {
-  event.preventDefault();
-
-  await signIn('google');
-};
+import { useTopPage } from '@/app/_features/top/TopPageContext';
 
 export default function PublicHeader() {
+  const { isAuthenticated, setIsAuthenticated } = useTopPage();
+
+  console.log(isAuthenticated);
+  const handleLogin = async (event: MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    const result = await signIn('google', { redirect: false });
+    //if (result?.status === 200) {
+    //}
+    return;
+  };
+
   return (
     <>
       <div className="fixed left-4 justify-center ml-16">
