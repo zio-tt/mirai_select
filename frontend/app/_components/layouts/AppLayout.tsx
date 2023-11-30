@@ -54,10 +54,15 @@ export default function AppLayout({children}: AppLayoutProps) {
 function LayoutContent( {children}: AppLayoutProps ){
   const { data: session, status } = useSession();
   const [ hasVisited, setHasVisited] = useState<string>('');
-  const isRoot = usePathname();
   const { isViewed, setIsViewed } = useTopPage();
+  const isRoot = usePathname();
   console.log(status)
   console.log(isRoot)
+  console.log(isViewed)
+
+  useEffect(() => {
+    if(isRoot != '/'){setIsViewed(true)}
+  }, [isRoot])
 
   useEffect(() => {
     const storedHasVisited = sessionStorage.getItem('hasVisited');
@@ -67,29 +72,48 @@ function LayoutContent( {children}: AppLayoutProps ){
 
   return(
     <>
-      <div className='flex flex-col' data-theme="fantasy">
-        <div className="relative w-[100vw] h-[100vh] overflow-hidden">
-          {/* 背景画像とその他の要素 */}
-          {isRoot == '/' && <FloatingCircles />}
+      <div  className={`${kiwimaru.className}`}>
+        <div className="relative flex flex-col w-screen min-h-screen overflow-auto">
+          {/* 背景画像とTopPageアニメーション */}
           <Image src="/images/background.png" alt="background" layout="fill"
-                 className="absolute top-50% left-50% min-w-full min-h-full object-cover"/>
-          { isRoot == '/' && <FloatingCircles />}
+                 className="absolute top-50% left-50% min-w-full min-h-full object-cover z-0"/>
+          { isRoot && <FloatingCircles />}
           { status != 'loading' && (
-            <div className='flex flex-col overflow-auto'>
+            <div className='flex flex-col h-full'>
               { isViewed && (
                 <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 1 }}
+                className='flex h-16 z-20'
                 >
                   <Header />
                 </motion.div>
               )}
-              <div className={`${kiwimaru.className} flex-grow flex`} data-theme="fantasy">
+              <div className='flex flex-grow w-screen min-h-screen z-10 items-center'>
                 { isRoot == "/" && children }
-                { isRoot != "/" && <AuthGuard children={children} /> }
+                { isRoot != "/" && (
+                  <>
+                    <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 1 }}
+                    >
+                      <AuthGuard children={children} />
+                    </motion.div>
+                  </>
+                )}
               </div>
-              <Footer />
+              { isViewed && (
+                <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 1 }}
+                className='flex h-16 z-20'
+                >
+                  <Footer />
+                </motion.div>
+              )}
             </div>
           )}
         </div>

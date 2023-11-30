@@ -50,7 +50,7 @@ export default function PublicHeader() {
         <a href="/index" className="text-base hover:underline mr-4 ml-4">みんなの悩みごと</a>
         <a href="#" onClick={handleLogout} className="w-12 h-12 bg-gray-200 rounded-full items-center justify-center overflow-hidden flex-shrink-0">
           {avatar.length > 0 && (
-            <Image src={avatar} alt="アバター画像" width={144} height={144} className="object-cover" />
+            <Image src="/images/logo.png" alt="アバター画像" width={144} height={144} className="object-cover" />
           )}
         </a>
       </div>

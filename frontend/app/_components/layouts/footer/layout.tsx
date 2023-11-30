@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <div className='w-screen flex items-center justify-end z-20' data-theme="dark">
+    <div className='flex h-full w-screen items-center justify-center' data-theme="dark">
       <footer className="footer footer-center p-5 bg-base-200 text-base-content rounded">
         <nav className="grid grid-flow-col gap-4">
           <a href="https://forms.gle/5529xgmL49n93grn9" className="link link-hover">お問い合わせ</a>
