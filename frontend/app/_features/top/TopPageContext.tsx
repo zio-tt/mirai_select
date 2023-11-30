@@ -5,8 +5,6 @@ type TopPageContextType = {
   setIsViewing: React.Dispatch<React.SetStateAction<boolean>>;
   isViewed: boolean;
   setIsViewed: React.Dispatch<React.SetStateAction<boolean>>;
-  isAuthenticated: boolean;
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type ChildrenType = {
@@ -25,11 +23,10 @@ export const useTopPage = () => {
 export default function TopPageProvider({ children }: ChildrenType) {
   const [ isViewing, setIsViewing ] = useState<boolean>(false);
   const [ isViewed, setIsViewed ] = useState<boolean>(false);
-  const [ isAuthenticated, setIsAuthenticated ] = useState<boolean>(false);
 
   return (
     <TopPageContext.Provider
-     value={{ isViewing, setIsViewing, isViewed, setIsViewed, isAuthenticated, setIsAuthenticated }}>
+     value={{ isViewing, setIsViewing, isViewed, setIsViewed }}>
       {children}
     </TopPageContext.Provider>
   );
