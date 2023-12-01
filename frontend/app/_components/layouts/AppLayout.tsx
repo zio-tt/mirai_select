@@ -16,6 +16,7 @@ import { FloatingCircles } from './floating_circle/FloatingCircles';
 import TopPageProvider from '@/app/_features/top/TopPageContext';
 import { useTopPage } from '@/app/_features/top/TopPageContext';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export const notojp = Noto_Sans_JP({
   weight: ["400", "700"],
@@ -55,14 +56,26 @@ function LayoutContent( {children}: AppLayoutProps ){
   const { data: session, status } = useSession();
   const [ hasVisited, setHasVisited] = useState<string>('');
   const { isViewed, setIsViewed } = useTopPage();
+  const router = useRouter();
   const isRoot = usePathname();
-  console.log(status)
-  console.log(isRoot)
-  console.log(isViewed)
+  const unAuthFlag = sessionStorage.getItem('unAuthFlag');
+
+  {/* デバッグ用 */}
+  console.log("unAuthFlag: " + unAuthFlag)
+  console.log("status: " + status)
+  console.log("isRoot: " + isRoot)
+  console.log("isViewed: " + isViewed)
 
   useEffect(() => {
     if(isRoot != '/'){setIsViewed(true)}
   }, [isRoot])
+
+  useEffect(() => {
+    if (unAuthFlag === 'true') {
+      router.push('/');
+      sessionStorage.removeItem('unAuthFlag');
+    }
+  }, [unAuthFlag]);
 
   useEffect(() => {
     const storedHasVisited = sessionStorage.getItem('hasVisited');
@@ -78,6 +91,9 @@ function LayoutContent( {children}: AppLayoutProps ){
           <Image src="/images/background.png" alt="background" layout="fill"
                  className="absolute top-50% left-50% min-w-full min-h-full object-cover z-0"/>
           { isRoot && <FloatingCircles />}
+          {/* ローディング画面 */}
+          { status == 'loading' && <Loading />}
+          {/* メインコンテンツ */}
           { status != 'loading' && (
             <div className='flex flex-col h-full'>
               { isViewed && (
