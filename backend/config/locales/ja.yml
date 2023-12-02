@@ -1,0 +1,60 @@
+
+ja:
+  activerecord:
+    models:
+      character: 'キャラクター'
+    attributes:
+      character:
+        name:           '名前'
+        avatar:         'アバター画像'
+        mbti_type:      'MBTIタイプ'
+        tone:           '口調'
+        first_person:   '一人称'
+        second_person:  '二人称'
+        expression:     '感情表現'
+        values:         '価値観'
+        empathy:        '共感性'
+  enums:
+    characters: # モデル名
+      mbti_type:
+        ISTJ: '管理者'
+        ISFJ: '擁護者'
+        INFJ: '提唱者'
+        INTJ: '建築家'
+        ISTP: '巨匠'
+        ISFP: '冒険家'
+        INFP: '仲介者'
+        INTP: '論理学者'
+        ESTP: '起業家'
+        ESFP: 'エンターテイナー'
+        ENFP: '運動家'
+        ENTP: '討論者'
+        ESTJ: '幹部'
+        ESFJ: '領事官'
+        ENFJ: '主人公'
+        ENTJ: '指揮官'
+      tone:
+        polite:        '丁寧'
+        calm:          '落ち着いた'
+        casual:        'カジュアル'
+        energetic:     '活発'
+        confident:     '自信がある'
+        logical:       '論理的'
+      expression:
+        humorous:      'ユーモア'
+        sarcastic:     '皮肉'
+        passionate:    '情熱的'
+        creative:      '創造的'
+        proactive:     '積極的'
+        passive:       '消極的'
+        emotional:     '感情的'
+        serious:       '真面目'
+        irresponsible: '不真面目'
+        negative:      'ネガティブ'
+        positive:      'ポジティブ'
+        kind:          '優しい'
+        strict:        '厳しい'
+      empathy:
+        high:      '高い'
+        moderate:  '普通'
+        low:       '低い'

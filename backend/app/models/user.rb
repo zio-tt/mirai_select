@@ -7,7 +7,7 @@ class User < ApplicationRecord
   has_many :decision_bookmarks, through: :decision, source: :bookmarks
   has_many :decision_comments, through: :decision, source: :comments
 
-  after_create :create_default_user_characters
+  # after_create :create_default_user_characters
 
   private
 
