@@ -1,39 +1,61 @@
-# 天使のデータ
-Character.create(
-  name: '天使',
-  mbti_type: 0,
-  tone: 0,
-  first_person: '私',
-  expression: 0,
-  values: '信仰',
-  dialogue_style: 0,
-)
+load Rails.root.join('db/seeds/users_seed.rb')
+load Rails.root.join('db/seeds/characters_seed.rb')
 
-# 悪魔のデータ
-Character.create(
-  name: '悪魔',
-  mbti_type: 10,
-  tone: 1,
-  first_person: 'オレ様',
-  expression: 1,
-  values: 'イタズラ好き',
-  dialogue_style: 1
-)
+users      = User.all
+characters = Character.all
 
-# ユーザーの作成
-user = User.create(
-  uid: '110699395209413308809',
-  provider: 'google',
-  name: '寺尾友宏',
-  email: 'zio.tt.dev@gmail.com',
-  avatar: 'https://lh3.googleusercontent.com/a/ACg8ocIVi6TfTXwVuAp0tIsTPJrysfMcX-eX9HukxJ1Z4uuQzQ=s96-c',
-  token: 1000
-)
+# ユーザーに紐づくキャラクターの設定
+users.each do |user|
+  this_user_characters = characters.sample(2)
+  UserCharacter.create(user_id: user.id, character_id: this_user_characters[0].id, role: :character1)
+  UserCharacter.create(user_id: user.id, character_id: this_user_characters[1].id, role: :character2)
+end
 
-# 既存のキャラクター（天使と悪魔）を取得
-angel = Character.find_by(name: '天使')
-demon = Character.find_by(name: '悪魔')
+load Rails.root.join('db/seeds/templates_seed.rb')
+load Rails.root.join('db/seeds/tags_seed.rb')
 
-# 作成したユーザーに対して天使と悪魔のキャラクターを追加
-UserCharacter.create(user_id: user.id, character_id: angel.id, role: :character1)
-UserCharacter.create(user_id: user.id, character_id: demon.id, role: :character2)
+# 会話履歴の作成
+# Decision
+decisions = []
+users.each do |user|
+  Decision.create(user_id: user.id, public: true)
+end
+
+# input
+inputs = [
+  {
+    query_text: "春におすすめの旅行先を教えてください",
+    tags: ["春", "旅行"],
+    character1_response: "春におすすめの旅行先ですね。私は桜が好きなので、桜の名所を巡るのがおすすめです。",
+    character2_response: "春におすすめの旅行先といえば、やっぱり沖縄ですね。"
+  },
+  {
+    query_text: "夏におすすめの旅行先を教えてください",
+    tags: ["夏", "旅行"],
+    character1_response: "夏におすすめの旅行先ですね。私は海が好きなので、海のある場所を巡るのがおすすめです。",
+    character2_response: "夏におすすめの旅行先といえば、やっぱり北海道ですね。"
+  },
+  {
+    query_text: "秋におすすめの旅行先を教えてください",
+    tags: ["秋", "旅行"],
+    character1_response: "秋におすすめの旅行先ですね。私は紅葉が好きなので、紅葉の名所を巡るのがおすすめです。",
+    character2_response: "秋におすすめの旅行先といえば、やっぱり京都ですね。"
+  }
+]
+
+# Conversation
+users.each do |user|
+  input = inputs.sample
+  decision = Decision.find_by(user_id: user.id)
+  conversation = Conversation.create(decision_id: decision.id, query_text: input[:query_text], user_decision: 1)
+  input[:tags].each do |tag|
+    if !Tag.find_by(name: tag)
+      Tag.create(name: tag)
+    end
+  end
+  input[:tags].each do |tag|
+    ConversationTag.create(conversation_id: conversation.id, tag_id: Tag.find_by(name: tag).id)
+  end
+  CharacterResponse.create(conversation_id: conversation.id, character_id: user.user_characters[0].character_id, response: input[:character1_response])
+  CharacterResponse.create(conversation_id: conversation.id, character_id: user.user_characters[1].character_id, response: input[:character2_response])
+end

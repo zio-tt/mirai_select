@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_26_040320) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_02_083019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -34,17 +34,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_26_040320) do
   end
 
   create_table "characters", force: :cascade do |t|
-    t.string "name"
+    t.string "name", default: "名無し", null: false
     t.string "avatar"
-    t.integer "mbti_type"
-    t.integer "tone"
-    t.string "first_person"
-    t.string "second_person"
-    t.integer "expression"
+    t.integer "mbti_type", default: 0, null: false
+    t.integer "tone", default: 0, null: false
+    t.string "first_person", default: "私", null: false
+    t.string "second_person", default: "あなた", null: false
+    t.integer "expression", default: 0, null: false
     t.string "values"
-    t.integer "dialogue_style"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "empathy", default: 0, null: false
   end
 
   create_table "comments", force: :cascade do |t|
