@@ -1,0 +1,15 @@
+.text-window:before, .text-window:after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 2px;
+  height: calc(100% + 20px);
+  background-color: black;
+}
+.text-window:before { left: 10px; }
+.text-window:after { right: 10px; }
+
+.container {
+  width: 60vw;
+  height: auto;
+}
