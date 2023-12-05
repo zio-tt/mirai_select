@@ -54,7 +54,7 @@ users.each do |user|
     end
   end
   input[:tags].each do |tag|
-    ConversationTag.create(conversation_id: conversation.id, tag_id: Tag.find_by(name: tag).id)
+    DecisionTag.create(decision_id: decision.id, tag_id: Tag.find_by(name: tag).id)
   end
   CharacterResponse.create(conversation_id: conversation.id, character_id: user.user_characters[0].character_id, response: input[:character1_response])
   CharacterResponse.create(conversation_id: conversation.id, character_id: user.user_characters[1].character_id, response: input[:character2_response])

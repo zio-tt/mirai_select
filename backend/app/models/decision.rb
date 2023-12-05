@@ -1,7 +1,9 @@
 class Decision < ApplicationRecord
-  has_many :conversation, dependent: :destroy
+  has_many :conversations, dependent: :destroy
   has_many :bookmarks, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :decision_tags, dependent: :destroy
+  has_many :tags, through: :decision_tags
 
   belongs_to :user
 

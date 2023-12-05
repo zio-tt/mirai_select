@@ -12,7 +12,7 @@ const InputForm = ({ isLoading }: InputFormProps) => {
 
   return (
     <div className="thought-bubble w-[30%] flex flex-col items-center justify-center mr-10">
-      <div className="form-control w-full max-w-lg bg-white p-4">
+      <div className="form-control w-full max-w-lg p-4">
         <textarea
           ref={textAreaRef}
           placeholder="悩みごとを入力してください（最大50文字）"
