@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_02_083019) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_05_081004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,15 +57,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_02_083019) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
-  create_table "conversation_tags", force: :cascade do |t|
-    t.bigint "conversation_id", null: false
-    t.bigint "tag_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["conversation_id"], name: "index_conversation_tags_on_conversation_id"
-    t.index ["tag_id"], name: "index_conversation_tags_on_tag_id"
-  end
-
   create_table "conversations", force: :cascade do |t|
     t.bigint "decision_id", null: false
     t.integer "user_decision"
@@ -73,6 +64,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_02_083019) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["decision_id"], name: "index_conversations_on_decision_id"
+  end
+
+  create_table "decision_tags", force: :cascade do |t|
+    t.bigint "decision_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["decision_id"], name: "index_decision_tags_on_decision_id"
+    t.index ["tag_id"], name: "index_decision_tags_on_tag_id"
   end
 
   create_table "decisions", force: :cascade do |t|
@@ -133,9 +133,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_02_083019) do
   add_foreign_key "character_responses", "conversations"
   add_foreign_key "comments", "decisions"
   add_foreign_key "comments", "users"
-  add_foreign_key "conversation_tags", "conversations"
-  add_foreign_key "conversation_tags", "tags"
   add_foreign_key "conversations", "decisions"
+  add_foreign_key "decision_tags", "decisions"
+  add_foreign_key "decision_tags", "tags"
   add_foreign_key "decisions", "users"
   add_foreign_key "template_tags", "tags"
   add_foreign_key "template_tags", "templates"
