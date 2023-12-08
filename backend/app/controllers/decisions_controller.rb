@@ -24,7 +24,7 @@ class DecisionsController < ApplicationController
       user = decision.user
       query_text = decision.conversations.first.query_text
       decision.attributes.merge(
-        users: user,
+        user: user,
         characters: user.characters,
         first_query: query_text,
         conversations: decision.conversations,
