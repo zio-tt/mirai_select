@@ -3,9 +3,10 @@
 import "@/app/_common/styles/inputForm.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Bookmark, Character, Comment, Conversation, Decision, Tag, User} from "@/app/_common/types";
+import { Bookmark, Character, CharacterResponse, Comment, Conversation, Decision, Tag, User} from "@/app/_common/types";
 import { useSession } from "next-auth/react";
 import { Table } from "@/app/_components/ui-elements/Index/Table";
+import { DetailDecision } from "@/app/_components/layouts/detail/detail";
 
 // 2023/12/5 作業予定(バックエンドの修正）
 // ConversationTagは本来Decisionに紐づくべきなので修正が必要
@@ -20,6 +21,7 @@ interface DecisionIndex extends Decision {
   characters: Character[];
   first_query: string;
   conversations: Conversation[];
+  character_responses: CharacterResponse[];
   tags: Tag[];
   comments: Comment[];
   bookmarks: Bookmark[];
@@ -28,6 +30,7 @@ interface DecisionIndex extends Decision {
 export default function Index() {
   const [ decisions, setDecisions] = useState<DecisionIndex[]>([]); // 初期値として空の配列を設定
   const { data: session, status } = useSession();
+  const [ showDetail, setShowDetail ] = useState<string>("");
   const token = session?.appAccessToken;
 
   const fetchCharacters = async () => {
@@ -52,6 +55,13 @@ export default function Index() {
     }
   };
 
+  const showDetails = (decision: DecisionIndex) => {
+    setShowDetail("popup-bg-cover")
+    return (
+      <DetailDecision decision={decision} />
+    )
+  }
+
   const headerTitle = [
     'query_text',
     'user',
@@ -66,7 +76,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-start w-screen min-h-screen">
+      <div className={`flex flex-col items-center justify-start w-screen min-h-screen ${showDetail}`}>
         <div className='flex flex-col items-center justify-center w-[80vw] h-[90vh] mt-[5vh]'>
           <div className='h-full w-full bg-gray-200/30 backdrop-blur-lg rounded-md border border-gray-200/30 shadow-lg flex flex-col items-center justify-start py-[1vh] px-[3vw] overflow-auto'>
             <div className='flex text-center text-gray-500 text-lg md:text-2xl lg:text-4xl underline mb-[3vh]'>
