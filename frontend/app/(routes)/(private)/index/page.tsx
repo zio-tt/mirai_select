@@ -1,11 +1,11 @@
 'use client';
 
-import "@/app/_common/styles/inputForm.css";
+import "@/app/_styles/inputForm.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Bookmark, Character, CharacterResponse, Comment, Conversation, Decision, Tag, User} from "@/app/_common/types";
+import { Bookmark, Character, CharacterResponse, Comment, Conversation, Decision, Tag, User} from "@/app/_types";
 import { useSession } from "next-auth/react";
-import { Table } from "@/app/_components/ui-elements/Index/Table";
+import { Table } from "@/app/_components/ui/Index/Table";
 import { DetailDecision } from "@/app/_components/layouts/detail/detail";
 
 // 2023/12/5 作業予定(バックエンドの修正）

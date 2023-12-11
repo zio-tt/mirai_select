@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useHelper } from "@/app/_features/helper/HelperContext";
+import { useHelper } from "@/app/_contexts/HelperContext";
 
 export const useAutoResizeTextArea = (initialValue: string = "") => {
   const { inputText, setInputText } = useHelper();

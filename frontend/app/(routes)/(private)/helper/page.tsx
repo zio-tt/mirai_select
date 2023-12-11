@@ -3,10 +3,10 @@
 import  "./style.css";
 import { useState, useEffect, use } from "react";
 import axios from "axios";
-import Modal from "@/app/_components/ui-elements/helper/Modal";
-import InputForm from "@/app/_components/ui-elements/helper/InputForm";
+import Modal from "@/app/_components/ui/Helper/Modal";
+import InputForm from "@/app/_components/ui/Helper/InputForm";
 import Image from "next/image";
-import { useHelper } from "@/app/_features/helper/HelperContext";
+import { useHelper } from "@/app/_contexts/HelperContext";
 import type { MouseEvent } from "react";
 import { useSession } from "next-auth/react";
 

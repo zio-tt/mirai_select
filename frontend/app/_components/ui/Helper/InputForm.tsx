@@ -1,6 +1,6 @@
-import "@/app/_common/styles/inputForm.css";
-import { useHelper } from "@/app/_features/helper/HelperContext";
-import { useAutoResizeTextArea } from '@/app/_common/hooks/useAutoResizeTextArea';
+import "@/app/_styles/InputForm.css";
+import { useHelper } from "@/app/_contexts/HelperContext";
+import { useAutoResizeTextArea } from '@/app/_hooks/useAutoResizeTextArea';
 
 type InputFormProps = {
   isLoading: boolean;

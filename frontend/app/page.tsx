@@ -1,12 +1,11 @@
 "use client"
 
-import { kiwimaru } from './_components/layouts/AppLayout';
+import { kiwimaru } from './_utils/font';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
-import { useTopPage } from './_features/top/TopPageContext';
-import { ContentsCard } from './_components/ui-parts/TopPage/ContentsCard';
-import { set } from 'zod';
+import { useTopPage } from './_contexts/TopPageContext';
+import { ContentsCard } from './_components/ui/TopPage/ContentsCard';
 
 export default function Home() {
   const [ showTitle, setShowTitle ] = useState<string>("display: block;");
