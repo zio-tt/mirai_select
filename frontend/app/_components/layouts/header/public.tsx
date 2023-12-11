@@ -1,14 +1,4 @@
-import { signIn } from 'next-auth/react';
-import type { MouseEvent } from 'react';
-
-const handleLogin = async (e: MouseEvent<HTMLElement>) => {
-  e.preventDefault();
-  try {
-    await signIn('google', { redirect: false });
-  } catch (error) {
-    console.error(error);
-  }
-}
+import handleLogin from '@/app/_features/handleLogin';
 
 const PublicHeader = () => {
   return (
