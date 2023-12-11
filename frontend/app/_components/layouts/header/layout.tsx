@@ -6,7 +6,7 @@ const Header = () => {
   const { status } = useSession();
 
   return (
-    <header className='flex fixed h-16 w-screen items-center justify-center' data-theme="dark">
+    <header className='flex fixed h-16 w-screen items-center justify-center' data-theme='dark'>
       {status === 'authenticated' ? <PrivateHeader /> : <PublicHeader />}
     </header>
   );

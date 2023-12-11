@@ -21,12 +21,12 @@ const PublicHeader = () => {
   return (
     <>
       <HeaderLogo />
-      <div className="fixed right-4 flex items-center mr-16">
-        <HeaderMenu url="/helper" text="決断ヘルパー" />
-        <HeaderMenu url="/index" text="みんなの悩みごと" />
-        <Link href="#" onClick={handleLogout} className="w-12 h-12 bg-gray-200 mr-3 ml-3 rounded-full items-center justify-center overflow-hidden flex-shrink-1 block">
+      <div className='fixed right-4 flex items-center mr-16'>
+        <HeaderMenu url='/helper' text='決断ヘルパー' />
+        <HeaderMenu url='/index' text='みんなの悩みごと' />
+        <Link href='#' onClick={handleLogout} className='w-12 h-12 bg-gray-200 mr-3 ml-3 rounded-full items-center justify-center overflow-hidden flex-shrink-1 block'>
           {avatar.length > 0 && (
-            <Image src={avatar} alt="アバター画像" width={100} height={100} className="flex object-cover" />
+            <Image src={avatar} alt='アバター画像' width={100} height={100} className='flex object-cover' />
           )}
         </Link>
       </div>
