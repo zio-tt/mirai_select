@@ -1,6 +1,6 @@
 import { TableHeader } from "./TableHeader"
 import { TableRow } from "./TableRow"
-import { Bookmark, Comment, Character, Conversation, Tag, User, Decision } from "@/app/_common/types"
+import { Bookmark, Comment, Character, Conversation, Tag, User, Decision } from "@/app/_types"
 
 interface DecisionIndex extends Decision {
   user: User;

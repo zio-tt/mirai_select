@@ -9,35 +9,20 @@ import Footer from './footer/layout';
 import Loading from './loading/layout';
 import AuthGuard from '@/app/_features/AuthGuard';
 import { useState, useEffect } from 'react';
-import HelperProvider from '@/app/_features/helper/HelperContext';
-import { Noto_Sans_JP } from 'next/font/google';
-import { Kiwi_Maru } from 'next/font/google';
+import HelperProvider from '@/app/_contexts/HelperContext';
 import { FloatingCircles } from './floating_circle/FloatingCircles';
-import TopPageProvider from '@/app/_features/top/TopPageContext';
-import { useTopPage } from '@/app/_features/top/TopPageContext';
+import TopPageProvider from '@/app/_contexts/TopPageContext';
+import { useTopPage } from '@/app/_contexts/TopPageContext';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-
-export const notojp = Noto_Sans_JP({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const kiwimaru = Kiwi_Maru({
-  weight: "300",
-  subsets: ["latin"],
-  display: "swap",
-});
+import { kiwimaru, notojp } from '@/app/_utils/font';
 
 const inter = Inter({ subsets: ['latin'] })
-
 export type AppLayoutProps = {
   children: React.ReactNode
 }
 
 export default function AppLayout({children}: AppLayoutProps) {
-
   return (
     <html lang="en">
       <head>

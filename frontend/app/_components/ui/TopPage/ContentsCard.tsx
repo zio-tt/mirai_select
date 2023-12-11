@@ -1,5 +1,5 @@
-import { ContentsImage } from "../../ui-elements/TopPage/ContentsImage";
-import { ContentsText } from "../../ui-elements/TopPage/ContentsText";
+import { ContentsImage } from "./ContentsImage";
+import { ContentsText } from "./ContentsText";
 
 type ContentsCardProps = {
   imageURL: string[]

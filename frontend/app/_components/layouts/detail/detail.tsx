@@ -1,4 +1,4 @@
-import { Bookmark, Character, CharacterResponse, Comment, Conversation, Decision, Tag, User} from "@/app/_common/types";
+import { Bookmark, Character, CharacterResponse, Comment, Conversation, Decision, Tag, User} from "@/app/_types";
 
 interface DecisionIndex extends Decision {
   // id: number;
