@@ -2,7 +2,7 @@ import PublicHeader from './public';
 import PrivateHeader from './private';
 import { useSession } from 'next-auth/react';
 
-export default function Header() {
+const Header = () => {
   const { status } = useSession();
 
   return (
@@ -11,3 +11,5 @@ export default function Header() {
     </header>
   );
 }
+
+export default Header;

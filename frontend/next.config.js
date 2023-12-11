@@ -1,18 +1,19 @@
-// import { env } from "./env.mjs"
+/**
+ * @type {import('next').NextConfig}
+ */
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const withVideos = require('next-videos')
+
+module.exports = {
+  ...withVideos(),
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'lh3.googleusercontent.com'
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/a/**',
       },
     ],
   },
 }
-
-const withVideos = require('next-videos')
-
-module.exports = nextConfig
-module.exports = withVideos()
