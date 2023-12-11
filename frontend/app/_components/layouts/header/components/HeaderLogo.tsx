@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-const HeaderLogo = () => {
+export const HeaderLogo = () => {
   return(
     <div className='fixed left-4 justify-center ml-16'>
       <Link href='/'>
@@ -10,5 +10,3 @@ const HeaderLogo = () => {
     </div>
   );
 }
-
-export default HeaderLogo;

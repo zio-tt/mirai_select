@@ -1,43 +1,40 @@
-"use client"
+'use client' // useEffectはクライアントサイドでのみ実行される
 
+// Import
+// React
 import Image from 'next/image';
-import { Inter } from 'next/font/google'
-import { useSession, SessionProvider } from 'next-auth/react';
+// Libraries
+import { motion } from 'framer-motion';
+// Contexts
+import { SessionProvider } from 'next-auth/react';
+import HelperProvider from '@/app/_contexts/HelperContext';
+import TopPageProvider from '@/app/_contexts/TopPageContext';
+// Hooks
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useTopPage } from '@/app/_contexts/TopPageContext';
+import { useRouter } from 'next/navigation';
+// Fonts
+import { Inter } from 'next/font/google'
+import { kiwimaru } from '@/app/_utils/font';
+import { notojp } from '@/app/_utils/font';
+// Layouts
 import Header from './header/layout';
 import Footer from './footer/layout';
 import Loading from './loading/layout';
-import AuthGuard from '@/app/_features/AuthGuard';
-import { useState, useEffect } from 'react';
-import HelperProvider from '@/app/_contexts/HelperContext';
+// Features
 import { FloatingCircles } from './floating_circle/FloatingCircles';
-import TopPageProvider from '@/app/_contexts/TopPageContext';
-import { useTopPage } from '@/app/_contexts/TopPageContext';
-import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import { kiwimaru, notojp } from '@/app/_utils/font';
+import AuthGuard from '@/app/_features/auth/AuthGuard';
 
+// デフォルトではpreloadがtrueになっているのでsubsetsの指定が必要
 const inter = Inter({ subsets: ['latin'] })
+
 export type AppLayoutProps = {
   children: React.ReactNode
 }
 
-export default function AppLayout({children}: AppLayoutProps) {
-  return (
-    <html lang="en">
-      <head>
-        <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&display=swap" rel="stylesheet" />
-      </head>
-      <body className={inter.className}>
-        <SessionProvider><TopPageProvider><HelperProvider>
-          <LayoutContent children={children} />
-        </HelperProvider></TopPageProvider></SessionProvider>
-      </body>
-    </html>
-  )
-}
-
-function LayoutContent( {children}: AppLayoutProps ){
+const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { data: session, status } = useSession();
   const [ hasVisited, setHasVisited] = useState<string>('');
   const { isViewed, setIsViewed } = useTopPage();
@@ -45,16 +42,18 @@ function LayoutContent( {children}: AppLayoutProps ){
   const isRoot = usePathname();
   const unAuthFlag = sessionStorage.getItem('unAuthFlag');
 
-  {/* デバッグ用 */}
+  // Debug
   console.log("unAuthFlag: " + unAuthFlag)
   console.log("status: " + status)
   console.log("isRoot: " + isRoot)
   console.log("isViewed: " + isViewed)
 
+  // OpeningAnimationFlag
   useEffect(() => {
     if(isRoot != '/'){setIsViewed(true)}
   }, [isRoot])
 
+  // SignOut, redirect to root
   useEffect(() => {
     if (unAuthFlag === 'true') {
       router.push('/');
@@ -122,3 +121,24 @@ function LayoutContent( {children}: AppLayoutProps ){
     </>
   );
 }
+
+const AppLayout = ({children}: AppLayoutProps) => {
+  return (
+    <html lang="en">
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&display=swap" rel="stylesheet" />
+      </head>
+      <body className={inter.className}>
+        <SessionProvider>
+        <TopPageProvider>
+        <HelperProvider>
+          <LayoutContent children={children} />
+        </HelperProvider>
+        </TopPageProvider>
+        </SessionProvider>
+      </body>
+    </html>
+  )
+}
+
+export default AppLayout;

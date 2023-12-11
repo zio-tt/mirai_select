@@ -1,6 +1,7 @@
-import handleLogin from '@/app/_features/handleLogin';
-import HeaderLogo from './components/HeaderLogo';
-import HeaderMenu from './components/HeaderMenu';
+// Components
+import { HeaderLogo } from './components/HeaderLogo';
+import { HeaderMenu } from './components/HeaderMenu';
+import { handleLogin } from '@/app/_features/auth/function';
 
 const PublicHeader = () => {
   return (
