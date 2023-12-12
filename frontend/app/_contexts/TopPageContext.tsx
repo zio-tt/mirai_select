@@ -20,7 +20,7 @@ export const useTopPage = () => {
   return context;
 };
 
-export default function TopPageProvider({ children }: ChildrenType) {
+export const TopPageProvider = ({ children }: ChildrenType) => {
   const [ isViewing, setIsViewing ] = useState<boolean>(false);
   const [ isViewed, setIsViewed ] = useState<boolean>(false);
 

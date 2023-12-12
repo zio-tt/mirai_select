@@ -10,6 +10,7 @@ type ChildrenType = {
 };
 
 const HelperContext = createContext<HelperContextType | null>(null);
+
 export const useHelper = () => {
   const context = useContext(HelperContext);
   if (!context) {
@@ -18,7 +19,7 @@ export const useHelper = () => {
   return context;
 };
 
-export default function HelperProvider({ children }: ChildrenType) {
+export const HelperProvider = ({ children }: ChildrenType) => {
   const [ inputText, setInputText ] = useState<string>('');
 
   return (
