@@ -1,10 +1,13 @@
+// Built-in components
+import Image from 'next/image';
+import Link from 'next/link';
+// Hooks
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import Image from 'next/image';
-import HeaderLogo from './components/HeaderLogo';
-import HeaderMenu from './components/HeaderMenu';
-import handleLogout from '@/app/_features/handleLogout';
-import Link from 'next/link';
+// Components
+import { HeaderLogo } from './components/HeaderLogo';
+import { HeaderMenu } from './components/HeaderMenu';
+import { handleLogout } from '@/app/_features/auth/function';
 
 const PublicHeader = () => {
   const [ avatar, setAvatar ]= useState<string>('');
