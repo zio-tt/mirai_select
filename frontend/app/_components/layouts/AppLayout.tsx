@@ -3,14 +3,12 @@
 // Import
 // Built-in components
 import Image from 'next/image';
-// Libraries
-import { motion } from 'framer-motion';
 // Contexts
 import { SessionProvider } from 'next-auth/react';
 import { HelperProvider } from '@/app/_contexts/HelperContext';
 import { TopPageProvider } from '@/app/_contexts/TopPageContext';
 // Hooks
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTopPage } from '@/app/_contexts/TopPageContext';
@@ -18,11 +16,12 @@ import { useRouter } from 'next/navigation';
 // Fonts
 import { Inter } from 'next/font/google'
 import { kiwimaru } from '@/app/_utils/font';
-import { notojp } from '@/app/_utils/font';
 // Layouts
 import Header from './header/layout';
 import Footer from './footer/layout';
 import Loading from './loading/layout';
+import { FadeInAnimation } from '../root/FadeInAnimation';
+import { OpeningAnimation } from '../root/OpeningAnimation';
 // Features
 import { FloatingCircles } from './floating_circle/FloatingCircles';
 import AuthGuard from '@/app/_features/auth/AuthGuard';
@@ -35,77 +34,48 @@ export type AppLayoutProps = {
 }
 
 const LayoutContent = ( {children}: AppLayoutProps ) => {
-  const { data: session, status } = useSession();
-  const [ hasVisited, setHasVisited] = useState<string>('');
-  const { isViewed, setIsViewed } = useTopPage();
+  const { isViewed, setIsViewed } = useTopPage(); // Opening Animation Flag
+  const { status } = useSession();
   const router = useRouter();
   const isRoot = usePathname();
-  const unAuthFlag = sessionStorage.getItem('unAuthFlag');
+  const isAuth = sessionStorage.getItem('unAuthFlag');
 
-  // Debug
-  console.log("unAuthFlag: " + unAuthFlag)
-  console.log("status: " + status)
-  console.log("isRoot: " + isRoot)
-  console.log("isViewed: " + isViewed)
-
-  // OpeningAnimationFlag
   useEffect(() => {
-    if(isRoot != '/'){ setIsViewed(true) }
-  }, [isRoot])
-
-  // SignOut, redirect to root
-  useEffect(() => {
-    if (unAuthFlag === 'true') {
-      router.push('/');
+    // 非認証の状態でルートにアクセスした場合、Openingアニメーションを表示する
+    if (isRoot == '/' && status == 'unauthenticated') {
+      setIsViewed(false);
+    } else {
+      setIsViewed(true);
+    }
+    // 認証状態からサインアウトした場合、ルートにリダイレクトする
+    if (isRoot != '/' && isAuth == 'true') {
+      router.replace('/');
       sessionStorage.removeItem('unAuthFlag');
     }
-  }, [unAuthFlag]);
+  }, [isRoot, status])
 
   return(
-    <div className={`relative flex flex-col w-screen min-h-screen overflow-auto ${kiwimaru.className}`}>
+    <div className={`relative w-screen min-h-screen ${kiwimaru.className}`}>
       {/* 背景画像とTopPageアニメーション */}
       <Image src="/images/background.png" alt="background" layout="fill"
               className="absolute top-50% left-50% min-w-full min-h-full object-cover z-0"/>
-      <FloatingCircles />
+      {/* <FloatingCircles /> */}
       {/* ローディング画面 */}
       { status == 'loading' && <Loading />}
+      {/* オープニングアニメーション */}
+      { status != 'loading' && !isViewed && <OpeningAnimation /> }
       {/* メインコンテンツ */}
-      { status != 'loading' && (
-        <div className='flex flex-col h-full'>
-          { isViewed && (
-            <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1 }}
-            className='flex h-16 z-20'
-            >
+      { status != 'loading' && isViewed && (
+        <div className='flex flex-col w-full h-full overflow-auto'>
+          <FadeInAnimation>
+            <>
               <Header />
-            </motion.div>
-          )}
-          <div className='flex flex-grow w-screen min-h-screen z-10 items-center'>
-            { isRoot == "/" && children }
-            { isRoot != "/" && (
-              <>
-                <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 1 }}
-                >
-                  <AuthGuard children={children} />
-                </motion.div>
-              </>
-            )}
-          </div>
-          { isViewed && (
-            <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1 }}
-            className='flex h-16 z-20'
-            >
+              <main className='flex flex-grow w-screen min-h-screen pt-16 z-10 items-center'>
+                <AuthGuard children={children} />
+              </main>
               <Footer />
-            </motion.div>
-          )}
+            </>
+          </FadeInAnimation>
         </div>
       )}
     </div>
@@ -114,7 +84,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
 
 const AppLayout = ({children}: AppLayoutProps) => {
   return (
-    <html lang="en">
+    <html lang="ja">
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&display=swap" rel="stylesheet" />
       </head>

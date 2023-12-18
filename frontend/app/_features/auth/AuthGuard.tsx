@@ -3,9 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
-import { useTopPage } from '@/app/_contexts/TopPageContext';
-
-const unAuthenticatedPaths = ['/privacy-policy', '/terms-of-service'];
+const unAuthenticatedPaths = ['/', '/privacy-policy', '/terms-of-service'];
 
 const AuthGuard = ({ children }: { children: React.ReactNode }): any => {
   const { status } = useSession();

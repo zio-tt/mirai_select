@@ -16,7 +16,7 @@ const InputForm = ({ isLoading }: InputFormProps) => {
         <textarea
           ref={textAreaRef}
           placeholder="悩みごとを入力してください（最大50文字）"
-          className="input resize-none p-2 w-full max-w-full h-8 text-base leading-normal"
+          className="bg-white input resize-none p-2 w-full max-w-full h-8 text-base leading-normal"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
         />

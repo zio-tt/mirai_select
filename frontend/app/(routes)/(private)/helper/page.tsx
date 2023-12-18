@@ -132,7 +132,7 @@ export default function decisionHelperFirstInput () {
       { !isComing && !resultFlag && <Modal onClose={closeModal} />}
       {/* 2回目以降訪れたとき */}
       { isComing && !resultFlag && (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col w-full h-full items-center justify-center">
           <div className="container my-10 py-10 border-gray-300 border-1 flex flex-col items-center justify-center">
             <div className="w-full flex flex-col items-center justify-center">
               {/* 文字数オーバーの警告 */}
@@ -153,7 +153,7 @@ export default function decisionHelperFirstInput () {
             </div>
           </div>
           <div>
-            <button className="btn btn-sm" onClick={sendText}>Tiny</button>
+            <button className="btn btn-sm bg-white text-base" onClick={sendText}>送信</button>
           </div>
         </div>
       )}
