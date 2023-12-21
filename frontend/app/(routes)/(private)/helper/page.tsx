@@ -3,7 +3,6 @@
 import  "./style.css";
 import { useState, useEffect, use } from "react";
 import axios from "axios";
-import Modal from "@/app/_components/ui/Helper/Modal";
 import InputForm from "@/app/_components/ui/Helper/InputForm";
 import Image from "next/image";
 import { useHelper } from "@/app/_contexts/HelperContext";
