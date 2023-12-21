@@ -15,7 +15,7 @@ const AuthGuard = ({ children }: { children: React.ReactNode }): any => {
     if ((status === 'unauthenticated' || status === null) &&
         (!unAuthenticatedPaths.includes(isRoute) || isRoute == '/'))
         { router.replace('/'); }
-  }, [router, status]);
+  }, [router]);
 
   {/* 非認証状態で認可されているページにアクセスした場合 */}
   if ((status === 'unauthenticated' || status === null) &&
