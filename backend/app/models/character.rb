@@ -1,6 +1,7 @@
 class Character < ApplicationRecord
   has_many :character_responses, dependent: :destroy
   has_many :user_characters, dependent: :destroy
+  has_one_attached :avatar
 
   # 性格(MBTI)
   enum mbti_type: {
@@ -51,12 +52,4 @@ class Character < ApplicationRecord
 
   # 共感があるかどうか
   enum empathy:  { high: 0, moderate: 1, low: 2 }
-
-  after_create :create_welcome_message
-
-  private
-
-  def create_welcome_message
-    
-  end
 end

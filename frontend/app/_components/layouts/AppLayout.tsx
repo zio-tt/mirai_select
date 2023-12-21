@@ -8,7 +8,7 @@ import { SessionProvider } from 'next-auth/react';
 import { HelperProvider } from '@/app/_contexts/HelperContext';
 import { TopPageProvider } from '@/app/_contexts/TopPageContext';
 // Hooks
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTopPage } from '@/app/_contexts/TopPageContext';
@@ -35,10 +35,14 @@ export type AppLayoutProps = {
 
 const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { isViewed, setIsViewed } = useTopPage(); // Opening Animation Flag
+  const [ isAuth, setIsAuth ] = useState<string | null>(null); // 認証状態
   const { status } = useSession();
   const router = useRouter();
   const isRoot = usePathname();
-  const isAuth = sessionStorage.getItem('unAuthFlag');
+{/*}
+  useEffect(() => {
+    setIsAuth(sessionStorage.getItem('unAuthFlag'));
+  },[]);
 
   useEffect(() => {
     // 非認証の状態でルートにアクセスした場合、Openingアニメーションを表示する
@@ -52,7 +56,8 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       router.replace('/');
       sessionStorage.removeItem('unAuthFlag');
     }
-  }, [isRoot, status])
+  }, [isRoot]);
+*/}
 
   return(
     <div className={`relative w-screen min-h-screen ${kiwimaru.className}`}>
@@ -61,17 +66,18 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
               className="absolute top-50% left-50% min-w-full min-h-full object-cover z-0"/>
       {/* <FloatingCircles /> */}
       {/* ローディング画面 */}
-      { status == 'loading' && <Loading />}
+      {/* status == 'loading' && <Loading /> */}
       {/* オープニングアニメーション */}
-      { status != 'loading' && !isViewed && <OpeningAnimation /> }
+      {/* status != 'loading' && !isViewed && <OpeningAnimation /> */}
       {/* メインコンテンツ */}
-      { status != 'loading' && isViewed && (
+      {/* status != 'loading' &&  isViewed && */(
         <div className='flex flex-col w-full h-full overflow-auto'>
           <FadeInAnimation>
             <>
               <Header />
               <main className='flex flex-grow w-screen min-h-[calc(100vh-4rem)] pt-16 z-10 items-center'>
-                <AuthGuard children={children} />
+                {/* <AuthGuard children={children} /> */}
+                {children}
               </main>
               <Footer />
             </>

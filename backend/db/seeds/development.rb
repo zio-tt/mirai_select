@@ -1,3 +1,6 @@
+load Rails.root.join('db/seeds/data/characters_seed.rb')
+
+=begin
 load Rails.root.join('db/seeds/data/users_seed.rb')
 load Rails.root.join('db/seeds/data/characters_seed.rb')
 
@@ -59,3 +62,4 @@ users.each do |user|
   CharacterResponse.create(conversation_id: conversation.id, character_id: user.user_characters[0].character_id, response: input[:character1_response])
   CharacterResponse.create(conversation_id: conversation.id, character_id: user.user_characters[1].character_id, response: input[:character2_response])
 end
+=end
