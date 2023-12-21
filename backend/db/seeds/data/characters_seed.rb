@@ -1,7 +1,7 @@
 characters = [
   {
     name:          '天使',
-    avatar:             ,
+    avatar:        'public/character_avatars/character_angel.png',
     mbti_type:     :INFJ,
     tone:          :polite,
     first_person:  '私',
@@ -9,10 +9,11 @@ characters = [
     expression:    :kind,
     values:        '信仰',
     empathy:       :high,
+    welcome_text:  '',
   },
   {
     name:          '悪魔',
-    avatar:             ,
+    avatar:        'public/character_avatars/character_akuma.png',
     mbti_type:     :ENTP,
     tone:          :casual,
     first_person:  'オレ様',
@@ -20,53 +21,25 @@ characters = [
     expression:    :irresponsible,
     values:        'イタズラ好き',
     empathy:       :low,
-  },
-  {
-    name:          "探偵",
-    avatar:             ,
-    mbti_type:     :ISTJ,
-    tone:          :logical,
-    first_person:  "私",
-    second_person: "君",
-    expression:    :humorous,
-    values:        "論理と真実",
-    empathy:       :low,
-  },
-  {
-    name:          "冒険家",
-    avatar:             ,
-    mbti_type:     :ESTP,
-    tone:          :energetic,
-    first_person:  "オレ",
-    second_person: "君",
-    expression:    :passionate,
-    values:        "自由と冒険",
-    empathy:       :moderate,
-  },
-  {
-    name:          "学者",
-    avatar:             ,
-    mbti_type:     :INFP,
-    tone:          :confident,
-    first_person:  "私",
-    second_person: "君",
-    expression:    :serious,
-    values:        "知識と真実",
-    empathy:       :low,
-  },
-  {
-    name:          "芸術家",
-    avatar:             ,
-    mbti_type:     :ISFP,
-    tone:          :casual,
-    first_person:  "私",
-    second_person: "君",
-    expression:    :creative,
-    values:        "自由と創造",
-    empathy:       :high,
+    welcome_text:  '',
   }
 ]
 
-characters.each do |character|
-  Character.create(character)
+characters.each do |character_data|
+  character = Character.create(
+    name: character_data[:name],
+    mbti_type: character_data[:mbti_type],
+    tone: character_data[:tone],
+    first_person: character_data[:first_person],
+    second_person: character_data[:second_person],
+    expression: character_data[:expression],
+    values: character_data[:values],
+    empathy: character_data[:empathy],
+    welcome_text: character_data[:welcome_text]
+  )
+
+  # アバター画像をアタッチ
+  avatar_path = character_data[:avatar]
+  filename = File.basename(avatar_path)
+  character.avatar.attach(io: File.open(avatar_path), filename: filename)
 end
