@@ -51,4 +51,12 @@ class Character < ApplicationRecord
 
   # 共感があるかどうか
   enum empathy:  { high: 0, moderate: 1, low: 2 }
+
+  after_create :create_welcome_message
+
+  private
+
+  def create_welcome_message
+    
+  end
 end

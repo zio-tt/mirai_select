@@ -31,3 +31,5 @@
 /config/credentials/development.key
 
 .env
+
+/db/seeds/data/admin.rb

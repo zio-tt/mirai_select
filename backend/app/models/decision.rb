@@ -18,7 +18,7 @@ class Decision < ApplicationRecord
     message << "二人称: #{character1.second_person}," if character1.second_person
     message << "感情表現: #{character1.expression}," if character1.expression
     message << "価値観: #{character1.values}," if character1.values
-    message << "言い回し: #{character1.dialogue_style}" if character1.dialogue_style
+    message << "共感性: #{character1.empathy}" if character1.empathy
     message << "#{character2.name}:"
     message << "性格(MBTI): #{character2.mbti_type}," if character2.mbti_type
     message << "口調: #{character2.tone}," if character2.tone
@@ -26,7 +26,7 @@ class Decision < ApplicationRecord
     message << "二人称: #{character2.second_person}," if character2.second_person
     message << "感情表現: #{character2.expression}," if character2.expression
     message << "価値観: #{character2.values}," if character2.values
-    message << "言い回し: #{character2.dialogue_style}" if character2.dialogue_style
+    message << "共感性: #{character2.empathy}" if character2.empathy
 
     return message
   end

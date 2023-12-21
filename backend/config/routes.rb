@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   post 'auth/:provider/callback', to: 'users#create'
 
   # OpenAI APIのコールバック
-  post 'helper/api/callback', to: 'decisions#callback'
+  post 'api/openai/v1/callback', to: 'open_ai#callback'
 
   # 一覧画面へのルーティング
   post 'api/index', to: 'decisions#index'
