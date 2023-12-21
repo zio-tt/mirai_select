@@ -8,7 +8,7 @@ import { SessionProvider } from 'next-auth/react';
 import { HelperProvider } from '@/app/_contexts/HelperContext';
 import { TopPageProvider } from '@/app/_contexts/TopPageContext';
 // Hooks
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTopPage } from '@/app/_contexts/TopPageContext';
@@ -35,10 +35,14 @@ export type AppLayoutProps = {
 
 const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { isViewed, setIsViewed } = useTopPage(); // Opening Animation Flag
+  const [ isAuth, setIsAuth ] = useState<string | null>(null); // 認証状態
   const { status } = useSession();
   const router = useRouter();
   const isRoot = usePathname();
-  const isAuth = sessionStorage.getItem('unAuthFlag');
+
+  useEffect(() => {
+    setIsAuth(sessionStorage.getItem('unAuthFlag'));
+  },[]);
 
   useEffect(() => {
     // 非認証の状態でルートにアクセスした場合、Openingアニメーションを表示する
@@ -52,7 +56,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       router.replace('/');
       sessionStorage.removeItem('unAuthFlag');
     }
-  }, [isRoot, status])
+  }, [isRoot, status]);
 
   return(
     <div className={`relative w-screen min-h-screen ${kiwimaru.className}`}>

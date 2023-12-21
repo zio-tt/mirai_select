@@ -15,10 +15,10 @@ interface DecisionIndex extends Decision {
 type TableProps = {
   header: string[];
   data: DecisionIndex[];
-  func: (decision: DecisionIndex) => void;
+  func?: (decision: DecisionIndex) => void;
 }
 
-export const Table = ({header, data, func} : TableProps) => {
+export const Table = ({header, data} : TableProps) => {
   return (
     <>
       <table className="min-w-full bg-white">
