@@ -1,6 +1,7 @@
 characters = [
   {
     name:          '天使',
+    avatar:             ,
     mbti_type:     :INFJ,
     tone:          :polite,
     first_person:  '私',
@@ -11,6 +12,7 @@ characters = [
   },
   {
     name:          '悪魔',
+    avatar:             ,
     mbti_type:     :ENTP,
     tone:          :casual,
     first_person:  'オレ様',
@@ -21,6 +23,7 @@ characters = [
   },
   {
     name:          "探偵",
+    avatar:             ,
     mbti_type:     :ISTJ,
     tone:          :logical,
     first_person:  "私",
@@ -31,6 +34,7 @@ characters = [
   },
   {
     name:          "冒険家",
+    avatar:             ,
     mbti_type:     :ESTP,
     tone:          :energetic,
     first_person:  "オレ",
@@ -41,6 +45,7 @@ characters = [
   },
   {
     name:          "学者",
+    avatar:             ,
     mbti_type:     :INFP,
     tone:          :confident,
     first_person:  "私",
@@ -51,6 +56,7 @@ characters = [
   },
   {
     name:          "芸術家",
+    avatar:             ,
     mbti_type:     :ISFP,
     tone:          :casual,
     first_person:  "私",

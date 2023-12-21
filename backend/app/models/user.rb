@@ -8,11 +8,15 @@ class User < ApplicationRecord
   has_many :decision_bookmarks, through: :decision, source: :bookmarks
   has_many :decision_comments, through: :decision, source: :comments
 
-  # after_create :create_default_user_characters
+  after_create :create_default_user_characters
 
   private
 
   def create_default_user_characters
-    UserCharacter.create(user_id: self.id)
+    @character1 = Character.find_by(name: "天使")
+    @character2 = Character.find_by(name: "悪魔")
+
+    UserCharacter.create(user_id: self.id, character_id: @character1.id, role: :character1)
+    UserCharacter.create(user_id: self.id, character_id: @character2.id, role: :character2)
   end
 end
