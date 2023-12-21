@@ -39,7 +39,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { status } = useSession();
   const router = useRouter();
   const isRoot = usePathname();
-
+{/*}
   useEffect(() => {
     setIsAuth(sessionStorage.getItem('unAuthFlag'));
   },[]);
@@ -57,6 +57,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       sessionStorage.removeItem('unAuthFlag');
     }
   }, [isRoot]);
+*/}
 
   return(
     <div className={`relative w-screen min-h-screen ${kiwimaru.className}`}>
@@ -65,11 +66,11 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
               className="absolute top-50% left-50% min-w-full min-h-full object-cover z-0"/>
       {/* <FloatingCircles /> */}
       {/* ローディング画面 */}
-      { status == 'loading' && <Loading />}
+      {/* status == 'loading' && <Loading /> */}
       {/* オープニングアニメーション */}
-      { status != 'loading' && !isViewed && <OpeningAnimation /> }
+      {/* status != 'loading' && !isViewed && <OpeningAnimation /> */}
       {/* メインコンテンツ */}
-      { status != 'loading' && isViewed && (
+      {/* status != 'loading' &&  isViewed && */(
         <div className='flex flex-col w-full h-full overflow-auto'>
           <FadeInAnimation>
             <>
