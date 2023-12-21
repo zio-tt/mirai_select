@@ -56,7 +56,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       router.replace('/');
       sessionStorage.removeItem('unAuthFlag');
     }
-  }, [isRoot, status]);
+  }, [isRoot]);
 
   return(
     <div className={`relative w-screen min-h-screen ${kiwimaru.className}`}>

@@ -108,7 +108,7 @@ export const options: NextAuthOptions = {
         // UsersController#createを呼び出し、ユーザー作成または確認
         const userCreateResponse = await axios({
           method: 'post',
-          url: `${process.env.NEXT_PUBLIC_WEB_URL}/auth/${account?.provider}/callback`,
+          url: `${process.env.NEXT_PUBLIC_API_URL}/auth/${account?.provider}/callback`,
           headers: { 'X-Requested-With': 'XMLHttpRequest',
                      'Authorization': `Bearer ${token}`,
                      'Content-Type': 'application/json' },
