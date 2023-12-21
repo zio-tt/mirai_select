@@ -18,7 +18,8 @@ RUN apk update && \
     postgresql-dev \
     tzdata \
     git \
-    gcompat
+    gcompat \
+    vim
 
 
 # GemfileとGemfile.lockをコピーし、bundle installを実行

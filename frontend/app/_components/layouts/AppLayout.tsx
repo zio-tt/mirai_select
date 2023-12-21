@@ -70,7 +70,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
           <FadeInAnimation>
             <>
               <Header />
-              <main className='flex flex-grow w-screen min-h-screen pt-16 z-10 items-center'>
+              <main className='flex flex-grow w-screen min-h-[calc(100vh-4rem)] pt-16 z-10 items-center'>
                 <AuthGuard children={children} />
               </main>
               <Footer />

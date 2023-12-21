@@ -1,25 +1,6 @@
-class DecisionsController < ApplicationController
+class OpenAiController < ApplicationController
   include ErrorHandler
   before_action :set_key, :set_characters, only: [:callback]
-
-  def index
-    @decisions = Decision.where(public: true).order(created_at: :asc)
-    @decisions = @decisions.map do |decision|
-      user = decision.user
-      query_text = decision.conversations.first.query_text
-      decision.attributes.merge(
-        user: user,
-        characters: user.characters,
-        first_query: query_text,
-        conversations: decision.conversations,
-        character_responses: decision.conversations.map{|conversation| conversation.character_responses},
-        tags: decision.tags,
-        comments: decision.comments,
-        bookmarks: decision.bookmarks
-      )
-    end
-    render json: { decisions: @decisions }
-  end
 
   def callback
     input_text = params[:inputText]
