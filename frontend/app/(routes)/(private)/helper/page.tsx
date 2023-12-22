@@ -24,11 +24,24 @@ export default function decisionHelperFirstInput () {
   // レスポンスがあるかどうか
   const [ isResponse, setIsResponse ] = useState<boolean>(false);
   const [ responses, setResponses ] = useState<ResponseData[]>([]); 
+  const { data: session, status } = useSession();
+  const token = session?.appAccessToken;
 
+  // 非同期でバックエンドからユーザー情報を取得する関数
   const fetchUserData= async () => {
     try {
-      const user = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/helper/`);
+      const user = await axios({
+        method: 'post',
+        url: `${process.env.NEXT_PUBLIC_API_URL}/helper/`,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Authorization': `Bearer ${token}`
+        },
+        withCredentials: true,
+      });
       setUserData(user.data);
+      // デバッグ用
+      console.log(user.data);
     } catch (error) {
       console.error(error);
     }
