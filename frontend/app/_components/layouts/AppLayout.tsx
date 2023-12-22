@@ -39,7 +39,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { status } = useSession();
   const router = useRouter();
   const isRoot = usePathname();
-{/*}
+
   useEffect(() => {
     setIsAuth(sessionStorage.getItem('unAuthFlag'));
   },[]);
@@ -48,7 +48,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
     // 非認証の状態でルートにアクセスした場合、Openingアニメーションを表示する
     if (isRoot == '/' && status == 'unauthenticated') {
       setIsViewed(false);
-    } else {
+    } else if (isRoot == '/' && status == 'authenticated') {
       setIsViewed(true);
     }
     // 認証状態からサインアウトした場合、ルートにリダイレクトする
@@ -56,8 +56,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       router.replace('/');
       sessionStorage.removeItem('unAuthFlag');
     }
-  }, [isRoot]);
-*/}
+  }, [isRoot, status]);
 
   return(
     <div className={`relative w-screen min-h-screen ${kiwimaru.className}`}>
@@ -68,9 +67,9 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       {/* ローディング画面 */}
       {/* status == 'loading' && <Loading /> */}
       {/* オープニングアニメーション */}
-      {/* status != 'loading' && !isViewed && <OpeningAnimation /> */}
+      { status != 'loading' && !isViewed && <OpeningAnimation /> }
       {/* メインコンテンツ */}
-      {/* status != 'loading' &&  isViewed && */(
+      {/* status != 'loading' &&  */isViewed && (
         <div className='flex flex-col w-full h-full overflow-auto'>
           <FadeInAnimation>
             <>
