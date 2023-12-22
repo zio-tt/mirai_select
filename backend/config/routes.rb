@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   # OpenAI APIのコールバック
   post 'api/openai/v1/callback', to: 'open_ai#callback'
 
+  post 'helper', to: 'helper#callback'
   # 一覧画面へのルーティング
   post 'api/index', to: 'decisions#index'
 end
