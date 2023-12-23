@@ -4,7 +4,7 @@ class HelperController < ApplicationController
     @user_characters = Character.where(id: @user.user_characters.pluck(:character_id))
     @data = {
       user: @user,
-      user_characters: @user_characters
+      characters: @user_characters
     }
 
     render json: {data: @data}

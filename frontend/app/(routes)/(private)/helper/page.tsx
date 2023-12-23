@@ -12,6 +12,8 @@ import { User, Character } from "@/app/_types";
 
 import { CharacterDisplay } from "./components/CharacterDisplay";
 import { ResponseData } from "./type/ResponseData";
+import { set } from "zod";
+import Loading from "@/app/_components/layouts/loading/layout";
 
 interface UserData {
   user: User;
@@ -21,6 +23,7 @@ interface UserData {
 export default function decisionHelperFirstInput () {
   // ユーザー情報
   const [ userData , setUserData ] = useState<UserData>();
+  const [ getUserData, setGetUserData ] = useState<boolean>(false);
   // レスポンスがあるかどうか
   const [ isResponse, setIsResponse ] = useState<boolean>(false);
   const [ responses, setResponses ] = useState<ResponseData[]>([]); 
@@ -40,8 +43,7 @@ export default function decisionHelperFirstInput () {
         withCredentials: true,
       });
       setUserData(user.data);
-      // デバッグ用
-      console.log(user.data);
+      setGetUserData(true);
     } catch (error) {
       console.error(error);
     }
@@ -54,11 +56,14 @@ export default function decisionHelperFirstInput () {
 
   return (
     <>
-      <div className="flex w-full max-h-[calc(100vh-8rem)] h-[calc(100vh-4rem)]  items-center justify-center">
-        <div id="main-contents" className="w-[80%] h-[80%] bg-gray-200/30 rounded-md border-2 border-black shadow-lg flex flex-col justify-start py-[1vh] px-[3vw] overflow-auto">
-          {!isResponse && <CharacterDisplay />}
+      { !getUserData && <Loading /> }
+      { getUserData && userData!.characters.length > 0 && (
+        <div className="flex w-full max-h-[calc(100vh-8rem)] h-[calc(100vh-4rem)]  items-center justify-center">
+          <div id="main-contents" className="w-[80%] h-[80%] bg-gray-200/30 rounded-md border-2 border-black shadow-lg flex flex-col justify-start py-[1vh] px-[3vw] overflow-auto">
+            {!isResponse && <CharacterDisplay characters={userData!.characters} />}
+          </div>
         </div>
-      </div>
+      )}
     </>
   )
 
