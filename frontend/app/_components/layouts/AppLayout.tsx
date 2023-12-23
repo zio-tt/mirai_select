@@ -75,8 +75,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
             <>
               <Header />
               <main className='flex flex-grow w-screen min-h-[calc(100vh-4rem)] pt-16 z-10 items-center'>
-                {/* <AuthGuard children={children} /> */}
-                {children}
+                <AuthGuard children={children} />
               </main>
               <Footer />
             </>
