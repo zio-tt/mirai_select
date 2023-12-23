@@ -12,14 +12,12 @@ const AuthGuard = ({ children }: { children: React.ReactNode }): any => {
 
   {/* 非認証状態で認可されていないページにアクセスした場合 */}
   useEffect(() => {
-    if ((status === 'unauthenticated' || status === null) &&
-        (!unAuthenticatedPaths.includes(isRoute) || isRoute == '/'))
+    if ((status === 'unauthenticated') && (!unAuthenticatedPaths.includes(isRoute)))
         { router.replace('/'); }
-  }, [router]);
+  }, [router, status]);
 
   {/* 非認証状態で認可されているページにアクセスした場合 */}
-  if ((status === 'unauthenticated' || status === null) &&
-      (unAuthenticatedPaths.includes(isRoute)))
+  if ((status === 'unauthenticated' || status === null) && (unAuthenticatedPaths.includes(isRoute)))
       { return children; };
   {/* 認証状態でページにアクセスした場合 */}
   if (status === 'authenticated') return children;
