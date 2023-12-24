@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import { useTopPage } from "@/app/_contexts/TopPageContext";
-import { useEffect, useState } from "react";
+import { motion } from 'framer-motion';
+import { useTopPage } from '@/app/_contexts/TopPageContext';
+import { useEffect, useState } from 'react';
 
 const fadeInVariants = {
   hidden: { opacity: 0 },
@@ -15,12 +15,12 @@ type FadeInOutProps = {
 
 const FadeInOut = ({ children, onCompletion, animationType }: FadeInOutProps ) => (
   <motion.div
-    initial={ animationType == 'fadeIn' ? "hidden" : "visible" }
-    animate={ animationType == 'fadeIn' ? "visible" : "hidden" }
+    initial={ animationType == 'fadeIn' ? 'hidden' : 'visible' }
+    animate={ animationType == 'fadeIn' ? 'visible' : 'hidden' }
     variants={fadeInVariants}
     transition={{ duration: 0.7, delay: 0.3 }}
     onAnimationComplete={ animationType == 'fadeIn' ? onCompletion : undefined }
-    className="absolute w-full h-full"
+    className='absolute w-full h-full'
   >
     {children}
   </motion.div>

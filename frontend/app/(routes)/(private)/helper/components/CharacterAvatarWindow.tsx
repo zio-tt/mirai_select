@@ -6,7 +6,7 @@ type CharacterProps = {
 const CharacterAvatarWindow = ({ name, avatar }: CharacterProps) => {
   return (
     <div>
-      <div className="flex flex-col">
+      <div className='flex flex-col'>
         <img src={avatar} alt={name} />
         {name}
       </div>

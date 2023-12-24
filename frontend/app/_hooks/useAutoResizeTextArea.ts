@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { useHelper } from "@/app/_contexts/HelperContext";
+import { useEffect, useRef, useState } from 'react';
+import { useHelper } from '@/app/_contexts/HelperContext';
 
-export const useAutoResizeTextArea = (initialValue: string = "") => {
+export const useAutoResizeTextArea = (initialValue: string = '') => {
   const { inputText, setInputText } = useHelper();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 

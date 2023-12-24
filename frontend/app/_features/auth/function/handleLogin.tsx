@@ -1,4 +1,4 @@
-import { signIn } from "next-auth/react";
+import { signIn } from 'next-auth/react';
 
 export const handleLogin = async (e: React.MouseEvent<HTMLElement>) => {
   e.preventDefault();

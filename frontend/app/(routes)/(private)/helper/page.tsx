@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import  "./style.css";
-import { useState, useEffect, use } from "react";
-import axios from "axios";
-import InputForm from "@/app/_components/ui/Helper/InputForm";
-import Image from "next/image";
-import { useHelper } from "@/app/_contexts/HelperContext";
-import type { MouseEvent } from "react";
-import { useSession } from "next-auth/react";
-import { User, Character } from "@/app/_types";
+import  './style.css';
+import { useState, useEffect, use } from 'react';
+import axios from 'axios';
+import InputForm from '@/app/_components/ui/Helper/InputForm';
+import Image from 'next/image';
+import { useHelper } from '@/app/_contexts/HelperContext';
+import type { MouseEvent } from 'react';
+import { useSession } from 'next-auth/react';
+import { User, Character } from '@/app/_types';
 
-import { CharacterDisplay } from "./components/CharacterDisplay";
-import { ResponseData } from "./type/ResponseData";
-import { set } from "zod";
-import Loading from "@/app/_components/layouts/loading/layout";
+import { CharacterDisplay } from './components/CharacterDisplay';
+import { ResponseData } from './type/ResponseData';
+import { set } from 'zod';
+import Loading from '@/app/_components/layouts/loading/layout';
 
 interface UserData {
   user: User;
@@ -58,8 +58,8 @@ export default function decisionHelperFirstInput () {
     <>
       { !getUserData && <Loading /> }
       { getUserData && userData!.characters.length > 0 && (
-        <div className="flex w-full max-h-[calc(100vh-8rem)] h-[calc(100vh-4rem)]  items-center justify-center">
-          <div id="main-contents" className="w-[80%] h-[80%] bg-gray-200/30 rounded-md border-2 border-black shadow-lg flex flex-col justify-start py-[1vh] px-[3vw] overflow-auto">
+        <div className='flex w-full max-h-[calc(100vh-8rem)] h-[calc(100vh-4rem)]  items-center justify-center'>
+          <div id='main-contents' className='w-[80%] h-[80%] bg-gray-200/30 rounded-md border-2 border-black shadow-lg flex flex-col justify-start py-[1vh] px-[3vw] overflow-auto'>
             {!isResponse && <CharacterDisplay characters={userData!.characters} />}
           </div>
         </div>
@@ -128,9 +128,9 @@ export default function decisionHelperFirstInput () {
   //     setCharacter2Response({ name: parsed.character2.character2_name, response: parsed.character2.character2_response });
   //     setResponseFlag(true);
   //   } catch (e) {
-  //     console.error("Error parsing response data", e);
+  //     console.error('Error parsing response data', e);
   //     setErrorFlag(true);
-  //     setErrorMessage("レスポンスデータの解析中にエラーが発生しました。");
+  //     setErrorMessage('レスポンスデータの解析中にエラーが発生しました。');
   //   }
   // }
 
@@ -181,38 +181,38 @@ export default function decisionHelperFirstInput () {
   //    { !isComing && !resultFlag && <Modal onClose={closeModal} />}
   //    {/* 2回目以降訪れたとき */}
   //    { isComing && !resultFlag && (
-  //      <div className="flex flex-col w-full h-full items-center justify-center">
-  //        <div className="container my-10 py-10 border-gray-300 border-1 flex flex-col items-center justify-center">
-  //          <div className="w-full flex flex-col items-center justify-center">
+  //      <div className='flex flex-col w-full h-full items-center justify-center'>
+  //        <div className='container my-10 py-10 border-gray-300 border-1 flex flex-col items-center justify-center'>
+  //          <div className='w-full flex flex-col items-center justify-center'>
   //            {/* 文字数オーバーの警告 */}
-  //            { alertFlag && ( <div className="text-xl" style={{color: 'red'}}>文字数がオーバーしています。入力する悩みごとは<span className="underline">50文字以内</span>にしてください。</div> )}
+  //            { alertFlag && ( <div className='text-xl' style={{color: 'red'}}>文字数がオーバーしています。入力する悩みごとは<span className='underline'>50文字以内</span>にしてください。</div> )}
   //            {/* 入力フォーム */}
   //            <InputForm
   //              isLoading={isLoading}
   //            />
-  //            <div className="w-full flex items-center justify-end">
-  //              <div className="flex flex-col items-center justify-center">
-  //                <Image src="/images/helper/man.png"
-  //                       alt="avatar"
+  //            <div className='w-full flex items-center justify-end'>
+  //              <div className='flex flex-col items-center justify-center'>
+  //                <Image src='/images/helper/man.png'
+  //                       alt='avatar'
   //                       width={200}
   //                       height={200}
-  //                       className="rounded-full bg-white" />
+  //                       className='rounded-full bg-white' />
   //              </div>
   //            </div>
   //          </div>
   //        </div>
   //        <div>
-  //          <button className="btn btn-sm bg-white text-base" onClick={sendText}>送信</button>
+  //          <button className='btn btn-sm bg-white text-base' onClick={sendText}>送信</button>
   //        </div>
   //      </div>
   //    )}
   //    {/* 結果表示ウインドウ */}
   //    { resultFlag && (
-  //      <div className="container my-10 flex flex-col items-center justify-center">
-  //        <div className="w-full flex flex-col items-center justify-center">
-  //          <div className="text-xl">結果表示</div>
+  //      <div className='container my-10 flex flex-col items-center justify-center'>
+  //        <div className='w-full flex flex-col items-center justify-center'>
+  //          <div className='text-xl'>結果表示</div>
   //          {errorFlag && (
-  //            <div className="text-xl" style={{color: 'red'}}>{errorMessage}</div>
+  //            <div className='text-xl' style={{color: 'red'}}>{errorMessage}</div>
   //          )}
   //          { responseFlag && (
   //            <div>

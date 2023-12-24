@@ -336,7 +336,7 @@ export default function TermOfService() {
               />
             ))}
           </div>
-          <p className="flex flex-col text-left text-gray-500 text-xs md:text-sm lg:text-lg">2023年11月12日 制定</p>
+          <p className='flex flex-col text-left text-gray-500 text-xs md:text-sm lg:text-lg'>2023年11月12日 制定</p>
         </div>
       </div>
     </div>

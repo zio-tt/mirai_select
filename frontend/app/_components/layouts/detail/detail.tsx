@@ -1,4 +1,4 @@
-import { Bookmark, Character, CharacterResponse, Comment, Conversation, Decision, Tag, User} from "@/app/_types";
+import { Bookmark, Character, CharacterResponse, Comment, Conversation, Decision, Tag, User} from '@/app/_types';
 
 interface DecisionIndex extends Decision {
   // id: number;
@@ -19,7 +19,7 @@ interface DecisionIndex extends Decision {
 export const DetailDecision = ({ decision }: { decision: DecisionIndex}) => {
   return (
     <>
-      <div className="flex flex-col">
+      <div className='flex flex-col'>
         <p>{decision.user.name}</p>
         <p>{decision.first_query}</p>
         <p>{decision.characters[0].name}</p>
