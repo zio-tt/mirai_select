@@ -61,8 +61,8 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   return(
     <div className={`relative w-screen min-h-screen ${kiwimaru.className}`}>
       {/* 背景画像とTopPageアニメーション */}
-      <Image src="/images/background.png" alt="background" layout="fill"
-              className="absolute top-50% left-50% min-w-full min-h-full object-cover z-0"/>
+      <Image src='/images/background.png' alt='background' fill
+              className='absolute top-50% left-50% min-w-full min-h-full object-cover z-0'/>
       {/* <FloatingCircles /> */}
       {/* ローディング画面 */}
       {/* status == 'loading' && <Loading /> */}
@@ -88,9 +88,9 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
 
 const AppLayout = ({children}: AppLayoutProps) => {
   return (
-    <html lang="ja">
+    <html lang='ja'>
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&display=swap" rel="stylesheet" />
+        <link href='https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&display=swap' rel='stylesheet' />
       </head>
       <body className={inter.className}>
         <SessionProvider>

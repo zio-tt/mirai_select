@@ -1,5 +1,5 @@
-import { signOut } from "next-auth/react";
-import axios from "axios";
+import { signOut } from 'next-auth/react';
+import axios from 'axios';
 
 export const handleLogout = async (e: React.MouseEvent<HTMLElement>) => {
   e.preventDefault();

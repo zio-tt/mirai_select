@@ -9,7 +9,7 @@ type Circle = {
   opacity: number;
 };
 
-const colors = ["red", "blue", "green", "yellow", "purple"];
+const colors = ['red', 'blue', 'green', 'yellow', 'purple'];
 const sizeRange = [70, 250];
 const maxCircles = 10;
 
@@ -52,18 +52,18 @@ export const FloatingCircles = () => {
   }, []);
 
   return (
-    <div className="absolute top-0 left-0 w-full h-full z-1 overflow-hidden">
+    <div className='absolute top-0 left-0 w-full h-full z-1 overflow-hidden'>
       {circles.map((circle) => (
         <motion.div
           key={circle.id}
-          initial={{ y: "100vh", x: Math.random() * window.innerWidth }}
-          animate={{ y: "-100vh" }}
-          transition={{ duration: circle.duration, repeat: Infinity, ease: "linear" }}
+          initial={{ y: '100vh', x: Math.random() * window.innerWidth }}
+          animate={{ y: '-100vh' }}
+          transition={{ duration: circle.duration, repeat: Infinity, ease: 'linear' }}
           style={{
-            position: "absolute",
+            position: 'absolute',
             width: circle.size,
             height: circle.size,
-            borderRadius: "50%",
+            borderRadius: '50%',
             backgroundColor: circle.color,
             opacity: circle.opacity,
           }}
