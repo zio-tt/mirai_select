@@ -35,6 +35,7 @@ export const ContentsImage = ({imageURL, imageAlt, addClassName, imageWidth, ima
         <div className='relative w-[30vw] min-h-[40vh] overflow-hidden left-0 mr-5'>
           <Image src={imageURL[0]}
                   alt={imageAlt[0]}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   fill
                   className={`${addClassName}`} />
         </div>

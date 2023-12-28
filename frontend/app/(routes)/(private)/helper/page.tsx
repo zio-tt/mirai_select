@@ -20,20 +20,21 @@ interface UserData {
   characters: Character[];
 }
 
-export default function decisionHelperFirstInput () {
+export default function decisionHelper () {
   // ユーザー情報
   const [ userData , setUserData ] = useState<UserData>();
   const [ getUserData, setGetUserData ] = useState<boolean>(false);
   // レスポンスがあるかどうか
   const [ isResponse, setIsResponse ] = useState<boolean>(false);
+  const [ characterDataLength, setCharacterDataLength ] = useState<number>(0);
   const [ responses, setResponses ] = useState<ResponseData[]>([]); 
   const { data: session, status } = useSession();
   const token = session?.appAccessToken;
 
   // 非同期でバックエンドからユーザー情報を取得する関数
-  const fetchUserData= async () => {
+  const fetchUserData = async () => {
     try {
-      const user = await axios({
+      const response = await axios({
         method: 'post',
         url: `${process.env.NEXT_PUBLIC_API_URL}/helper/`,
         headers: {
@@ -42,12 +43,21 @@ export default function decisionHelperFirstInput () {
         },
         withCredentials: true,
       });
-      setUserData(user.data);
-      setGetUserData(true);
+      setUserData(response.data);
+      if (response.data.characters) {
+        setCharacterDataLength(response.data.characters.length);
+      } else {
+        setCharacterDataLength(0);
+      }
     } catch (error) {
       console.error(error);
+    } finally {
+      // 成功でも失敗でも実行される処理
+      setGetUserData(true);
     }
   }
+
+  console.log(userData);
 
   // ページ読み込み時にバックエンドからユーザー情報を取得する
   useEffect(() => {
@@ -57,7 +67,7 @@ export default function decisionHelperFirstInput () {
   return (
     <>
       { !getUserData && <Loading /> }
-      { getUserData && userData!.characters.length > 0 && (
+      { getUserData && characterDataLength > 0 && (
         <div className='flex w-full max-h-[calc(100vh-8rem)] h-[calc(100vh-4rem)]  items-center justify-center'>
           <div id='main-contents' className='w-[80%] h-[80%] bg-gray-200/30 rounded-md border-2 border-black shadow-lg flex flex-col justify-start py-[1vh] px-[3vw] overflow-auto'>
             {!isResponse && <CharacterDisplay characters={userData!.characters} />}

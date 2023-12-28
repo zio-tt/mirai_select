@@ -40,6 +40,9 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   const router = useRouter();
   const isRoot = usePathname();
 
+  // デバッグ
+  console.log(status);
+
   useEffect(() => {
     setIsAuth(sessionStorage.getItem('unAuthFlag'));
   },[]);
@@ -56,7 +59,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       router.replace('/');
       sessionStorage.removeItem('unAuthFlag');
     }
-  }, [isRoot, status]);
+  }, [status]);
 
   return(
     <div className={`relative w-screen min-h-screen ${kiwimaru.className}`}>
