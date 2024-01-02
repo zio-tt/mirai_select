@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import { Inter } from 'next/font/google'
 import { kiwimaru } from '@/app/_utils/font';
 // Layouts
+import { Drawer } from './Drawer/layout';
 import Header from './header/layout';
 import Footer from './footer/layout';
 import Loading from './loading/layout';
@@ -73,15 +74,17 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       { isRoot == "/" && status != 'loading' && !isViewed && <OpeningAnimation /> }
       {/* メインコンテンツ */}
       { status != 'loading' && isViewed && (
-        <div className='flex flex-col w-full h-full overflow-auto'>
+        <div className='flex w-full h-full'>
           <FadeInAnimation>
-            <>
-              <Header />
-              <main className='flex flex-grow w-screen min-h-[calc(100vh-4rem)] pt-16 z-10 items-center'>
-                <AuthGuard children={children} />
-              </main>
-              <Footer />
-            </>
+            <div className='flex flex-row w-screen h-full'>
+              <Drawer />
+              <div className="flex flex-col w-[80vw] h-full ml-[20vw] overflow-auto">
+                <main className='flex w-full min-h-[calc(100vh-4rem)] z-10 items-center'>
+                  <AuthGuard children={children} />
+                </main>
+                <Footer />
+              </div>
+            </div>
           </FadeInAnimation>
         </div>
       )}

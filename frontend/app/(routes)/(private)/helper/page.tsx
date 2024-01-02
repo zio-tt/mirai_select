@@ -129,8 +129,8 @@ export default function decisionHelper () {
     <>
       { !isCharacterData && <Loading /> }
       { isCharacterData && (
-        <div className='flex w-full max-h-[calc(100vh-8rem)] h-[calc(100vh-4rem)]  items-center justify-center'>
-          <div id='main-contents' className='w-[60%] h-[80%] bg-gray-200/30 rounded-md border-2 border-black shadow-lg flex flex-row items-center justify-center p-4 overflow-hidden'>
+        <div className='flex w-full min-h-screen items-center justify-center'>
+          <div id='main-contents' className='w-[80%] h-[95vh] bg-gray-200/30 rounded-md border-2 border-black shadow-lg flex flex-row items-center justify-center p-4 overflow-hidden'>
             <div id='decision-window' className='flex w-[70%] h-[50%] m-3 items-center justify-self-center'>
               <div className='flex flex-col w-full h-full items-center justify-center'>
                 <CharacterDisplay

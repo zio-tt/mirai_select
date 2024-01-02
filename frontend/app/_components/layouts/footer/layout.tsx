@@ -13,7 +13,7 @@ const FooterMenu = ({url, text}: FooterMenuProps) => {
 
 const Footer = () => {
   return (
-    <footer className='footer footer-center flex h-16 w-screen items-center justify-center z-10 p-5 bg-base-200 text-base-content rounded' data-theme='dark'>
+    <footer className='footer footer-center flex h-16 w-full items-center justify-center z-10 p-5 bg-base-200 text-base-content rounded' data-theme='dark'>
       <nav className='flex flex-row'>
         <FooterMenu url='https://forms.gle/5529xgmL49n93grn9' text='お問い合わせ' />
         <FooterMenu url='/privacy-policy' text='プライバシーポリシー' />
