@@ -3,26 +3,28 @@ import { CharacterTextWindow } from './CharacterTextWindow';
 import { Character } from '@/app/_types';
 import { ResponseData } from '../type/ResponseData';
 
+interface CharacterProps extends Character {
+  avatar: string;
+}
+
 interface CharacterDisplayProps {
-  characters?: Character[];
+  characters?: CharacterProps[];
   responses?: ResponseData[];
 }
 
-const CharacterDisplay: React.FC<CharacterDisplayProps> = ({ characters, responses }: CharacterDisplayProps) => {
+const CharacterDisplay = ({ characters, responses }: CharacterDisplayProps) => {
   return (
-    <div>
-      { characters && characters.map((character) => (
-        <div key={character.id} className='character-response flex flex-row'>
-          <CharacterAvatarWindow name={character.name} avatar={character.avatar}  />
-          <CharacterTextWindow response={character.welcome_text} />
-        </div>
-      ))}
-      {responses && responses.map((response) => (
-        <div key={response.character_id} className='character-response flex flex-row'>
-          <CharacterAvatarWindow name={response.name} avatar={response.avatar}  />
-          <CharacterTextWindow response={response.response} />
-        </div>
-      ))}
+    <div className='w-full h-[60vh] border-2 border-black'>
+      { characters && characters.map((character) => {
+        const response = responses?.find(r => r.name === character.name) || null;
+
+        return(
+            <div key={character.id} className='character-response flex flex-row text-black m-4'>
+              <CharacterAvatarWindow name={character.name} avatar={character.avatar}  />
+              <CharacterTextWindow response={response} />
+            </div>
+          );
+      })}
     </div>
   );
 }
