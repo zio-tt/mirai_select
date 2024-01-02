@@ -6,7 +6,7 @@ export default function Home() {
 
   return (
     <>
-      <div className='flex flex-col w-screen min-h-screen items-center justify-start overflow-auto mt-16'>
+      <div className='flex flex-col w-full min-h-screen items-center justify-start overflow-auto mt-16'>
         <div className='flex flex-col items-center justify-start w-full h-full'>
           <div className='flex flex-col items-center justify-start w-[90%]'>
             <ContentsCard
