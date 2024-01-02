@@ -1,25 +1,27 @@
 import { useEffect, useState } from 'react';
+import { ResponseData } from '../type/ResponseData';
 
-type ResponseProps = {
-  response: string;
+interface CharacterTextWindowProps {
+  response: ResponseData | null;
 }
 
-const CharacterTextWindow = ({ response }: ResponseProps) => {
-  const [ text, setText ] = useState<string>('');
+const CharacterTextWindow = ({ response }: CharacterTextWindowProps) => {
+  const [text, setText] = useState<string>('welcome_textが存在しません。');
 
   useEffect(() => {
-    if (response = '') {
-      setText('welcome_textが存在しません');
+    if (response) {
+      setText(response.response);
     } else {
-      setText(response);
+      setText('No response available.');
     }
-  }, []);
+  }, [response]);
 
   return (
-    <div className='character-response-window'>
-      <p>{response}</p>
+    <div className='flex flex-grow w-[60%] h-[75] items-center justify-center bg-white ml-3 p-2'>
+      <p>{text}</p>
     </div>
   );
 }
+
 
 export { CharacterTextWindow }
