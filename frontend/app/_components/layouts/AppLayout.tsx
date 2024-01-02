@@ -18,7 +18,6 @@ import { Inter } from 'next/font/google'
 import { kiwimaru } from '@/app/_utils/font';
 // Layouts
 import { Drawer } from './Drawer/layout';
-import Header from './header/layout';
 import Footer from './footer/layout';
 import Loading from './loading/layout';
 import { FadeInAnimation } from '../root/FadeInAnimation';
@@ -73,17 +72,22 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       {/* オープニングアニメーション */}
       { isRoot == "/" && status != 'loading' && !isViewed && <OpeningAnimation /> }
       {/* メインコンテンツ */}
-      { status != 'loading' && isViewed && (
+      { isViewed && (
         <div className='flex w-full h-full'>
           <FadeInAnimation>
             <div className='flex flex-row w-screen h-full'>
               <Drawer />
-              <div className="flex flex-col w-[80vw] h-full ml-[20vw] overflow-auto">
-                <main className='flex w-full min-h-[calc(100vh-4rem)] z-10 items-center'>
-                  <AuthGuard children={children} />
-                </main>
-                <Footer />
-              </div>
+                <div className="flex flex-col w-[80vw] h-full ml-[20vw] overflow-auto">
+                  { status == 'loading' && <Loading /> }
+                  { status != 'loading' && 
+                    <>
+                      <main className='flex w-full min-h-[calc(100vh-4rem)] z-10 items-center'>
+                        <AuthGuard children={children} />
+                      </main>
+                      <Footer />
+                    </>
+                  }
+                </div>
             </div>
           </FadeInAnimation>
         </div>

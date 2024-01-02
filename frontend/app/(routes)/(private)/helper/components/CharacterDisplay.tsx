@@ -9,19 +9,21 @@ interface CharacterProps extends Character {
 
 interface CharacterDisplayProps {
   characters?: CharacterProps[];
-  responses?: ResponseData[];
+  responses?: string[];
 }
 
 const CharacterDisplay = ({ characters, responses }: CharacterDisplayProps) => {
   return (
     <div className='w-full h-[60vh] border-2 border-black'>
-      { characters && characters.map((character) => {
-        const response = responses?.find(r => r.name === character.name) || null;
+      { characters && characters.map((character, index) => {
+        const response = responses ? responses[index] : null;
 
         return(
-            <div key={character.id} className='character-response flex flex-row text-black m-4'>
+            <div key={character.id} className='character-response flex h-[50%] w-full text-black p-4 items-center'>
+              <div className='flex flex-row h-full w-full items-center'>
               <CharacterAvatarWindow name={character.name} avatar={character.avatar}  />
               <CharacterTextWindow response={response} />
+              </div>
             </div>
           );
       })}

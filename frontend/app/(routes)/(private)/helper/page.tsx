@@ -30,13 +30,14 @@ export default function decisionHelper () {
   // ページ読み込み時に取得する情報（キャラクター情報）
   const [ characterData , setCharacterData ] = useState<UserData>();
   const [ isCharacterData, setIsCharacterData ] = useState<boolean>(false);
-  // レスポンスがあるかどうか
+  // 通信中の場合Loadingコンポーネントを表示する
   const [ isLoading , setIsLoading ] = useState<boolean>(false);
+
   const [ resultFlag , setResultFlag ] = useState<boolean>(false);
   const [ errorFlag, setErrorFlag ] = useState<boolean>(false);
   const [ errorMessage, setErrorMessage ] = useState<string>('');
   const [ characterDataLength, setCharacterDataLength ] = useState<number>(0);
-  const [ responses, setResponses ] = useState<ResponseData[]>([]);
+  const [ responses, setResponses ] = useState<string[]>([]);
   const { data: session, status } = useSession();
   const [ inputText, setInputText ] = useState<string>('');
   const [ inputTextLength, setInputTextLength ] = useState<number>(0);
@@ -101,17 +102,13 @@ export default function decisionHelper () {
       });
       parseResponse(userCreateResponse.data.response);
 
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-
-      console.log(userCreateResponse.data);
-
     } catch (error: any) {
       console.error(error);
       setErrorFlag(true);
       setErrorMessage(error.message);
       //alert('エラーが発生しました。');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -127,11 +124,12 @@ export default function decisionHelper () {
 
   return (
     <>
-      { !isCharacterData && <Loading /> }
-      { isCharacterData && (
+      { !isCharacterData && <div className='w-full min-h-screen'><Loading /></div> }
+      { isLoading && <div className='w-full min-h-screen'><Loading /></div> }
+      { isCharacterData && !isLoading && (
         <div className='flex w-full min-h-screen items-center justify-center'>
           <div id='main-contents' className='w-[80%] h-[95vh] bg-gray-200/30 rounded-md border-2 border-black shadow-lg flex flex-row items-center justify-center p-4 overflow-hidden'>
-            <div id='decision-window' className='flex w-[70%] h-[50%] m-3 items-center justify-self-center'>
+            <div id='decision-window' className='flex w-[70%] h-full m-3 items-center justify-self-center'>
               <div className='flex flex-col w-full h-full items-center justify-center'>
                 <CharacterDisplay
                   characters={characterData!.characters}
@@ -141,10 +139,10 @@ export default function decisionHelper () {
                   setInputText={setInputText} />
               </div>
             </div>
-            <div id='control-window' className='flex flex-col w-[30%] h-[90%] border-2 border-black m-3'>
-                <div id='send-button' className='flex'>
-                  <button className='btn btn-sm bg-white text-base' onClick={sendText}>送信</button>
-                </div>
+            <div id='control-window' className='flex flex-col w-[30%] h-full border-2 border-black m-3 items-center justify-end'>
+              <div id='send-button' className='flex w-full items-center justify-center mb-5'>
+                <button className='btn btn-lg w-[90%] bg-white text-2xl' onClick={sendText}>2人に相談する</button>
+              </div>
             </div>
           </div>
         </div>

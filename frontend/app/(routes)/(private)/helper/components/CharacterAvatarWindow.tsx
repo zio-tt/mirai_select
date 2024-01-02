@@ -20,7 +20,7 @@ const CharacterAvatarWindow = ({ name, avatar }: CharacterProps) => {
 
   return (
     <div>
-      <div className='flex flex-col items-center justify-center m-2'>
+      <div className='flex flex-col items-center justify-center border-black border-2 p-3 bg-white m-2'>
         <Image src={avatarURL} className="flex bg-white rounded-lg items-center justify-center"
                alt={name}
                width={50}
