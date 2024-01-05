@@ -1,8 +1,15 @@
 import { useState, createContext, useContext } from 'react';
+import { User, Character } from '@/app/_types'; 
 
 type HelperContextType = {
+  userData: User | null;
+  setUserData: React.Dispatch<React.SetStateAction<User | null>>;
+  characterData: Character[] | null;
+  setCharacterData: React.Dispatch<React.SetStateAction<Character[] | null>>;
   inputText: string;
   setInputText: React.Dispatch<React.SetStateAction<string>>;
+  remainingTokens: number;
+  setRemainingTokens: React.Dispatch<React.SetStateAction<number>>;
 };
 
 type ChildrenType = {
@@ -20,10 +27,17 @@ export const useHelper = () => {
 };
 
 export const HelperProvider = ({ children }: ChildrenType) => {
+  const [ userData, setUserData ] = useState<User | null>(null);
+  const [ characterData, setCharacterData ] = useState<Character[] | null>(null);
   const [ inputText, setInputText ] = useState<string>('');
+  const [ remainingTokens, setRemainingTokens ] = useState<number>(0);
 
   return (
-    <HelperContext.Provider value={{ inputText, setInputText }}>
+    <HelperContext.Provider 
+      value={{ userData, setUserData, 
+               characterData, setCharacterData, 
+               inputText, setInputText,
+               remainingTokens, setRemainingTokens}}>
       {children}
     </HelperContext.Provider>
   );

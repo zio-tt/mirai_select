@@ -6,18 +6,23 @@ import { handleLogin } from '@/app/_features/auth/function';
 const PublicDrawer = () => {
   return (
     <>
-      {/* LogoSpace */}
       <div id='logo-space'
-           className='flex h-[20vh] w-full items-center justify-center'>
+          className='flex h-[20vh] w-full items-center justify-center'>
         <DrawerLogo />
       </div>
-      {/* MenuSpace */}
       <div id='menu-space'
-           className='flex h-[80vh] w-full items-start justify-center'>
+           className='flex flex-col h-[60vh] w-full items-center justify-start'>
+        <div className="divider divider-neutral mb-6">Menu</div>
         <DrawerMenu url='/'
                     text='Google認証'
                     imageURL='/images/google.png'
                     onClick={handleLogin} />
+        <DrawerMenu url='#'
+                    text='体験ページ¥¥¥（現在準備中）'
+                    imageURL='/images/wakaba.png'/>
+      </div>
+      <div className="information flex flex-col min-h-[20vh] items-center justify-start">
+        <div className="divider divider-neutral">Information</div>
       </div>
     </>
   );

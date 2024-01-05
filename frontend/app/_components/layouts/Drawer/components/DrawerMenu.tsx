@@ -18,6 +18,7 @@ const DrawerMenu = ({ url, text, imageURL, onClick }: DrawerMenuProps) => {
     </span>
   ));
 
+
   useEffect(() => {
     if (imageURL) {setImage(imageURL);}
   }, []);
@@ -28,7 +29,7 @@ const DrawerMenu = ({ url, text, imageURL, onClick }: DrawerMenuProps) => {
         <Image src={imageURL} alt={text} width={100} height={100} className='flex object-cover' />
       </div>
       <div className='w-[80%] flex h-[10vh] p-1 border-black border-2 rounded-lg items-center justify-center hover:bg-[#ffcf82]'>
-        <Link href={url} onClick={onClick} className='text-[0.9rem] leading-5 mr-3 ml-3'>{textElements}</Link>
+        <Link href={url} onClick={onClick} className='text-[0.9rem] font-bold leading-5 mr-3 ml-3 text-center'>{textElements}</Link>
       </div>
     </div>
   );

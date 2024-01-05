@@ -10,6 +10,11 @@ class User < ApplicationRecord
 
   after_create :create_default_user_characters
 
+  def decrease_token(text_length)
+    self.token -= text_length
+    self.save!
+  end
+
   private
 
   def create_default_user_characters

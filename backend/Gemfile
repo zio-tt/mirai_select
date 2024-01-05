@@ -54,3 +54,4 @@ gem 'pry-nav'
 gem 'rails-i18n'
 gem 'enum_help'
 gem 'aws-sdk-s3'
+gem 'whenever', require: false
