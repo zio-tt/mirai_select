@@ -13,7 +13,6 @@ import { UserInterface } from './components/UserInterface';
 import Loading from '@/app/_components/layouts/loading/layout';
 
 import { useHelper } from '@/app/_contexts/HelperContext';
-import { set } from 'zod';
 
 interface CharacterProps extends Character {
   avatar: string;
