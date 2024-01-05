@@ -14,20 +14,20 @@ interface CharacterDisplayProps {
 
 const CharacterDisplay = ({ characters, responses }: CharacterDisplayProps) => {
   return (
-    <div className='w-full h-[60vh] border-2 border-black'>
+    <>
       { characters && characters.map((character, index) => {
         const response = responses ? responses[index] : null;
 
         return(
-            <div key={character.id} className='character-response flex h-[50%] w-full text-black p-4 items-center'>
+            <div key={character.id} className='character-response flex h-[30%] w-[90%] text-black p-4 items-center rounded-md'>
               <div className='flex flex-row h-full w-full items-center'>
-              <CharacterAvatarWindow name={character.name} avatar={character.avatar}  />
-              <CharacterTextWindow response={response} />
+                <CharacterAvatarWindow name={character.name} avatar={character.avatar}  />
+                <CharacterTextWindow response={response} /> 
               </div>
             </div>
           );
       })}
-    </div>
+    </>
   );
 }
 

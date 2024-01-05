@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_21_143115) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_05_173855) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -72,7 +72,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_21_143115) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "empathy", default: 0, null: false
-    t.text "welcome_text", default: "", null: false
+    t.text "character1_welcome"
+    t.text "character2_welcome"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -149,7 +150,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_21_143115) do
     t.string "name", default: "名無し", null: false
     t.string "email"
     t.string "avatar"
-    t.integer "token", default: 1000, null: false
+    t.integer "token", default: 300, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true

@@ -4,11 +4,14 @@ class OpenAiController < ApplicationController
 
   def callback
     input_text = params[:inputText]
+    text_length = input_text.length
+
     @decision = Decision.new(user_id: current_user.id, public: false)
 
     if @decision.save
+      current_user.decrease_token(text_length)
       response = OpenAiService.new(@api_key, @decision, @character1, @character2).call(input_text)
-      render json: { response: response }
+      render json: { response: response, user: current_user }
     else
       render json: { error: "Decision could not be saved." }, status: :unprocessable_entity
     end
