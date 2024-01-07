@@ -28,7 +28,7 @@ const Home: NextPage = () => {
     setPassword(e.target.value);
   }
 
-  if (isAuth) { return (
+  if (!isAuth) { return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
@@ -64,7 +64,7 @@ const Home: NextPage = () => {
       </div>
     </div>
   );}
-  if (!isAuth) {return (
+  if (isAuth) {return (
     <SessionProvider>
       <App />
     </SessionProvider>
