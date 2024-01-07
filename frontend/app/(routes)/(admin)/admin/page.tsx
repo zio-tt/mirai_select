@@ -3,6 +3,7 @@
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
+import { SessionProvider } from "next-auth/react";
 
 const App = dynamic(() => import("@/app/_components/layouts/Admin/Admin"), { ssr: false });
 
@@ -27,7 +28,7 @@ const Home: NextPage = () => {
     setPassword(e.target.value);
   }
 
-  if (!isAuth) { return (
+  if (isAuth) { return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
@@ -63,7 +64,11 @@ const Home: NextPage = () => {
       </div>
     </div>
   );}
-  if (isAuth) {return <App />;}
+  if (!isAuth) {return (
+    <SessionProvider>
+      <App />
+    </SessionProvider>
+  );}
 };
 
 export default Home;

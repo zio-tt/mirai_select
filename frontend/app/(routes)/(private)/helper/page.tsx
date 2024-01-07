@@ -121,7 +121,7 @@ export default function decisionHelper () {
       setBeforeConsultation(inputText);
       setIsResponse(true);
       setIsLoading(false);
-      setPlaceholder('悩みを深ぼる場合は入力してください（50文字以内）');
+      setPlaceholder('悩みを深掘りする場合は追加の相談文を入力してください（50文字以内）');
       setInputText('');
     }
   }
