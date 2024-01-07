@@ -21,6 +21,10 @@ module.exports = {
       {
         protocol: 'http',
         hostname: 'web',
+      },
+      {
+        protocol: 'https',
+        hostname: 'mirai-select.onrender.com'
       }
     ],
   },
