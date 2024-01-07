@@ -14,6 +14,8 @@ const CharacterAvatarWindow = ({ name, avatar }: CharacterProps) => {
     if (avatar) {
       if (avatar.includes("localhost")){
         setAvatarURL(avatar.replace("localhost", "web"));
+      } else {
+        setAvatarURL(avatar);
       }
     }
   }, []);
