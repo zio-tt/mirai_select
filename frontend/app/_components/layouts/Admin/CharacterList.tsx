@@ -17,6 +17,7 @@ const CharacterList = (props: ListProps) => {
         <TextField source="character2_welcome" />
         <TextField source="created_at" />
         <TextField source="updated_at" />
+        <TextField source="avatar_url" />
       </Datagrid>
     </List>
   );
