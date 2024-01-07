@@ -52,4 +52,53 @@ class Character < ApplicationRecord
 
   # 共感があるかどうか
   enum empathy:  { high: 0, moderate: 1, low: 2 }
+
+  after_create :create_welcome_text
+
+  def create_welcome_system_message(character)
+    message = "#{character.name}の口調で説明文を2つ作成してください。
+    内容は元コメントのまま口調だけキャラクターに変更してください。
+    character1_welcomeの元コメント「相談内容を下記のフォームに50文字以内かつユーザーごとに所持しているトークン数以内で入力してください。」
+    character2_welcomeの元コメント「トークンは毎週月曜日0:00に100トークン付与されます（最大300トークン）。」
+    回答はJSON形式で返してください。また、それぞれの回答は重複しないものとします。
+    キャラクターのプロフィールは以下の通りです。"
+    message << "#{character.name}:"
+    message << "性格(MBTI): #{character.mbti_type}," if character.mbti_type
+    message << "口調: #{character.tone}," if character.tone
+    message << "一人称: #{character.first_person}," if character.first_person
+    message << "二人称: #{character.second_person}," if character.second_person
+
+    return message
+  end
+
+  def create_welcome_assistant_message(character)
+    message = "
+      - 回答はJSON形式で以下の様な形でお願いします。
+        ```json
+        {
+          response: {
+            character_name: { #{character.name} }
+            character1_welcome: { }
+            character2_welcome: { }
+          }
+        }
+        ```
+
+      - それぞれのresponseは100文字程度でお願いします。
+    "
+
+    return message
+  end
+
+  private
+
+  def create_welcome_text
+    @api_key = ENV["OPENAI_ACCESS_TOKEN"]
+    response = CharacterInit.new(@api_key, self).create_welcome_text
+    if response
+      self.character1_welcome = response[:character1_welcome]
+      self.character2_welcome = response[:character2_welcome]
+      self.save
+    end
+  end
 end

@@ -36,6 +36,7 @@ export type AppLayoutProps = {
 const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { isViewed, setIsViewed } = useTopPage(); // Opening Animation Flag
   const [ isAuth, setIsAuth ] = useState<string | null>(null); // 認証状態
+  const [ isAdmin, setIsAdmin ] = useState<boolean>(false); // 管理者権限
   const { status } = useSession();
   const router = useRouter();
   const isRoot = usePathname();
@@ -59,6 +60,10 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       router.replace('/');
       sessionStorage.removeItem('unAuthFlag');
     }
+
+    if (isRoot == '/admin') {
+      setIsAdmin(true);
+    }
   }, [status]);
 
   return(
@@ -71,8 +76,9 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       {/* status == 'loading' && <Loading /> */}
       {/* オープニングアニメーション */}
       { isRoot == "/" && status != 'loading' && !isViewed && <OpeningAnimation /> }
+      { isAdmin && (children)}
       {/* メインコンテンツ */}
-      { isViewed && (
+      { isViewed && !isAdmin && (
         <div className='flex w-full h-full'>
           <FadeInAnimation>
             <div className='flex flex-row w-screen h-full'>
