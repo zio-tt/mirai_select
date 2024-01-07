@@ -18,7 +18,7 @@ const CharacterTextWindow = ({ response }: CharacterTextWindowProps) => {
 
   return (
     <div className='flex flex-grow w-[60%] h-full border-black border-2 items-center justify-center bg-white ml-3 p-2 rounded-md'>
-      <p className='text-xl'>{text}</p>
+      <p className='text-lg'>{text}</p>
     </div>
   );
 }

@@ -15,7 +15,10 @@
     "next": "14.0.1",
     "next-auth": "^4.24.4",
     "next-videos": "1.4.1",
+    "ra-data-json-server": "^4.16.5",
+    "ra-data-simple-rest": "^4.16.5",
     "react": "^18",
+    "react-admin": "^4.16.5",
     "react-dom": "^18",
     "zod": "^3.22.4"
   },

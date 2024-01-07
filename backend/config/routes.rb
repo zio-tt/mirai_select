@@ -8,4 +8,11 @@ Rails.application.routes.draw do
   post 'helper', to: 'helper#callback'
   # 一覧画面へのルーティング
   post 'api/index', to: 'decisions#index'
+
+  # adminコントローラのusers,charactersアクションへのルーティング
+  # それぞれ"admin/users"と"admin/characters"というURLになる
+  namespace :admin do
+    resources :users, only: [:index, :show, :update, :destroy]
+    resources :characters, only: [:index, :show, :update, :destroy]
+  end
 end

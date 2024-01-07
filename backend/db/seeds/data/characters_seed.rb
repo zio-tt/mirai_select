@@ -9,7 +9,6 @@ characters = [
     expression:    :kind,
     values:        '信仰',
     empathy:       :high,
-    welcome_text:  '',
   },
   {
     name:          '悪魔',
@@ -20,8 +19,7 @@ characters = [
     second_person: 'オマエ',
     expression:    :irresponsible,
     values:        'イタズラ好き',
-    empathy:       :low,
-    welcome_text:  '',
+    empathy:       :low
   }
 ]
 
@@ -34,8 +32,7 @@ characters.each do |character_data|
     second_person: character_data[:second_person],
     expression: character_data[:expression],
     values: character_data[:values],
-    empathy: character_data[:empathy],
-    welcome_text: character_data[:welcome_text]
+    empathy: character_data[:empathy]
   )
 
   # アバター画像をアタッチ

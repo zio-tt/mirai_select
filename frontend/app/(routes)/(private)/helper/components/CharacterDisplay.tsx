@@ -15,8 +15,16 @@ interface CharacterDisplayProps {
 const CharacterDisplay = ({ characters, responses }: CharacterDisplayProps) => {
   return (
     <>
-      { characters && characters.map((character, index) => {
-        const response = responses ? responses[index] : null;
+      {characters && characters.map((character, index) => {
+        let response: string;
+        if (responses!.length > 0) {
+          response = responses![index];
+        } else {
+          // responses が渡されていない場合、character1_welcome または character2_welcome を使用
+          response = index === 0 ? character.character1_welcome : character.character2_welcome;
+        }
+
+        console.log(response);
 
         return(
             <div key={character.id} className='character-response flex h-[30%] w-[90%] text-black p-4 items-center rounded-md'>

@@ -11,5 +11,6 @@ export interface Character {
   empathy: number;
   created_at: string;
   updated_at: string;
-  welcome_text: string;
+  character1_welcome: string;
+  character2_welcome: string;
 }
