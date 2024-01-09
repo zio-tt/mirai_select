@@ -34,7 +34,7 @@ const InputForm = ({ inputText, setInputText, handleChange, sendText, placeholde
         <p className={`flex font-extrabold ${textColor}`}>
           {alertText}
         </p>
-        <button className='flex btn btn-lg w-[70%] bg-white text-2xl text-black' onClick={sendText}>相談する</button>
+        <button className='flex btn btn-lg w-[70%] bg-white text-2xl text-black hover:text-white' onClick={sendText}>相談する</button>
       </div>
     </>
   );

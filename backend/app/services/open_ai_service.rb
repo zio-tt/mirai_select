@@ -26,7 +26,7 @@ class OpenAiService
     client = OpenAI::Client.new(access_token: @api_key)
     response = client.chat(
       parameters: {
-        model: "gpt-3.5-turbo-1106",
+        model: "gpt-4-1106-preview",
         messages: [
           { role: "system", content: @decision.system_message(@character1, @character2) },
           { role: "user", content: input_text },

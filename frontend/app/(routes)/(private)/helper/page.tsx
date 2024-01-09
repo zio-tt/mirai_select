@@ -1,26 +1,30 @@
 'use client';
 
 import  './style.css';
-import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { InputForm } from './components/InputForm';
 import type { MouseEvent } from 'react';
-import { useSession } from 'next-auth/react';
-import { User, Character } from '@/app/_types';
 
-import { CharacterDisplay } from './components/CharacterDisplay';
-import { UserInterface } from './components/UserInterface';
-import Loading from '@/app/_components/layouts/loading/layout';
-
+// Components
+import { AlertMessage }     from './_components/AlertMessage';
+import { CharacterDisplay } from './_components/Character/CharacterDisplay';
+import { CheckModal }       from './_components/CheckModal';
+import { InputForm }        from './_components/UserInterface/InputForm';
+import { UserInterface }    from './_components/UserInterface/UserInterface';
+import { Loading }          from '@/app/_components/layouts/loading/layout';
+// Hooks
+import { useState, useEffect } from 'react';
 import { useHelper } from '@/app/_contexts/HelperContext';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+// Types
+import { Error } from './_types/Error';
+import { User, Character, Decision, Conversation } from '@/app/_types';
+import { set } from 'zod';
 
 interface CharacterProps extends Character {
   avatar: string;
 }
-interface Error {
-  message: string;
-  kind: string;
-}
+
 
 export default function decisionHelper () {
   // ページ読み込み時に取得する情報（キャラクター情報）
@@ -34,17 +38,27 @@ export default function decisionHelper () {
   const [ isError, setIsError ] = useState<boolean>(false);
   // 相談関係
   const [ responses, setResponses ] = useState<string[]>([]);
+  const [ decision, setDecision ] = useState<number>(0);
+  const [ conversation, setConversation ] = useState<Conversation[]>([]);
   const [ beforeConsultation, setBeforeConsultation ] = useState<string>('');
   const [ placeholder, setPlaceholder ] = useState<string>('悩みを入力してください（50文字以内）');
   const [ isResponse, setIsResponse ] = useState<boolean>(false);
+  // チェックボックス関係
+  // チェックボックスにチェックが入っている場合、確認用モーダルを表示しない
+  const [ isCheckModal, setIsCheckModal ] = useState<boolean>(false);
 
-  const [ resultFlag , setResultFlag ] = useState<boolean>(false);
-  const [ characterDataLength, setCharacterDataLength ] = useState<number>(0);
+  // ユーザーインターフェース関係
+  const [ tags, setTags ] = useState<string[]>([]);
+  const [ userDecision, setUserDecision ] = useState<number>(0);
+  const [ isPublic, setIsPublic ] = useState<boolean>(false);
+
   const { data: session, status } = useSession();
 
   const { inputText, setInputText } = useHelper();
   const { remainingTokens, setRemainingTokens } = useHelper();
   const token = session?.appAccessToken;
+
+  const router = useRouter();
 
   // 非同期でバックエンドからユーザー情報を取得する関数
   const fetchUserData = async () => {
@@ -96,7 +110,6 @@ export default function decisionHelper () {
     const token = session?.appAccessToken;
 
     setIsLoading(true);
-    setResultFlag(true);
 
     try {
       const userCreateResponse = await axios({
@@ -111,6 +124,10 @@ export default function decisionHelper () {
       });
       parseResponse(userCreateResponse.data.response);
       setUserData(userCreateResponse.data.user);
+      setDecision(userCreateResponse.data.decision);
+      setConversation(userCreateResponse.data.conversation);
+
+      console.log("userCreateResponse:",userCreateResponse.data);
 
     } catch (error: any) {
       addErrorMessage({
@@ -130,13 +147,63 @@ export default function decisionHelper () {
     setInputText(event.target.value);
   }
 
-  const AlertMessage = () => {
-    return errors.map((error, index) => (
-      <div key={index} role="alert" className="flex alert alert-error w-[80%] mb-[3vh]">
-        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <span>{error.message}</span>
-      </div>
-    ));
+  const saveDecision = async (event: MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+  
+    // タグが少なくとも1つ存在し、ユーザーがキャラクターを選択しているかを確認
+    if (tags.length === 0 || userDecision === 0) {
+      // エラーメッセージを表示
+      addErrorMessage({
+        message: '最低1つのタグを入力し、どちらかのキャラクターを選択してください。',
+        kind: 'validation'
+      });
+      return;
+    }
+  
+    const sendURL = `${process.env.NEXT_PUBLIC_API_URL}/api/create`;
+    if (isError) return;
+  
+    const token = session?.appAccessToken;
+  
+    setIsLoading(true);
+  
+    try {
+      const response = await axios({
+        method: 'post',
+        url: sendURL,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Authorization': `Bearer ${token}`
+        },
+        data: { tags, userDecision, isPublic, decision, conversation },
+        withCredentials: true,
+      });
+      console.log(response.data.message);
+    } catch (error: any) {
+      addErrorMessage({
+        message: error.message,
+        kind: 'openai'
+      });
+    } finally {
+      // ページ内の状態を全てデフォルトに戻す
+      initializeState();
+    }
+  }
+
+  const initializeState = () => {
+    setTags([]);
+    setUserDecision(0);
+    setIsPublic(false);
+    setIsResponse(false);
+    setIsLoading(false);
+    setPlaceholder('悩みを入力してください（50文字以内）');
+    setInputText('');
+    setResponses([]);
+    setDecision(0);
+    setBeforeConsultation('');
+    setConversation([]);
+
+    return;
   }
 
   // ページ読み込み時にバックエンドからユーザー情報を取得する
@@ -167,6 +234,12 @@ export default function decisionHelper () {
       setIsError(false);
     }
   }
+
+  useEffect(() => {
+    if(tags.length > 0 && userDecision !== 0) {
+      removeErrorMessage('validation');
+    }
+  }, [tags, userDecision]);
 
   // 入力フォームの内容が変更された場合の処理
   useEffect(() => {
@@ -209,35 +282,41 @@ export default function decisionHelper () {
     }
   })
 
-  // デバッグ用
-  useEffect(() => {
-    console.log('Updated responses:', responses);
-  }, [responses]);
-  useEffect(() => {
-    console.log('characterData:', characterData);
-    console.log('userData:', userData);
-  }, [characterData, userData]);
-
   return (
     <>
       { !isCharacterData && <div className='w-full min-h-screen'><Loading /></div> }
       { isLoading && <div className='w-full min-h-screen'><Loading /></div> }
       { isCharacterData && !isLoading && (
         <div className='flex flex-col w-full min-h-screen items-center justify-center py-[3vh]'>
-        { isError && <AlertMessage />}
+        { isError && <AlertMessage errors={errors} />}
           <div id='main-contents' className='w-[70vw] h-[90vh] bg-gray-200/30 rounded-md border-2 border-black shadow-lg flex flex-col items-center justify-center p-3 overflow-hidden'>
             <div className='flex flex-row w-full h-[70%]'>
               <div className='flex flex-col w-[70%] h-full border-2 rounded-md border-black justify-center items-center'>
                 { isResponse && (
-                  <div className='flex w-[90%] h-[10%] border-2 rounded-md border-black bg-white m-6 items-center justify-center text-black'>
-                    <div className='flex'>相談内容：{beforeConsultation}</div>
-                  </div>
+                  <>
+                    <div className='flex w-[90%] h-[10%] border-2 rounded-md border-black bg-white mx-6 mt-6 mb-2 items-center justify-center text-black'>
+                      <div className='flex'>相談内容：{beforeConsultation}</div>
+                    </div>
+                    <div className='flex w-[60%] h-[10%] rounded-xl bg-pink-200 items-center justify-center text-black'>
+                      良いと思った方の意見を選択してください。
+                    </div>
+                  </>
                 )}
                 <CharacterDisplay
                   characters={characterData!}
-                  responses={responses} />
+                  responses={responses}
+                  userDecision={userDecision}
+                  setUserDecision={setUserDecision}
+                  isResponse={isResponse} />
               </div>
               <div id='control-window' className='flex flex-col w-[30%] h-full border-2 border-black ml-3 rounded-md items-center justify-end'>
+                <UserInterface
+                  tags={tags}
+                  setTags={setTags}
+                  isPublic={isPublic}
+                  setIsPublic={setIsPublic}
+                  saveDecision={saveDecision}
+                   />
               </div>
             </div>
             <div id='input-form' className='w-full grow-[3] flex items-center justify-center border-2 rounded-md border-black mt-3'>
