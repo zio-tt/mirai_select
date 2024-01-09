@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   # 一覧画面へのルーティング
   post 'api/index', to: 'decisions#index'
   post 'api/create', to: 'decisions#create'
+  post 'api/comments', to: 'comments#create'
 
   # adminコントローラのusers,charactersアクションへのルーティング
   # それぞれ"admin/users"と"admin/characters"というURLになる

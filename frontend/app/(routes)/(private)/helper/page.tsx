@@ -203,6 +203,7 @@ export default function decisionHelper () {
     setDecision(0);
     setBeforeConsultation('');
     setConversation([]);
+    setIsDrawerClick(false);
 
     return;
   }
@@ -224,8 +225,6 @@ export default function decisionHelper () {
       setIsResponse(false);
       setInputText('');
       setIsLoading(false);
-      setResultFlag(false);
-      setCharacterDataLength(0);
       setIsDrawerClick(false);
     }
   }, [isDrawerClick]);
@@ -326,13 +325,14 @@ export default function decisionHelper () {
                   isResponse={isResponse} />
               </div>
               <div id='control-window' className='flex flex-col w-[30%] h-full border-2 border-black ml-3 rounded-md items-center justify-end'>
-                <UserInterface
+                { isResponse && <UserInterface
                   tags={tags}
                   setTags={setTags}
                   isPublic={isPublic}
                   setIsPublic={setIsPublic}
                   saveDecision={saveDecision}
                    />
+                }
               </div>
             </div>
             <div id='input-form' className='w-full grow-[3] flex items-center justify-center border-2 rounded-md border-black mt-3'>

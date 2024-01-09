@@ -1,33 +1,52 @@
-import { Decision, Conversation, Character, CharacterResponse } from '@/app/_types';
+import { Conversation, Character, CharacterResponse, Comment } from '@/app/_types';
+import { CharacterAvatarWindow } from './Character/CharacterAvatarWindow';
+import { CharacterTextWindow } from './Character/CharacterTextWindow';
+import { CommentInputForm } from './Comment/CommentInputForm';
+import { CommentsDisplay } from './Comment/CommentDisplay';
+import { BookmarkButton } from './Bookmark/BookmarkButton';
 
 interface DecisionDetailProps {
-  decision: Decision;
   conversations: Conversation[];
   characters: Character[];
-  character_responses: CharacterResponse[];
+  character_responses: CharacterResponse[][];
+  comments: Comment[];
+  onCommentSubmit: (comment: string) => void;
+  isBookmarked: boolean;
+  onBookmarkToggle: () => void;
 }
 
-const DecisionDetail = ({ decision, conversations, characters, character_responses }: DecisionDetailProps) => {
+const DecisionDetail = ({ conversations, characters, character_responses, comments, onCommentSubmit, isBookmarked, onBookmarkToggle }: DecisionDetailProps) => {
   return (
     <>
-      {conversations && conversations.map((conversation, index) => {
-        characters.map((character, index) => {
-          return (
-            <div key={character.id} className='character-response flex h-[30%] w-[90%] text-black p-4 items-center rounded-md'>
-              <div className='flex flex-col h-full w-full items-center'>
-                <div className='flex'>{conversation.query_text}</div>
-                <div className='flex flex-row h-full w-full items-center'>
-                  <div className='flex flex-col h-full w-full items-center'>
-                    <div className='flex'>{character.avatar}</div>
-                    <div className='flex'>{character.name}</div>
-                  </div>
-                  <div className='flex'>{character_responses[index].response}</div>
-                </div>
+      {conversations.map((conversation, index) => (
+        <div key={index} className='flex flex-col w-full h-full items-center justify-center'>
+          <div className='flex flex-row w-full h-[70vh]'>
+            <div className='flex flex-col w-[70%] h-full mr-4'>
+              <div className='query-text flex w-full h-[20vh] text-center border-gray-200 border-2 rounded items-center justify-center text-lg mb-5'>
+                {conversation.query_text}
               </div>
+              {characters.map((character, charIndex) => {
+                // 適切なレスポンスを検索
+                const character_response = character_responses[0].find((response: CharacterResponse ) => 
+                  response.character_id === character.id && response.conversation_id === conversation.id
+                );
+
+                return (
+                  <div key={character.id} className='character-response w-full flex items-center justify-center mb-5'>
+                    <CharacterAvatarWindow name={character.name} avatar={character.avatar} />
+                    {/* character_response が存在する場合のみ response プロパティを渡す */}
+                    <CharacterTextWindow response={character_response ? character_response.response : null} />
+                  </div>
+                );
+              })}
             </div>
-          );
-        });
-      })}
+            <div className='flex flex-col'>
+              <CommentInputForm onSubmit={onCommentSubmit} />
+              <CommentsDisplay comments={comments} />
+            </div>
+          </div>
+        </div>
+      ))}
     </>
   );
 };

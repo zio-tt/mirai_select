@@ -7,11 +7,13 @@ import Image from 'next/image';
 import { SessionProvider } from 'next-auth/react';
 import { HelperProvider }  from '@/app/_contexts/HelperContext';
 import { TopPageProvider } from '@/app/_contexts/TopPageContext';
+import { IndexProvider }   from '@/app/_contexts/IndexContext';
 // Hooks
 import { useState, useEffect } from 'react';
 import { usePathname }         from 'next/navigation';
 import { useSession }          from 'next-auth/react';
 import { useTopPage }          from '@/app/_contexts/TopPageContext';
+import { useIndex }            from '@/app/_contexts/IndexContext';
 import { useRouter }           from 'next/navigation';
 // Fonts
 import { Inter }    from 'next/font/google'
@@ -25,6 +27,7 @@ import { OpeningAnimation } from '../root/OpeningAnimation';
 // Features
 import { FloatingCircles } from './floating_circle/FloatingCircles';
 import AuthGuard           from '@/app/_features/auth/AuthGuard';
+import { set } from 'zod';
 
 // デフォルトではpreloadがtrueになっているのでsubsetsの指定が必要
 const inter = Inter({ subsets: ['latin'] })
@@ -35,6 +38,7 @@ export type AppLayoutProps = {
 
 const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { isViewed, setIsViewed } = useTopPage(); // Opening Animation Flag
+  const { openModal, setOpenModal } = useIndex(); // Index Modal Flag
   const [ isAuth, setIsAuth ] = useState<string | null>(null); // 認証状態
   const [ isAdmin, setIsAdmin ] = useState<boolean>(false); // 管理者権限
   const { status } = useSession();
@@ -83,14 +87,14 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
           <FadeInAnimation>
             <div className='flex flex-row w-screen h-full'>
               <Drawer />
-                <div className="flex flex-col w-[80vw] h-full ml-[20vw] overflow-auto">
+                <div className='flex flex-col w-[80vw] h-full ml-[20vw]'>
                   { status == 'loading' && <Loading /> }
                   { status != 'loading' && 
                     <>
                       <main className='flex w-full min-h-[calc(100vh-4rem)] z-10 items-center'>
                         <AuthGuard children={children} />
                       </main>
-                      <Footer />
+                      {!openModal && <Footer />}
                     </>
                   }
                 </div>
@@ -112,7 +116,9 @@ const AppLayout = ({children}: AppLayoutProps) => {
         <SessionProvider>
         <TopPageProvider>
         <HelperProvider>
+        <IndexProvider>
           <LayoutContent children={children} />
+        </IndexProvider>
         </HelperProvider>
         </TopPageProvider>
         </SessionProvider>

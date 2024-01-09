@@ -1,14 +1,20 @@
 import { User, Comment, Bookmark } from '@/app/_types';
 import { useState, useEffect } from 'react';
 
+type decisionTagsProps = {
+  id: number;
+  name: string | undefined;
+}
+
 interface DecisionCardProps {
   query_text: string;
   user: User;
   comments: Comment[];
   bookmarks: Bookmark[];
+  decision_tags: decisionTagsProps[];
 }
 
-const DecisionCard = ({ query_text, user, comments, bookmarks }: DecisionCardProps) => {
+const DecisionCard = ({ query_text, user, comments, bookmarks, decision_tags }: DecisionCardProps) => {
   const [ commentCount, setCommentCount ] = useState(comments.length);
   const [ bookmarkCount, setBookmarkCount ] = useState(bookmarks.length);
 
@@ -22,11 +28,15 @@ const DecisionCard = ({ query_text, user, comments, bookmarks }: DecisionCardPro
       <div className="flex flex-row justify-between">
         <div className="flex flex-col">
           <div className="text-lg font-bold">{query_text}</div>
-          <div className="text-sm text-gray-500">{user.name}</div>
+          <div className='flex flex-row'>
+            {decision_tags.map((decision_tag) => (
+              <div key={decision_tag.id} className="badge badge-outline mt-1 mr-1">{decision_tag.name}</div>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col">
-          <div className="text-sm text-gray-500">コメント数: {commentCount}</div>
-          <div className="text-sm text-gray-500">ブックマーク数: {bookmarkCount}</div>
+        <div className="flex flex-col justify-end items-end">
+          <div className="flex text-sm text-gray-500">コメント数: {commentCount}</div>
+          <div className="flex text-sm text-gray-500">ブックマーク数: {bookmarkCount}</div>
         </div>
       </div>
     </div>
