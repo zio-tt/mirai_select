@@ -1,5 +1,6 @@
 import { Admin, Resource, DataProvider } from 'react-admin';
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
 
 import { UserList } from './UserList';
 import { CharacterList } from './CharacterList';
@@ -8,9 +9,15 @@ import { useSession } from 'next-auth/react';
 import { User } from '@/app/_types';
 import { Character } from '@/app/_types';
 
+const encryptToken = (token: string) => {
+  const secretKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY; // 環境変数から秘密鍵を取得
+  return CryptoJS.AES.encrypt(token, secretKey!).toString();
+};
+
 const App = () => {
   const { data: session } = useSession();
-  const token = session?.appAccessToken;
+  const token = process.env.NEXT_PUBLIC_ENCRYPTION_TOKEN;
+  const encryptedToken = encryptToken(token!); 
 
   const dataProvider: DataProvider = {
     getList: async (resource, params) => {
@@ -18,7 +25,7 @@ const App = () => {
         const url = `${process.env.NEXT_PUBLIC_API_URL}/admin/${resource}`;
         const response = await axios.get(url, {
           headers: {
-            'Authorization': `Bearer ${token}`, // トークンを適切に設定
+            'Authorization': `Bearer ${encryptedToken}`, // トークンを適切に設定
             'X-Requested-With': 'XMLHttpRequest'
           },
           withCredentials: true,
@@ -38,7 +45,7 @@ const App = () => {
       const url = `${process.env.NEXT_PUBLIC_API_URL}/admin/${resource}/${params.id}`;
       const response = await axios.get(url, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${encryptedToken}`,
           'X-Requested-With': 'XMLHttpRequest'
         },
         withCredentials: true,
@@ -52,7 +59,7 @@ const App = () => {
       const url = `${process.env.NEXT_PUBLIC_API_URL}/admin/${resource}/${params.id}`;
       const response = await axios.put(url, { [resource]: params.data }, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${encryptedToken}`,
           'X-Requested-With': 'XMLHttpRequest'
         },
         withCredentials: true,
@@ -66,7 +73,7 @@ const App = () => {
       await Promise.all(
         params.ids.map(id => axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/admin/${resource}/${id}`, {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${encryptedToken}`,
             'X-Requested-With': 'XMLHttpRequest'
           },
           withCredentials: true,

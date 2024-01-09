@@ -5,26 +5,26 @@
 import Image from 'next/image';
 // Contexts
 import { SessionProvider } from 'next-auth/react';
-import { HelperProvider } from '@/app/_contexts/HelperContext';
+import { HelperProvider }  from '@/app/_contexts/HelperContext';
 import { TopPageProvider } from '@/app/_contexts/TopPageContext';
 // Hooks
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useTopPage } from '@/app/_contexts/TopPageContext';
-import { useRouter } from 'next/navigation';
+import { usePathname }         from 'next/navigation';
+import { useSession }          from 'next-auth/react';
+import { useTopPage }          from '@/app/_contexts/TopPageContext';
+import { useRouter }           from 'next/navigation';
 // Fonts
-import { Inter } from 'next/font/google'
+import { Inter }    from 'next/font/google'
 import { kiwimaru } from '@/app/_utils/font';
 // Layouts
-import { Drawer } from './Drawer/layout';
-import Footer from './footer/layout';
-import Loading from './loading/layout';
-import { FadeInAnimation } from '../root/FadeInAnimation';
+import { Drawer }           from './Drawer/layout';
+import { Footer }           from './footer/layout';
+import { Loading }          from './loading/layout';
+import { FadeInAnimation }  from '../root/FadeInAnimation';
 import { OpeningAnimation } from '../root/OpeningAnimation';
 // Features
 import { FloatingCircles } from './floating_circle/FloatingCircles';
-import AuthGuard from '@/app/_features/auth/AuthGuard';
+import AuthGuard           from '@/app/_features/auth/AuthGuard';
 
 // デフォルトではpreloadがtrueになっているのでsubsetsの指定が必要
 const inter = Inter({ subsets: ['latin'] })

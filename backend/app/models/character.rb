@@ -59,11 +59,10 @@ class Character < ApplicationRecord
     message = "#{character.name}の口調で説明文を2つ作成してください。
     内容は元コメントのまま口調だけキャラクターに変更してください。
     character1_welcomeの元コメント「相談内容を下記のフォームに50文字以内かつユーザーごとに所持しているトークン数以内で入力してください。」
-    character2_welcomeの元コメント「トークンは毎週月曜日0:00に100トークン付与されます（最大300トークン）。」
-    回答はJSON形式で返してください。また、それぞれの回答は重複しないものとします。
+    character2_welcomeの元コメント「トークンは毎週月曜日に100トークン付与されます（最大300トークン）。」
+    回答はJSON形式で返してください。
     キャラクターのプロフィールは以下の通りです。"
     message << "#{character.name}:"
-    message << "性格(MBTI): #{character.mbti_type}," if character.mbti_type
     message << "口調: #{character.tone}," if character.tone
     message << "一人称: #{character.first_person}," if character.first_person
     message << "二人称: #{character.second_person}," if character.second_person
