@@ -1,3 +1,5 @@
+"use client";
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
@@ -17,7 +19,6 @@ const DrawerMenu = ({ url, text, imageURL, onClick }: DrawerMenuProps) => {
       {index < array.length - 1 && <br />}
     </span>
   ));
-
 
   useEffect(() => {
     if (imageURL) {setImage(imageURL);}

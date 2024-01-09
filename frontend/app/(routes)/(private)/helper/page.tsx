@@ -26,6 +26,7 @@ export default function decisionHelper () {
   // ページ読み込み時に取得する情報（キャラクター情報）
   const { characterData , setCharacterData } = useHelper();
   const { userData, setUserData } = useHelper();
+  const { isDrawerClick, setIsDrawerClick } = useHelper();
   const [ isCharacterData, setIsCharacterData ] = useState<boolean>(false);
   // 通信中の場合Loadingコンポーネントを表示する
   const [ isLoading , setIsLoading ] = useState<boolean>(false);
@@ -45,6 +46,7 @@ export default function decisionHelper () {
   const { inputText, setInputText } = useHelper();
   const { remainingTokens, setRemainingTokens } = useHelper();
   const token = session?.appAccessToken;
+
 
   // 非同期でバックエンドからユーザー情報を取得する関数
   const fetchUserData = async () => {
@@ -146,8 +148,23 @@ export default function decisionHelper () {
     fetchUserData();
   }, []);
 
-  // エラーメッセージをエラー配列に追加する関数
+  useEffect(() => {
+    console.log(isDrawerClick)
+    if(isDrawerClick) {
+      // ページ内のすべてのstateを初期化
+      setResponses([]);
+      setBeforeConsultation('');
+      setPlaceholder('悩みを入力してください（50文字以内）');
+      setIsResponse(false);
+      setInputText('');
+      setIsLoading(false);
+      setResultFlag(false);
+      setCharacterDataLength(0);
+      setIsDrawerClick(false);
+    }
+  }, [isDrawerClick]);
 
+  // エラーメッセージをエラー配列に追加する関数
   const addErrorMessage = ({ message, kind } : Error) => {
     // 既に同じ種類のエラーが存在する場合、エラーを上書きする
     const error = errors.find(error => error.kind === kind);
@@ -238,6 +255,15 @@ export default function decisionHelper () {
                   responses={responses} />
               </div>
               <div id='control-window' className='flex flex-col w-[30%] h-full border-2 border-black ml-3 rounded-md items-center justify-end'>
+                <UserInterface
+                  inputText={inputText}
+                  handleChange={handleChange}
+                  setInputText={setInputText}
+                  placeholder={placeholder}
+                  sendText={sendText}
+                  remainingTokens={remainingTokens}
+                  resultFlag={resultFlag}
+                  characterDataLength={characterDataLength} />
               </div>
             </div>
             <div id='input-form' className='w-full grow-[3] flex items-center justify-center border-2 rounded-md border-black mt-3'>

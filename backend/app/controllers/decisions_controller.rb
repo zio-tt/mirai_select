@@ -11,7 +11,7 @@ class DecisionsController < ApplicationController
         user: user,
         characters: user.characters,
         first_query: query_text,
-        conversations: decision.conversations,
+        conversations: decision.conversations.sort,
         character_responses: decision.conversations.map{|conversation| conversation.character_responses},
         tags: decision.tags,
         comments: decision.comments,

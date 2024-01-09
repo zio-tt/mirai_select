@@ -12,6 +12,7 @@ import { DrawerMenu } from './components/DrawerMenu';
 import { handleLogout } from '@/app/_features/auth/function';
 
 const PrivateDrawer = () => {
+  const { isDrawerClick, setIsDrawerClick } = useHelper();
   const [ avatar, setAvatar ]= useState<string>('');
   const { data: session } = useSession();
   const { userData } = useHelper();
@@ -26,6 +27,10 @@ const PrivateDrawer = () => {
     }
   });
 
+  const initState = (e: React.MouseEvent<HTMLElement>) => {
+    setIsDrawerClick(true);
+  };
+
   return (
     <>
       <div id='logo-space'
@@ -37,12 +42,15 @@ const PrivateDrawer = () => {
         <div className="divider divider-neutral mb-6">Menu</div>
         <DrawerMenu url='/helper'
                     imageURL="/images/comment.png"
+                    onClick={initState}
                     text='決断ヘルパー' />
         <DrawerMenu url='/index'
                     imageURL="/images/sns.png"
+                    onClick={initState}
                     text='みんなの悩みごと' />
         <DrawerMenu url='#'
                     imageURL="/images/human.png"
+                    onClick={initState}
                     text='マイページ¥¥¥（現在準備中）' />
         <DrawerMenu url='#'
                     imageURL="/images/exit.png"

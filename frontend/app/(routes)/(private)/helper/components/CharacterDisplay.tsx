@@ -24,8 +24,6 @@ const CharacterDisplay = ({ characters, responses }: CharacterDisplayProps) => {
           response = index === 0 ? character.character1_welcome : character.character2_welcome;
         }
 
-        console.log(response);
-
         return(
             <div key={character.id} className='character-response flex h-[30%] w-[90%] text-black p-4 items-center rounded-md'>
               <div className='flex flex-row h-full w-full items-center'>

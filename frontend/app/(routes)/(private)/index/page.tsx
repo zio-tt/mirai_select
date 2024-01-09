@@ -1,41 +1,31 @@
 'use client';
 
-import '@/app/_styles/inputForm.css';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { Bookmark, Character, CharacterResponse, Comment, Conversation, Decision, Tag, User} from '@/app/_types';
 import { useSession } from 'next-auth/react';
-import { Table } from '@/app/_components/ui/Index/Table';
-import { DetailDecision } from '@/app/_components/layouts/detail/detail';
+import { DecisionCard } from './_components/DecisionCard';
+import { DecisionDetail } from './_components/DecisionDetail';
+import { Decision, Conversation, Character, CharacterResponse, User, Comment, Bookmark } from '@/app/_types';
 
-// 2023/12/5 作業予定(バックエンドの修正）
-// ConversationTagは本来Decisionに紐づくべきなので修正が必要
-// DecisionTagモデル・テーブルを作成し、DecisionとTagを紐づける
-interface DecisionIndex extends Decision {
-  // id: number;
-  // user_id: number;
-  // public: boolean;
-  // created_at: string;
-  // updated_at: string;
+interface DecisionIndex {
+  decision: Decision;
   user: User;
-  characters: Character[];
-  first_query: string;
-  conversations: Conversation[];
-  character_responses: CharacterResponse[];
-  tags: Tag[];
   comments: Comment[];
   bookmarks: Bookmark[];
+  conversations: Conversation[];
+  characters: Character[];
+  character_responses: CharacterResponse[];
 }
 
 export default function Index() {
-  const [ decisions, setDecisions] = useState<DecisionIndex[]>([]); // 初期値として空の配列を設定
-  const { data: session, status } = useSession();
-  const [ showDetail, setShowDetail ] = useState<string>('');
+  const [decisions, setDecisions] = useState<DecisionIndex[]>([]);
+  const [selectedDecision, setSelectedDecision] = useState<DecisionIndex | null>(null);
+  const { data: session } = useSession();
   const token = session?.appAccessToken;
 
-  const fetchCharacters = async () => {
+  const fetchDecisions = async () => {
     try {
-      const getIndexData = await axios({
+      const response = await axios({
         method: 'post',
         url: `${process.env.NEXT_PUBLIC_API_URL}/api/index/`,
         headers: {
@@ -44,62 +34,54 @@ export default function Index() {
         },
         withCredentials: true,
       });
-      if (getIndexData.status === 200) {
-        const data = getIndexData.data;
-        console.log(data);
-        setDecisions(data.decisions);
+      if (response.status === 200) {
+        setDecisions(response.data.decisions);
       }
-      return;
     } catch (error) {
-      console.error('Catch error', error);
+      console.error('Error fetching decisions', error);
     }
   };
 
-  const showDetails = (decision: DecisionIndex) => {
-    setShowDetail('popup-bg-cover')
-    return (
-      <DetailDecision decision={decision} />
-    )
-  }
-
-  const headerTitle = [
-    'query_text',
-    'user',
-    'comments',
-    'bookmarks',
-    'tags'
-  ]
-
   useEffect(() => {
-    fetchCharacters();
+    fetchDecisions();
   }, []);
 
+  const handleDecisionClick = (decision: DecisionIndex) => {
+    setSelectedDecision(decision);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedDecision(null);
+  };
+
   return (
-    <>
-      <div className={`flex flex-col items-center justify-start w-screen min-h-screen ${showDetail}`}>
-        <div className='flex flex-col items-center justify-center w-[80vw] h-[90vh] mt-[5vh]'>
-          <div className='h-full w-full bg-gray-200/30 backdrop-blur-lg rounded-md border border-gray-200/30 shadow-lg flex flex-col items-center justify-start py-[1vh] px-[3vw] overflow-auto'>
-            <div className='flex text-center text-gray-500 text-lg md:text-2xl lg:text-4xl underline mb-[3vh]'>
-              <h1>みんなの悩みごと </h1>
-            </div>
-            <div className='min-w-[70%] h-full flex flex-col'>
-              <div className='p-8 rounded-md w-full'>
-                <div className=' flex items-center justify-between pb-6'>
-                  <div className='-mx-4 sm:-mx-8 px-4 sm:px-8
-                   py-4 overflow-x-auto'>
-                    <div className='inline-block min-w-full shadow rounded-lg overflow-hidden'>
-                      <Table
-                        header={headerTitle}
-                        data={decisions}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div className='flex flex-col items-center justify-start w-screen min-h-screen'>
+      <div className='w-[80vw] mt-[5vh]'>
+        {decisions.map((decision) => (
+          <div key={decision.decision.id} onClick={() => handleDecisionClick(decision)}>
+            <DecisionCard
+              query_text={decision.conversations[0].query_text}
+              user={decision.user}
+              comments={decision.comments}
+              bookmarks={decision.bookmarks}
+            />
+          </div>
+        ))}
+      </div>
+
+      {selectedDecision && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+          <div className="bg-white p-5 rounded-lg">
+            <DecisionDetail
+              decision={selectedDecision.decision}
+              conversations={selectedDecision.conversations}
+              characters={selectedDecision.characters}
+              character_responses={selectedDecision.character_responses}
+            />
+            <button onClick={handleCloseDetail} className="rounded bg-blue-500 text-white px-4 py-2 mt-4">閉じる</button>
           </div>
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }
