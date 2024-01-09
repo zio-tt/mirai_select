@@ -10,6 +10,8 @@ type HelperContextType = {
   setInputText: React.Dispatch<React.SetStateAction<string>>;
   remainingTokens: number;
   setRemainingTokens: React.Dispatch<React.SetStateAction<number>>;
+  isDrawerClick: boolean;
+  setIsDrawerClick: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type ChildrenType = {
@@ -31,13 +33,15 @@ export const HelperProvider = ({ children }: ChildrenType) => {
   const [ characterData, setCharacterData ] = useState<Character[] | null>(null);
   const [ inputText, setInputText ] = useState<string>('');
   const [ remainingTokens, setRemainingTokens ] = useState<number>(0);
+  const [ isDrawerClick, setIsDrawerClick ] = useState<boolean>(false);
 
   return (
     <HelperContext.Provider 
       value={{ userData, setUserData, 
                characterData, setCharacterData, 
                inputText, setInputText,
-               remainingTokens, setRemainingTokens}}>
+               remainingTokens, setRemainingTokens,
+               isDrawerClick, setIsDrawerClick}}>
       {children}
     </HelperContext.Provider>
   );

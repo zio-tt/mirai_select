@@ -1,6 +1,6 @@
-export interface ConversationTag {
+export interface DecisionTag {
   id: number;
-  conversation_id: number;
+  decision_id: number;
   tag_id: number;
   created_at: string;
   updated_at: string;
