@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { ResponseData } from '../type/ResponseData';
+import { ResponseData } from '../../_types/ResponseData';
 
 interface CharacterTextWindowProps {
   response: string | null;
+  borderStyle?: string;
 }
 
-const CharacterTextWindow = ({ response }: CharacterTextWindowProps) => {
+const CharacterTextWindow = ({ response, borderStyle }: CharacterTextWindowProps) => {
   const [text, setText] = useState<string>('welcome_textが存在しません。');
 
   useEffect(() => {
@@ -17,7 +18,7 @@ const CharacterTextWindow = ({ response }: CharacterTextWindowProps) => {
   }, [response]);
 
   return (
-    <div className='flex flex-grow w-[60%] h-full border-black border-2 items-center justify-center bg-white ml-3 p-2 rounded-md'>
+    <div className={`flex flex-grow w-[60%] h-full border-2 items-center justify-center bg-white ml-3 p-2 rounded-md ${borderStyle}`}>
       <p className='text-lg'>{text}</p>
     </div>
   );

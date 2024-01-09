@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 type CharacterProps = {
   name: string;
   avatar: string | undefined;
+  borderStyle?: string;
 }
 
-const CharacterAvatarWindow = ({ name, avatar }: CharacterProps) => {
+const CharacterAvatarWindow = ({ name, avatar, borderStyle }: CharacterProps) => {
   /* 開発環境用のコード */
   const [ avatarURL, setAvatarURL ] = useState<string>("/images/logo.png");
 
@@ -22,8 +23,8 @@ const CharacterAvatarWindow = ({ name, avatar }: CharacterProps) => {
 
   return (
     <div>
-      <div className='flex flex-col w-[5vw] h-full items-center justify-center border-black border-2 p-3 bg-white m-2 rounded-full'>
-        <Image src={avatarURL} className="flex bg-white rounded-lg items-center justify-center"
+      <div className={`flex flex-col w-[5vw] h-full items-center justify-center border-2 p-3 bg-white m-2 rounded-full ${borderStyle}`}>
+        <Image src={avatarURL} className='flex bg-white rounded-lg items-center justify-center'
                alt={name}
                width={70}
                height={70}
