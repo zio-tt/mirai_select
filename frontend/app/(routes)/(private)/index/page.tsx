@@ -21,11 +21,10 @@ interface DecisionIndex extends Decision {
   character_responses: CharacterResponse[][];
 }
 
-export default function Index() {
+export default function decisionIndex() {
   const [decisions, setDecisions] = useState<DecisionIndex[]>([]);
   const [filteredDecisions, setFilteredDecisions] = useState<DecisionIndex[]>([]);
   const [isTagInputFocused, setIsTagInputFocused] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const [tags, setTags] = useState<Tag[]>([]);
   const blankTag = { id: 0, name: '' }
   const [selectedDecision, setSelectedDecision] = useState<DecisionIndex | null>(null);
@@ -87,7 +86,7 @@ export default function Index() {
   }
 
   // ページネーションのために、表示するdecisionsを計算
-  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfLastItem  = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentDecisions = filteredDecisions.slice(indexOfFirstItem, indexOfLastItem);
 
