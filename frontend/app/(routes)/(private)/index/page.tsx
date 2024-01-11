@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useIndex } from '@/app/_contexts/IndexContext';
+import { useHelper } from '@/app/_contexts/HelperContext';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { DecisionCard } from './_components/DecisionCard';
@@ -32,6 +33,8 @@ export default function decisionIndex() {
   const { data: session } = useSession();
   const token = session?.appAccessToken;
 
+  const { isDrawerClick, setIsDrawerClick } = useHelper();
+
   const [searchQuery, setSearchQuery] = useState(''); // 相談文の検索キーワード
   const [selectedTag, setSelectedTag] = useState(''); // 選択されたタグ
   const [sortOrder, setSortOrder] = useState('date_new'); // 並べ替えの順序
@@ -57,6 +60,17 @@ export default function decisionIndex() {
   useEffect(() => {
     fetchComments();
   }, [comments]);
+
+  useEffect(() => {
+    if(isDrawerClick) {
+      // ページ内のすべてのstateを初期化
+      setSearchQuery('');
+      setSelectedTag('');
+      setSortOrder('date_new');
+      setCurrentPage(1);
+      setIsDrawerClick(false);
+    }
+  }, [isDrawerClick]);
 
   const fetchComments = async () => {
     try {
