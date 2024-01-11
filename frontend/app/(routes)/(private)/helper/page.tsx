@@ -231,19 +231,20 @@ export default function decisionHelper () {
   useEffect(() => {
     if(isDrawerClick) {
       // ページ内のすべてのstateを初期化
-    setResponses([]);
-    setBeforeQueryText('');
-    setPlaceholder('悩みを入力してください（50文字以内）');
-    setIsResponse(false);
-    setInputText('');
-    setIsLoading(false);
-    setTags([]);
-    setUserDecision('');
-    setIsPublic(false);
-    setDecision(undefined);
-    setConversation([]);
-    setConversationCount(1);
-    setRemainingTokens(userData!.token);
+      setResponses([]);
+      setBeforeQueryText('');
+      setPlaceholder('悩みを入力してください（50文字以内）');
+      setIsResponse(false);
+      setInputText('');
+      setIsLoading(false);
+      setTags([]);
+      setUserDecision('');
+      setIsPublic(false);
+      setDecision(undefined);
+      setConversation([]);
+      setConversationCount(1);
+      setRemainingTokens(userData!.token);
+      setIsDrawerClick(false);
     }
   }, [isDrawerClick]);
 
