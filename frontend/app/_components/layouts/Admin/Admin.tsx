@@ -6,9 +6,6 @@ import { UserList } from './UserList';
 import { CharacterList } from './CharacterList';
 import { useSession } from 'next-auth/react';
 
-import { User } from '@/app/_types';
-import { Character } from '@/app/_types';
-
 const encryptToken = (token: string) => {
   const secretKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY; // 環境変数から秘密鍵を取得
   return CryptoJS.AES.encrypt(token, secretKey!).toString();
