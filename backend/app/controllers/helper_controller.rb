@@ -1,9 +1,11 @@
 class HelperController < ApplicationController
   def callback
+    # 毎週月曜日にトークンを付与
+    add_token(current_user)
+
     # ユーザー情報・キャラクタ情報の取得
-    @user = current_user
-    add_token(@user) # 毎週月曜日にトークンを付与
-    @user_characters = Character.where(id: @user.user_characters.pluck(:character_id))
+    @user = { id: current_user.id, name: current_user.name, token: current_user.token }
+    @user_characters = Character.where(id: current_user.user_characters.pluck(:character_id))
 
     # 各キャラクターに対してavatar URLを取得してマージ
     characters_with_avatar = @user_characters.map do |character|

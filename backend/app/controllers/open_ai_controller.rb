@@ -3,18 +3,54 @@ class OpenAiController < ApplicationController
   before_action :set_key, :set_characters, only: [:callback]
 
   def callback
-    input_text = params[:inputText]
-    text_length = input_text.length
+    # Setting Intial Variables
+    input_text         = fetchParams["inputText"]
+    conversation_count = fetchParams["conversationCount"]
+    remainingTokens    = fetchParams["remainingTokens"]
 
-    @decision = Decision.new(user_id: current_user.id, public: false)
-
-    if @decision.save
-      current_user.decrease_token(text_length)
-      response = OpenAiService.new(@api_key, @decision, @character1, @character2).call(input_text)
-      process_response(@decision, input_text, response, @character1, @character2)
-      render json: { response: response, user: current_user, decision: @decision, conversation: @conversation }
+    # conversationが1の時はDecisionを作成
+    # それ以外の時はDecisionを取得
+    if conversation_count == 1
+      decision = Decision.create!(user_id: current_user.id, public: false)
     else
-      render json: { error: "Decision could not be saved." }, status: :unprocessable_entity
+      decision          = Decision.find(fetchParams["decisionId"])
+      before_query_text = fetchParams["beforeQueryText"]
+      user_decision     = fetchParams["userDecision"]
+    end
+
+
+    if decision
+      assistant_message = decision.assistant_message(@character1, @character2)
+      case conversation_count
+      when 1 then
+        system_message    = decision.system_message(@character1, @character2)
+        user_message      = input_text
+
+        response = OpenAiService.new(@api_key).call(system_message, user_message, assistant_message)
+        process_response(decision, input_text, response, @character1, @character2)
+      when 2 then
+        system_message      = decision.second_system_message(@character1, @character2)
+        user_message        = decision.second_message(input_text, before_query_text, user_decision)
+
+        @conversation = decision.conversations.first
+        @conversation.update!(user_decision: @user_decision)
+        response = OpenAiService.new(@api_key).call(system_message, user_message, assistant_message)
+        process_response(decision, input_text, response, @character1, @character2)
+      end
+
+      # トークンの減算処理
+      current_user.token = remainingTokens
+      current_user.save!
+
+      user_info = {
+        id:    current_user.id,
+        name:  current_user.name,
+        token: current_user.token
+      }
+
+      render json: { response: response, user: user_info, decision: decision, conversation: @conversation }
+    else
+      render json: { error: "Happend some error." }, status: :unprocessable_entity
     end
   end
 
@@ -33,7 +69,7 @@ class OpenAiController < ApplicationController
     content_hash.each do |key, character_info|
       character_name = character_info["#{key}_name"]
       character_response = character_info["#{key}_response"]
-  
+
       if character = characters[character_name]
         CharacterResponse.create!(
           conversation_id: @conversation.id,
@@ -43,7 +79,6 @@ class OpenAiController < ApplicationController
       end
     end
   end
-  
 
   def set_key
     @api_key = ENV["OPENAI_ACCESS_TOKEN"]
@@ -52,5 +87,9 @@ class OpenAiController < ApplicationController
   def set_characters
     @character1 = current_user.user_characters.find_by(role: :character1).character
     @character2 = current_user.user_characters.find_by(role: :character2).character
+  end
+
+  def fetchParams
+    params.require(:fetchData).permit(:inputText, :conversationCount, :decisionId, :beforeQueryText, :userDecision, :remainingTokens)
   end
 end

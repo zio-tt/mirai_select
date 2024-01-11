@@ -15,7 +15,6 @@ const PrivateDrawer = () => {
   const { isDrawerClick, setIsDrawerClick } = useHelper();
   const [ avatar, setAvatar ]= useState<string>('');
   const { data: session } = useSession();
-  const { userData } = useHelper();
   const { remainingTokens } = useHelper();
   const isRoot = usePathname();
 
