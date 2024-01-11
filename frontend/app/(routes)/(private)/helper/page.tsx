@@ -18,7 +18,8 @@ import { useHelper }           from '@/app/_contexts/HelperContext';
 import { useSession }          from 'next-auth/react';
 // Types
 import { Error } from './_types/Error';
-import { Character, Conversation } from '@/app/_types';
+import { Character, Conversation, Decision } from '@/app/_types';
+import { set } from 'zod';
 
 interface CharacterProps extends Character {
   avatar: string;
@@ -28,7 +29,7 @@ export default function decisionHelper () {
   const { data: session, status } = useSession();
   // ページ読み込み時に取得する情報（キャラクター情報）
   const { characterData , setCharacterData } = useHelper();
-  const { userData, setUserData } = useHelper();
+  const { userData, setUserData }            = useHelper();
   // ドロワーとの連携
   const { isDrawerClick, setIsDrawerClick } = useHelper();
   // 深掘り機能
@@ -40,7 +41,7 @@ export default function decisionHelper () {
   const { errors, isError, addErrorMessages, removeErrorMessages, resetErrorMessages } = useErrorHandling();
   // データ格納用
   const [ responses, setResponses ] = useState<string[]>([]);
-  const [ decision, setDecision ] = useState<number>(0);
+  const [ decision, setDecision ] = useState<Decision>();
   const [ conversation, setConversation ] = useState<Conversation[]>([]);
   const [ isResponse, setIsResponse ] = useState<boolean>(false);
   // チェックボックス関係
@@ -48,7 +49,7 @@ export default function decisionHelper () {
 
   // ユーザーインターフェース関係
   const [ tags, setTags ] = useState<string[]>([]);
-  const [ userDecision, setUserDecision ] = useState<number>(0);
+  const [ userDecision, setUserDecision ] = useState<string>('');
   const [ isPublic, setIsPublic ] = useState<boolean>(false);
   // 入力フォーム
   const { inputText, setInputText } = useHelper();
@@ -60,9 +61,7 @@ export default function decisionHelper () {
   {/* ページ読み込み時に使用する関数 */}
   // ページ読み込み時にバックエンドからユーザー情報を取得する
   useEffect(() => {
-    // ページ読み込みでエラー情報をリセットする
     resetErrorMessages();
-    // ページ読み込み時にRailsAPIから必要な情報を取得する
     fetchInitData();
   }, []);
 
@@ -90,18 +89,25 @@ export default function decisionHelper () {
     }
   }
 
-  // Conversationの作成で必要なComponent
-  const sendText = async (event: MouseEvent<HTMLElement>) => {
+  {/* Conversation関係 */}
+  const createConversation = async (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
 
     const sendURL = `${process.env.NEXT_PUBLIC_API_URL}/api/openai/v1/callback`;
+    const fetchData = {
+      inputText,
+      conversationCount,
+      decisionId      : conversationCount === 1 && !decision ? null : decision!.id,
+      beforeQueryText : conversationCount === 1              ? ''   : beforeQueryText,
+      userDecision    : conversationCount === 1              ? null : userDecision,
+      remainingTokens
+    }
+
     if (!inputText) {
       alert('テキストを入力してください。');
       return;
     }
     if (isError){ return; }
-
-    const token = session?.appAccessToken;
 
     setIsLoading(true);
 
@@ -113,12 +119,13 @@ export default function decisionHelper () {
           'X-Requested-With': 'XMLHttpRequest',
           'Authorization': `Bearer ${token}`
         },
-        data: { inputText },
+        data: {fetchData},
         withCredentials: true,
       });
       if (userCreateResponse.status == 200) {
         parseResponse(userCreateResponse.data.response);
 
+        console.log(userCreateResponse.data)
         // レスポンスデータを各Stateに格納
         setUserData(userCreateResponse.data.user);
         setDecision(userCreateResponse.data.decision);
@@ -164,7 +171,7 @@ export default function decisionHelper () {
     event.preventDefault();
   
     // タグが少なくとも1つ存在し、ユーザーがキャラクターを選択しているかを確認
-    if (tags.length === 0 || userDecision === 0) {
+    if (tags.length === 0 || !userDecision ) {
       // エラーメッセージを表示
       addErrorMessages({
         message: '最低1つのタグを入力し、どちらかのキャラクターを選択してください。',
@@ -212,9 +219,9 @@ export default function decisionHelper () {
     setInputText('');
     setIsLoading(false);
     setTags([]);
-    setUserDecision(0);
+    setUserDecision('');
     setIsPublic(false);
-    setDecision(0);
+    setDecision(undefined);
     setConversation([]);
     setConversationCount(1);
     setRemainingTokens(userData!.token);
@@ -239,7 +246,7 @@ export default function decisionHelper () {
 
 
   useEffect(() => {
-    if(tags.length > 0 && userDecision !== 0) {
+    if(tags.length > 0 && userDecision !== '') {
       removeErrorMessages('validation');
     }
   }, [tags, userDecision]);
@@ -325,7 +332,7 @@ export default function decisionHelper () {
                 handleChange={handleChange}
                 setInputText={setInputText}
                 placeholder={placeholder}
-                sendText={sendText} />
+                sendText={createConversation} />
               }
             </div>
           </div>

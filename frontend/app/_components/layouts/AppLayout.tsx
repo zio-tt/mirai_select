@@ -45,9 +45,6 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   const router = useRouter();
   const isRoot = usePathname();
 
-  // デバッグ
-  console.log(status);
-
   useEffect(() => {
     setIsAuth(sessionStorage.getItem('unAuthFlag'));
   },[]);

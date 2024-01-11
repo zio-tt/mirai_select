@@ -14,8 +14,8 @@ interface CharacterProps extends Character {
 interface CharacterDisplayProps {
   characters?: CharacterProps[];
   responses?: string[]
-  userDecision: number;
-  setUserDecision: (id: number) => void;
+  userDecision: string;
+  setUserDecision: (response: string) => void;
   isResponse: boolean;
 }
 
@@ -24,13 +24,13 @@ const CharacterDisplay = ({ characters, responses, userDecision, setUserDecision
 
   useEffect(() => {
     if (isDrawerClick) {
-      setUserDecision(0); // DrawerがクリックされたときにuserDecisionをリセット
+      setUserDecision(''); // DrawerがクリックされたときにuserDecisionをリセット
     }
   }, [isDrawerClick, setUserDecision]); // setUserDecisionを依存配列に追加
 
-  const handleCharacterClick = (id: number) => {
+  const handleCharacterClick = (response: string) => {
     if (isResponse) {
-      setUserDecision(id);
+      setUserDecision(response);
     }
   };
 
@@ -41,8 +41,8 @@ const CharacterDisplay = ({ characters, responses, userDecision, setUserDecision
                      ? responses[index]
                      : (index === 0 ? character.character1_welcome : character.character2_welcome);
 
-        const isSelected = userDecision === character.id;
-        const isAnySelected = userDecision !== 0; // いずれかのキャラクターが選択されているか
+        const isSelected    = userDecision === response;
+        const isAnySelected = userDecision !== ''; // いずれかのキャラクターが選択されているか
 
         // 各キャラクターに対する borderStyle を動的に計算
         const borderStyle = isSelected ? 'border-red-500' : 'border-black';
@@ -50,7 +50,7 @@ const CharacterDisplay = ({ characters, responses, userDecision, setUserDecision
         return (
           <div key={character.id} 
                className={`character-response flex h-[30%] w-[90%] text-black p-4 items-center rounded-md  ${isAnySelected && !isSelected ? 'filter grayscale' : ''}`}
-               onClick={() => handleCharacterClick(character.id)}>
+               onClick={() => handleCharacterClick(response)}>
             <div className='flex flex-row h-full w-full items-center'>
               <CharacterAvatarWindow name={character.name} avatar={character.avatar} borderStyle={borderStyle} />
               <CharacterTextWindow response={response} borderStyle={borderStyle} /> 

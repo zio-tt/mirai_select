@@ -1,5 +1,11 @@
 import { useState, createContext, useContext } from 'react';
-import { User, Character } from '@/app/_types'; 
+import { Character } from '@/app/_types'; 
+
+interface User {
+  id: number;
+  name: string;
+  token: number;
+}
 
 type HelperContextType = {
   userData: User | null;

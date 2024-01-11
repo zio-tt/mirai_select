@@ -8,7 +8,7 @@ class CharacterInit
     client = OpenAI::Client.new(access_token: @api_key)
     response = client.chat(
       parameters: {
-        model: "gpt-3.5-turbo-1106",
+        model: "gpt-4-1106-preview",
         messages: [
           { role: "system", content: @character.create_welcome_system_message(@character)},
           { role: "assistant", content: @character.create_welcome_assistant_message(@character)}
