@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   post 'api/create', to: 'decisions#create'
   post 'api/comments', to: 'comments#create'
 
+  post '/awake' => 'admin#dont_sreep'
+
   # adminコントローラのusers,charactersアクションへのルーティング
   # それぞれ"admin/users"と"admin/characters"というURLになる
   namespace :admin do
