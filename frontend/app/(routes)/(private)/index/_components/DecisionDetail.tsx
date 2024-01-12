@@ -1,21 +1,30 @@
-import { Conversation, Character, CharacterResponse, Comment } from '@/app/_types';
+import { Conversation, CharacterResponse, Comment } from '@/app/_types';
 import { CharacterAvatarWindow } from './Character/CharacterAvatarWindow';
 import { CharacterTextWindow } from './Character/CharacterTextWindow';
 import { CommentInputForm } from './Comment/CommentInputForm';
 import { CommentsDisplay } from './Comment/CommentDisplay';
 import { BookmarkButton } from './Bookmark/BookmarkButton';
 
+interface Character {
+  id:         number;
+  name:       string;
+  avatar:     string;
+}
+
+interface ConversationIndex extends Conversation {
+  character_responses: CharacterResponse[];
+}
+
 interface DecisionDetailProps {
-  conversations: Conversation[];
+  conversations: ConversationIndex[];
   characters: Character[];
-  character_responses: CharacterResponse[][];
   comments: Comment[];
   onCommentSubmit: (comment: string) => void;
   isBookmarked: boolean;
   onBookmarkToggle: () => void;
 }
 
-const DecisionDetail = ({ conversations, characters, character_responses, comments, onCommentSubmit, isBookmarked, onBookmarkToggle }: DecisionDetailProps) => {
+const DecisionDetail = ({ conversations, characters, comments, onCommentSubmit, isBookmarked, onBookmarkToggle }: DecisionDetailProps) => {
   return (
     <>
       {conversations.map((conversation, index) => (
@@ -27,8 +36,8 @@ const DecisionDetail = ({ conversations, characters, character_responses, commen
               </div>
               {characters.map((character, charIndex) => {
                 // 適切なレスポンスを検索
-                const character_response = character_responses[0].find((response: CharacterResponse ) => 
-                  response.character_id === character.id && response.conversation_id === conversation.id
+                const character_response = conversation.character_responses.find((character_response: CharacterResponse ) => 
+                  character_response.character_id === character.id
                 );
 
                 return (

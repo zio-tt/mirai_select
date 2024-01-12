@@ -25,6 +25,7 @@ const InputForm = ({ inputText, setInputText, handleChange, sendText, placeholde
   return (
     <>
       <textarea
+        id='input-text'
         className='ml-5 w-[70%] h-[80%] bg-white border-2 border-black text-xl text-black'
         value={inputText}
         onChange={handleChange}

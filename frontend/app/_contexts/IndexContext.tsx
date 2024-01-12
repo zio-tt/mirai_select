@@ -14,7 +14,7 @@ const IndexContext = createContext<IndexContextType | null>(null);
 export const useIndex = () => {
   const context = useContext(IndexContext);
   if (!context) {
-    throw new Error('useIndex must be used within a HelperProvider');
+    throw new Error('useIndex must be used within a IndexProvider');
   }
   return context;
 };

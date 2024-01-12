@@ -1,4 +1,4 @@
-import { User, Comment, Bookmark } from '@/app/_types';
+import { Comment, Bookmark } from '@/app/_types';
 import { useState, useEffect } from 'react';
 
 type decisionTagsProps = {
@@ -6,15 +6,22 @@ type decisionTagsProps = {
   name: string | undefined;
 }
 
+type User = {
+  id:     number;
+  name:   string;
+  avatar: string;
+}
+
 interface DecisionCardProps {
+  decision_id: number;
   query_text: string;
-  user: User;
+  user: User | undefined;
   comments: Comment[];
   bookmarks: Bookmark[];
   decision_tags: decisionTagsProps[];
 }
 
-const DecisionCard = ({ query_text, user, comments, bookmarks, decision_tags }: DecisionCardProps) => {
+const DecisionCard = ({ decision_id, query_text, user, comments, bookmarks, decision_tags }: DecisionCardProps) => {
   const [ commentCount, setCommentCount ] = useState(comments.length);
   const [ bookmarkCount, setBookmarkCount ] = useState(bookmarks.length);
 
@@ -30,7 +37,7 @@ const DecisionCard = ({ query_text, user, comments, bookmarks, decision_tags }: 
           <div className="text-lg font-bold">{query_text}</div>
           <div className='flex flex-row'>
             {decision_tags.map((decision_tag) => (
-              <div key={decision_tag.id} className="badge badge-outline mt-1 mr-1">{decision_tag.name}</div>
+              <div key={decision_tag.id.toString()} className="badge badge-outline mt-1 mr-1">{decision_tag.name}</div>
             ))}
           </div>
         </div>
