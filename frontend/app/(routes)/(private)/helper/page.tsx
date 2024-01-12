@@ -56,7 +56,7 @@ export default function decisionHelper () {
   const [ placeholder, setPlaceholder ] = useState<string>('悩みを入力してください（50文字以内）');
   const { remainingTokens, setRemainingTokens } = useHelper();
 
-  const token  = session?.appAccessToken;
+  const tokens  = session?.appAccessToken;
 
   {/* ページ読み込み時に使用する関数 */}
   // ページ読み込み時にバックエンドからユーザー情報を取得する
@@ -77,7 +77,7 @@ export default function decisionHelper () {
         url: `${process.env.NEXT_PUBLIC_API_URL}/helper/`,
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${tokens}`
         },
         withCredentials: true,
       });
@@ -123,7 +123,7 @@ export default function decisionHelper () {
         url: sendURL,
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${tokens}`
         },
         data: {fetchData},
         withCredentials: true,
