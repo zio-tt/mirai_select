@@ -62,6 +62,8 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
 
     if (isRoot == '/admin') {
       setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
     }
   }, [status]);
 
