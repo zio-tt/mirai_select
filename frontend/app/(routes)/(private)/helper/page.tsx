@@ -56,17 +56,14 @@ export default function decisionHelper () {
   const [ placeholder, setPlaceholder ] = useState<string>('悩みを入力してください（50文字以内）');
   const { remainingTokens, setRemainingTokens } = useHelper();
 
-  const tokens  = session?.appAccessToken;
+  const token  = session?.appAccessToken;
 
   {/* ページ読み込み時に使用する関数 */}
   // ページ読み込み時にバックエンドからユーザー情報を取得する
   useEffect(() => {
+    fetchInitData();
     resetErrorMessages();
   }, []);
-
-  useEffect(() => {
-    if (session) fetchInitData();
-  }, [session])
 
   const fetchInitData = async () => {
     if (!session) return;
@@ -77,7 +74,7 @@ export default function decisionHelper () {
         url: `${process.env.NEXT_PUBLIC_API_URL}/helper/`,
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
-          'Authorization': `Bearer ${tokens}`
+          'Authorization': `Bearer ${token}`
         },
         withCredentials: true,
       });
@@ -228,7 +225,6 @@ export default function decisionHelper () {
     setDecision(undefined);
     setConversation([]);
     setConversationCount(1);
-    setRemainingTokens(userData!.token);
 
     return;
   }
