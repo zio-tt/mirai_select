@@ -4,27 +4,36 @@ class DecisionsController < ApplicationController
   before_action :set_key, :set_characters, only: [:callback]
 
   def index
-    @decisions = Decision.where(public: true).order(created_at: :desc)
+    @users = User.all.select(:id, :name, :avatar)
+  
+    @decisions = Decision.includes(:user => { characters: :avatar_attachment }, :conversations => [:character_responses])
+                         .where(public: true)
+                         .order(created_at: :desc)
+  
     @decisions = @decisions.map do |decision|
-      user = decision.user
-      query_text = decision.conversations.first.query_text
-      characters_with_avatars = user.characters.map do |character|
+      characters = decision.user.characters.map do |character|
         avatar_url = character.avatar.attached? ? url_for(character.avatar) : nil
         character.attributes.merge(avatar: avatar_url)
       end
+  
+      conversations = decision.conversations.map do |conversation|
+        character_responses = conversation.character_responses
+        conversation.attributes.merge(character_responses: character_responses)
+      end
+      
       decision.attributes.merge(
-        user: user,
-        characters: characters_with_avatars,
-        first_query: query_text,
-        conversations: decision.conversations.order(created_at: :desc),
-        character_responses: decision.conversations.map{|conversation| conversation.character_responses},
-        decision_tags: decision.decision_tags,
-        comments: decision.comments,
-        bookmarks: decision.bookmarks
+        conversations: conversations,
+        characters:    characters,
+        # decision_tagsのキーをidとする値のみ配列として渡す
+        decision_tags: decision.decision_tags.map(&:tag_id),
+        comments:      decision.comments,
+        bookmarks:     decision.bookmarks
       )
     end
+  
     @tags = Tag.all
-    render json: { decisions: @decisions, tags: @tags }
+  
+    render json: { users: @users, decisions: @decisions, tags: @tags }
   end
 
   def callback

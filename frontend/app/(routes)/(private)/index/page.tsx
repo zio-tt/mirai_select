@@ -7,31 +7,46 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { DecisionCard } from './_components/DecisionCard';
 import { DecisionDetail } from './_components/DecisionDetail';
-import { Decision, Conversation, Character, 
-         CharacterResponse, User, Comment, 
-         Bookmark, Tag, DecisionTag } from '@/app/_types';
+import { Decision, Conversation, CharacterResponse, Comment, Bookmark, Tag } from '@/app/_types';
+
+interface ConversationIndex extends Conversation {
+  character_responses: CharacterResponse[];
+}
+
+interface Character {
+  id:         number;
+  name:       string;
+  avatar:     string;
+}
+
+interface User {
+  id:     number;
+  name:   string;
+  avatar: string;
+}
+
 
 interface DecisionIndex extends Decision {
-  user: User;
-  comments: Comment[];
-  bookmarks: Bookmark[];
-  conversations: Conversation[];
-  decision_tags: DecisionTag[];
-  tags: Tag[];
-  characters: Character[];
-  character_responses: CharacterResponse[][];
+  conversations:       ConversationIndex[];
+  characters:          Character[];
+  decision_tags:       number[]; // tag_id の配列
+  comments:            Comment[];
+  bookmarks:           Bookmark[];
 }
 
 export default function decisionIndex() {
+  // initial state
+  const [users, setUsers]         = useState<User[]>([]);
   const [decisions, setDecisions] = useState<DecisionIndex[]>([]);
+  const [tags, setTags]           = useState<Tag[]>([]);
+
+  const { data: session, status } = useSession();
+
   const [filteredDecisions, setFilteredDecisions] = useState<DecisionIndex[]>([]);
   const [isTagInputFocused, setIsTagInputFocused] = useState(false);
-  const [tags, setTags] = useState<Tag[]>([]);
   const blankTag = { id: 0, name: '' }
-  const [selectedDecision, setSelectedDecision] = useState<DecisionIndex | null>(null);
+  const [selectedDecision, setSelectedDecision] = useState<DecisionIndex>();
   const { openModal, setOpenModal } = useIndex();
-  const { data: session } = useSession();
-  const token = session?.appAccessToken;
 
   const { isDrawerClick, setIsDrawerClick } = useHelper();
 
@@ -42,24 +57,56 @@ export default function decisionIndex() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // 1ページあたりのアイテム数
 
+  const token = session?.appAccessToken;
+
+  {/* ページ読み込み時の動作 */}
+  useEffect(() => {
+    fetchDecisions();
+  }, []);
+
+  const fetchDecisions = async () => {
+    try {
+      const response = await axios({
+        method: 'post',
+        url: `${process.env.NEXT_PUBLIC_API_URL}/api/index/`,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Authorization': `Bearer ${token}`
+        },
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        setUsers(response.data.users);
+        setDecisions(response.data.decisions);
+        setTags(response.data.tags);
+      }
+    } catch (error) {
+      console.error('Error fetching decisions', error);
+    }
+  };
+
+
+
   // コメント用の定義
   const [comments, setComments] = useState<Comment[]>([]);
   const onCommentSubmit = (comment: string) => {
     if(!selectedDecision) return;
     const newComment:Comment = {
       id: comments.length + 1,
-      content: comment,
-      user_id: selectedDecision.user.id,
+      content:     comment,
+      user_id:     selectedDecision.user_id,
       decision_id: selectedDecision.id,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      created_at:  new Date().toISOString(),
+      updated_at:  new Date().toISOString(),
     };
     setComments([...comments, newComment]);
   }
 
   useEffect(() => {
-    fetchComments();
-  }, [comments]);
+    if(selectedDecision && comments){
+      fetchComments();
+    }
+  }, [ selectedDecision, comments]);
 
   useEffect(() => {
     if(isDrawerClick) {
@@ -84,7 +131,6 @@ export default function decisionIndex() {
         data: { selectedDecision, comments },
         withCredentials: true,
       });
-      console.log(response);
       if (response.status === 200) {
         setComments(response.data.comments);
       }
@@ -114,30 +160,7 @@ export default function decisionIndex() {
   const paginateFirst = () => setCurrentPage(1);
   const paginateLast = () => setCurrentPage(pageNumbers.length);
 
-  const fetchDecisions = async () => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: `${process.env.NEXT_PUBLIC_API_URL}/api/index/`,
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-          'Authorization': `Bearer ${token}`
-        },
-        withCredentials: true,
-      });
-      console.log(response);
-      if (response.status === 200) {
-        setDecisions(response.data.decisions);
-        setTags(response.data.tags);
-      }
-    } catch (error) {
-      console.error('Error fetching decisions', error);
-    }
-  };
 
-  useEffect(() => {
-    fetchDecisions();
-  }, []);
 
   useEffect(() => {
     // decisions が更新されたら、filteredDecisions も更新
@@ -157,7 +180,7 @@ export default function decisionIndex() {
   };
 
   const handleCloseDetail = () => {
-    setSelectedDecision(null);
+    setSelectedDecision(undefined);
     setOpenModal(false);
   };
 
@@ -169,7 +192,7 @@ export default function decisionIndex() {
         // decision_tags に紐づく各タグが selectedTag と一致するか確認
         return decision.decision_tags.some(decision_tag => {
           // 対応するタグを tags 配列から検索
-          const tag = tags.find(tag => tag.id === decision_tag.tag_id);
+          const tag = tags.find(tag => tag.id === decision_tag);
           return tag && tag.name === selectedTag;
         });
       });
@@ -178,7 +201,7 @@ export default function decisionIndex() {
     if (searchQuery) {
       filtered = filtered.filter(decision => 
         decision.conversations.some(convo => convo.query_text && convo.query_text.includes(searchQuery)) ||
-        decision.character_responses[0].some(response => response.response && response.response.includes(searchQuery))
+        decision.conversations.some(convo => convo.character_responses.some(res => res.response && res.response.includes(searchQuery)))
       );
     }
   
@@ -205,7 +228,6 @@ export default function decisionIndex() {
   };
 
   const handleSelectTag = (tagName: string) => {
-    console.log("Tag selected:", tagName); // このログが表示されるかチェック
     setSelectedTag(tagName);
     setIsTagInputFocused(false);
     handleSearchWithTag(tagName);
@@ -217,7 +239,7 @@ export default function decisionIndex() {
     if (tagToSearch) {
       filtered = filtered.filter(decision => {
         return decision.decision_tags.some(decision_tag => {
-          const tag = tags.find(tag => tag.id === decision_tag.tag_id);
+          const tag = tags.find(tag => tag.id === decision_tag);
           return tag && tag.name === tagToSearch;
         });
       });
@@ -231,6 +253,7 @@ export default function decisionIndex() {
       {/* 検索フォーム */}
       <div className='w-[70vw] mt-[2vh] mb-[3vh] flex'>
         <input
+          id='searchText'
           type='text'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -239,6 +262,7 @@ export default function decisionIndex() {
         />
         <div className='flex flex-col'>
           <input
+            id='searchTag'
             type='text'
             value={selectedTag}
             onChange={(e) => {
@@ -261,7 +285,7 @@ export default function decisionIndex() {
           )}
         </div>
 
-        <select onChange={handleSortChange} className='ml-2'>
+        <select onChange={handleSortChange} id='selectSort' className='ml-2'>
           <option value='date_new'>新しい順</option>
           <option value='date_old'>古い順</option>
           <option value='comments'>コメント数順</option>
@@ -273,26 +297,23 @@ export default function decisionIndex() {
       </div>
 
       <div className='w-[70vw] mb-[5vh]'>
-        {currentDecisions.map((decision) => (
-          <div key={decision.id}
-               className='mb-4 shadow-lg rounded-lg'
-               onClick={() => handleDecisionClick(decision)}>
-            <DecisionCard
-              query_text={decision.conversations[0].query_text}
-              user={decision.user}
-              comments={decision.comments}
-              bookmarks={decision.bookmarks}
-              decision_tags={
-                decision.decision_tags.map((decision_tag) => {
-                  return {
-                    id: decision_tag.tag_id,
-                    name: tags.find((tag) => tag.id === decision_tag.tag_id)?.name,
-                  };
-                })
-              }
-            />
-          </div>
-        ))}
+        {currentDecisions.map((decision) => {
+          const decisionTags = tags.filter((tag) => decision.decision_tags.includes(tag.id));
+          return (
+            <div key={decision.id}
+                className='mb-4 shadow-lg rounded-lg'
+                onClick={() => handleDecisionClick(decision)}>
+              <DecisionCard
+                decision_id={decision.id}
+                query_text={decision.conversations[0].query_text}
+                user={users.find((user) => user.id === decision.user_id)}
+                comments={decision.comments}
+                bookmarks={decision.bookmarks}
+                decision_tags={decisionTags}
+              />
+            </div>
+          );}
+        )}
       </div>
 
       <div className='pagination flex justify-center items-center my-4'>
@@ -320,7 +341,6 @@ export default function decisionIndex() {
                 <DecisionDetail
                   conversations={selectedDecision.conversations}
                   characters={selectedDecision.characters}
-                  character_responses={selectedDecision.character_responses}
                   comments={comments}
                   onCommentSubmit={onCommentSubmit}
                   isBookmarked={isBookmarked}
