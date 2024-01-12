@@ -45,9 +45,6 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
 
   useEffect(() => {
     setIsAuth(sessionStorage.getItem('unAuthFlag'));
-  },[]);
-
-  useEffect(() => {
     // 非認証の状態でルートにアクセスした場合、Openingアニメーションを表示する
     if (isRoot == '/' && status == 'unauthenticated') {
       setIsViewed(false);
