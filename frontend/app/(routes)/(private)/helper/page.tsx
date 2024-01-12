@@ -62,10 +62,15 @@ export default function decisionHelper () {
   // ページ読み込み時にバックエンドからユーザー情報を取得する
   useEffect(() => {
     resetErrorMessages();
-    fetchInitData();
   }, []);
 
+  useEffect(() => {
+    if (session) fetchInitData();
+  }, [session])
+
   const fetchInitData = async () => {
+    if (!session) return;
+
     try {
       const response = await axios({
         method: 'post',
@@ -80,6 +85,7 @@ export default function decisionHelper () {
       if (response.status === 200) {
         setUserData(response.data.user);
         setCharacterData(response.data.characters);
+        setIsLoading(false);
       }
     } catch (error) {
       addErrorMessages({

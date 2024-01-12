@@ -25,9 +25,7 @@ import { Loading }          from './loading/layout';
 import { FadeInAnimation }  from '../root/FadeInAnimation';
 import { OpeningAnimation } from '../root/OpeningAnimation';
 // Features
-import { FloatingCircles } from './floating_circle/FloatingCircles';
 import AuthGuard           from '@/app/_features/auth/AuthGuard';
-import { set } from 'zod';
 
 // デフォルトではpreloadがtrueになっているのでsubsetsの指定が必要
 const inter = Inter({ subsets: ['latin'] })
