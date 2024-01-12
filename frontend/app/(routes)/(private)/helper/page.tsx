@@ -120,7 +120,7 @@ export default function decisionHelper () {
         url: sendURL,
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
-          'Authorization': `Bearer ${tokens}`
+          'Authorization': `Bearer ${token}`
         },
         data: {fetchData},
         withCredentials: true,
@@ -213,17 +213,17 @@ export default function decisionHelper () {
 
   // すべてのstateを初期化する関数
   const initializeState = () => {
+    fetchInitData();
+    resetErrorMessages();
+
     setResponses([]);
     setBeforeQueryText('');
     setPlaceholder('悩みを入力してください（50文字以内）');
     setIsResponse(false);
     setInputText('');
-    setIsLoading(false);
     setTags([]);
     setUserDecision('');
     setIsPublic(false);
-    setDecision(undefined);
-    setConversation([]);
     setConversationCount(1);
 
     return;
