@@ -85,8 +85,6 @@ export default function decisionIndex() {
     }
   };
 
-
-
   // コメント用の定義
   const [comments, setComments] = useState<Comment[]>([]);
   const onCommentSubmit = (comment: string) => {
