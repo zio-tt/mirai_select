@@ -34,7 +34,7 @@ interface DecisionIndex extends Decision {
   bookmarks:           Bookmark[];
 }
 
-export default function decisionIndex() {
+export default function testPage() {
   // initial state
   const [users, setUsers]         = useState<User[]>([]);
   const [decisions, setDecisions] = useState<DecisionIndex[]>([]);
