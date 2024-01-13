@@ -249,6 +249,52 @@ export default function testPage() {
   return (
 
     <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[5vh]'>
+      {/* 検索フォーム */}
+      <div className='w-[70vw] mt-[2vh] mb-[3vh] flex'>
+        <input
+          id='searchText'
+          type='text'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder='相談文を検索...'
+          className='border p-2 mr-2'
+        />
+        <div className='flex flex-col'>
+          <input
+            id='searchTag'
+            type='text'
+            value={selectedTag}
+            onChange={(e) => {
+              setSelectedTag(e.target.value);
+              handleSearchWithTag(e.target.value);
+            }}
+            onFocus={() => setIsTagInputFocused(true)}
+            placeholder='タグを検索...'
+            className='border p-2 mr-2'
+          />
+          {/* オートコンプリートリスト */}
+          {isTagInputFocused && (
+            <div className='absolute z-10 bg-white border rounded max-h-40 overflow-auto top-24 border-black shadow-lg'>
+              {[blankTag, ...tags].map(tag => (
+                <div key={tag.id} onClick={() => handleSelectTag(tag.name)} className='p-2 hover:bg-gray-100 text-black'>
+                  {tag.name}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <select onChange={handleSortChange} id='selectSort' className='ml-2'>
+          <option value='date_new'>新しい順</option>
+          <option value='date_old'>古い順</option>
+          <option value='comments'>コメント数順</option>
+          <option value='bookmarks'>ブックマーク数順</option>
+        </select>
+        <button onClick={handleSearch} className='ml-2 bg-blue-500 text-white px-4 py-2 rounded'>
+          検索
+        </button>
+      </div>
+
       <div className='w-[70vw] mb-[5vh]'>
         {currentDecisions.map((decision) => {
           const decisionTags = tags.filter((tag) => decision.decision_tags.includes(tag.id));
