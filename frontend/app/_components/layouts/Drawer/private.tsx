@@ -43,7 +43,7 @@ const PrivateDrawer = () => {
                     imageURL="/images/comment.png"
                     onClick={initState}
                     text='決断ヘルパー' />
-        <DrawerMenu url='/index'
+        <DrawerMenu url='/decisions'
                     imageURL="/images/sns.png"
                     onClick={initState}
                     text='みんなの悩みごと' />
