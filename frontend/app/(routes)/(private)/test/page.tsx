@@ -247,7 +247,49 @@ export default function testPage() {
   };
 
   return (
-    <div>test page</div>
+
+    <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[5vh]'>
+      <div className='w-[70vw] mb-[5vh]'>
+        {currentDecisions.map((decision) => {
+          const decisionTags = tags.filter((tag) => decision.decision_tags.includes(tag.id));
+          return (
+            <div key={decision.id}
+                 className='mb-4 shadow-lg rounded-lg'
+                 onClick={() => handleDecisionClick(decision)}>
+              <DecisionCard
+                decision_id={decision.id}
+                query_text={decision.conversations[0].query_text}
+                user={users.find((user) => user.id === decision.user_id)}
+                comments={decision.comments}
+                bookmarks={decision.bookmarks}
+                decision_tags={decisionTags}
+              />
+            </div>
+          );}
+        )}
+      </div>
+
+      {selectedDecision && (
+        <div className='fixed inset-0 flex items-center justify-center z-10'>
+          <div className='fixed inset-0 bg-black bg-opacity-50' onClick={handleCloseDetail}></div>
+          <div className="flex w-[80vw] ml-[20vw] h-[100vh] items-center justify-center">
+            <div className="flex flex-col w-[80%] h-[80%] bg-white p-5 rounded-lg items-center z-20">
+              <div className='flex justify-center items-start'>
+                <DecisionDetail
+                  conversations={selectedDecision.conversations}
+                  characters={selectedDecision.characters}
+                  comments={comments}
+                  onCommentSubmit={onCommentSubmit}
+                  isBookmarked={isBookmarked}
+                  onBookmarkToggle={onBookmarkToggle}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+
     // <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[5vh]'>
     //   {/* 検索フォーム */}
     //   <div className='w-[70vw] mt-[2vh] mb-[3vh] flex'>
