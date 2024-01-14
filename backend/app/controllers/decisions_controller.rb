@@ -105,4 +105,8 @@ class DecisionsController < ApplicationController
   def tags_param
     params.require(:tags)
   end
+
+  def decisions_condition
+    params.require(:fetchDecisionsCondition)
+  end
 end

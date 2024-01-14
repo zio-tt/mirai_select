@@ -24,9 +24,9 @@ class AdminController < ApplicationController
     cipher.decrypt
     cipher.key = ENV['NEXT_PUBLIC_ENCRYPTION_KEY']
     decrypted_token = cipher.update(Base64.decode64(encrypted_token)) + cipher.final
-    binding.pry
     decrypted_token
   rescue OpenSSL::Cipher::CipherError
     raise 'Unauthorized'
   end
+  
 end

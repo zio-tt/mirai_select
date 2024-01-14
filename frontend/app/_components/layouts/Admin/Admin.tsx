@@ -7,8 +7,14 @@ import { CharacterList } from './CharacterList';
 import { useSession } from 'next-auth/react';
 
 const encryptToken = (token: string) => {
-  const secretKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY; // 環境変数から秘密鍵を取得
-  return CryptoJS.AES.encrypt(token, secretKey!).toString();
+  const secretKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY;
+  // 文字列をWordArrayに変換
+  const key = CryptoJS.enc.Utf8.parse(secretKey!);
+  const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(token), key, {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7
+  });
+  return encrypted.toString();
 };
 
 const App = () => {

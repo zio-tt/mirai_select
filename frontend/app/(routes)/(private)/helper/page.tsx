@@ -82,7 +82,6 @@ export default function decisionHelper () {
       if (response.status === 200) {
         setUserData(response.data.user);
         setCharacterData(response.data.characters);
-        setIsLoading(false);
       }
     } catch (error) {
       addErrorMessages({
@@ -91,6 +90,10 @@ export default function decisionHelper () {
       });
     }
   }
+
+  useEffect(() => {
+    if (userData && characterData) setIsLoading(false);
+  }, [userData, characterData]);
 
   {/* Conversation関係 */}
   const createConversation = async (event: MouseEvent<HTMLElement>) => {
