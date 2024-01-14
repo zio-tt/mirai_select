@@ -18,5 +18,10 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users, only: [:index, :show, :update, :destroy]
     resources :characters, only: [:index, :show, :update, :destroy]
+    resources :decisions, only: [:index, :show, :update, :destroy]
+    resources :conversations, only: [:index, :show, :update, :destroy]
+    resources :tags, only: [:index, :show, :update, :destroy]
+    resources :comments, only: [:index, :show, :update, :destroy]
+    resources :bookmarks, only: [:index, :show, :update, :destroy]
   end
 end

@@ -5,10 +5,13 @@ class DecisionsController < ApplicationController
 
   def index
     @users = User.all.select(:id, :name, :avatar)
-  
-    @decisions = Decision.includes(:user => { characters: :avatar_attachment }, :conversations => [:character_responses])
-                         .where(public: true)
-                         .order(created_at: :desc)
+
+    # decisions_conditionパラメータに基づいて決定をフィルタリング
+    if decisions_condition == "public"
+      @decisions = Decision.public_decisions
+    elsif decisions_condition == "private"
+      @decisions = current_user.decisions
+    end
   
     @decisions = @decisions.map do |decision|
       characters = decision.user.characters.map do |character|
@@ -24,16 +27,17 @@ class DecisionsController < ApplicationController
       decision.attributes.merge(
         conversations: conversations,
         characters:    characters,
-        # decision_tagsのキーをidとする値のみ配列として渡す
         decision_tags: decision.decision_tags.map(&:tag_id),
         comments:      decision.comments,
         bookmarks:     decision.bookmarks
       )
     end
-  
-    @tags = Tag.all
-  
-    render json: { users: @users, decisions: @decisions, tags: @tags }
+
+    decision_ids  = @decisions.map { |decision| decision["id"] }
+    decision_tags = DecisionTag.where(decision_id: decision_ids)
+    @tags         = Tag.where(id: decision_tags.pluck(:tag_id))
+
+    render json: { users: @users, decisions: @decisions, tags: @tags, decision_ids: decision_ids }
   end
 
   def callback
