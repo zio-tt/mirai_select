@@ -34,7 +34,7 @@ interface DecisionIndex extends Decision {
   bookmarks:           Bookmark[];
 }
 
-export default function decisionIndex() {
+export default function myPage() {
   // initial state
   const [users, setUsers]         = useState<User[]>([]);
   const [decisions, setDecisions] = useState<DecisionIndex[]>([]);
@@ -69,11 +69,11 @@ export default function decisionIndex() {
   }, []);
 
   const fetchDecisions = async () => {
-    const fetchDecisionsCondition = "public"
+    const fetchDecisionsCondition = "private"
     try {
       const response = await axios({
         method: 'post',
-        url: `${process.env.NEXT_PUBLIC_API_URL}/api/index/`,
+        url: `${process.env.NEXT_PUBLIC_API_URL}/api/user/decision`,
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
           'Authorization': `Bearer ${token}`
