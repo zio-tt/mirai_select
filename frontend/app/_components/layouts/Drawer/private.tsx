@@ -47,10 +47,10 @@ const PrivateDrawer = () => {
                     imageURL="/images/sns.png"
                     onClick={initState}
                     text='みんなの悩みごと' />
-        <DrawerMenu url='#'
+        <DrawerMenu url='/mypage'
                     imageURL="/images/human.png"
                     onClick={initState}
-                    text='マイページ¥¥¥（現在準備中）' />
+                    text='マイページ' />
         <DrawerMenu url='#'
                     imageURL="/images/exit.png"
                     onClick={handleLogout}

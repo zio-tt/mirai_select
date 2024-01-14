@@ -60,7 +60,6 @@ export default function decisionIndex() {
   const [isTagInputFocused, setIsTagInputFocused] = useState(false);
   const autoCompleteTagsRef = useRef<HTMLDivElement>(null);
 
-
   const token = session?.appAccessToken;
 
   {/* ページ読み込み時の動作 */}

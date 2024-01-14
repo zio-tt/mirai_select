@@ -73,7 +73,7 @@ export default function myPage() {
     try {
       const response = await axios({
         method: 'post',
-        url: `${process.env.NEXT_PUBLIC_API_URL}/api/user/decision`,
+        url: `${process.env.NEXT_PUBLIC_API_URL}/api/index/`,
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
           'Authorization': `Bearer ${token}`

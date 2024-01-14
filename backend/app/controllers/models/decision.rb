@@ -7,6 +7,8 @@ class Decision < ApplicationRecord
 
   belongs_to :user
 
+  scope :public_decisions, -> { includes(:user => { characters: :avatar_attachment }, :conversations => [:character_responses]).where(public: true).order(created_at: :desc) }
+
   def system_message(character1, character2)
     message = "ユーザーから与えられた質問文に対して、#{character1.name}と#{character2.name}というキャラクターになりきって返答してください。
     回答はJSON形式で返してください。また、それぞれの回答は重複しないものとします。
