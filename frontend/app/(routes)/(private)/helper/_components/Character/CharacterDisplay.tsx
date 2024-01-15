@@ -11,9 +11,14 @@ interface CharacterProps extends Character {
   avatar: string;
 }
 
+interface CharacterResponse {
+  name:     string;
+  response: string;
+}
+
 interface CharacterDisplayProps {
   characters?: CharacterProps[];
-  responses?: string[]
+  responses?: CharacterResponse[]
   userDecision: string;
   setUserDecision: (response: string) => void;
   isResponse: boolean;
@@ -37,8 +42,9 @@ const CharacterDisplay = ({ characters, responses, userDecision, setUserDecision
   return (
     <>
       {characters && characters.map((character, index) => {
+        // responseはresponsesの中からnameがcharacter.nameと一致するものを取得
         let response = responses && responses.length > 0
-                     ? responses[index]
+                     ? responses.find(response => response.name === character.name)?.response
                      : (index === 0 ? character.character1_welcome : character.character2_welcome);
 
         const isSelected    = userDecision === response;
@@ -50,10 +56,10 @@ const CharacterDisplay = ({ characters, responses, userDecision, setUserDecision
         return (
           <div key={character.id} 
                className={`character-response flex h-[30%] w-[90%] text-black p-4 items-center rounded-md  ${isAnySelected && !isSelected ? 'filter grayscale' : ''}`}
-               onClick={() => handleCharacterClick(response)}>
+               onClick={() => handleCharacterClick(response!)}>
             <div className='flex flex-row h-full w-full items-center'>
               <CharacterAvatarWindow name={character.name} avatar={character.avatar} borderStyle={borderStyle} />
-              <CharacterTextWindow response={response} borderStyle={borderStyle} /> 
+              <CharacterTextWindow response={response!} borderStyle={borderStyle} /> 
             </div>
             {!isSelected && <div className="overlay"></div>}
           </div>
