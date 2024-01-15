@@ -17,7 +17,7 @@ interface CommentDisplayProps {
 
 const CommentsDisplay = ({ users, currentUserId, comments, deleteComment }: CommentDisplayProps) => (
   <div className="flex flex-col flex-grow w-full border overflow-auto h-[50vh]">
-    {comments!.map((comment, index) => {
+    {comments && comments!.map((comment, index) => {
       const user = users?.find((user) => user.id === comment.user_id);
       return (
         <div key={index} className="flex flex-row border-b p-2 items-center">
