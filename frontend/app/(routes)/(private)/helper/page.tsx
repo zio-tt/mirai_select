@@ -20,9 +20,15 @@ import { useSession }          from 'next-auth/react';
 import { Error } from './_types/Error';
 import { Character, Conversation, Decision } from '@/app/_types';
 import { set } from 'zod';
+import { resolve } from 'path';
 
 interface CharacterProps extends Character {
   avatar: string;
+}
+
+interface CharacterResponse {
+  name:     string;
+  response: string;
 }
 
 export default function decisionHelper () {
@@ -40,7 +46,7 @@ export default function decisionHelper () {
   // エラー処理
   const { errors, isError, addErrorMessages, removeErrorMessages, resetErrorMessages } = useErrorHandling();
   // データ格納用
-  const [ responses, setResponses ] = useState<string[]>([]);
+  const [ responses, setResponses ] = useState<CharacterResponse[]>([]);
   const [ decision, setDecision ] = useState<Decision>();
   const [ conversation, setConversation ] = useState<Conversation[]>([]);
   const [ isResponse, setIsResponse ] = useState<boolean>(false);
@@ -156,10 +162,22 @@ export default function decisionHelper () {
     }
   }
 
+
   const parseResponse = (data: any) => {
     try {
+      // JSON 形式の文字列を解析
       const parsed = JSON.parse(data.choices[0].message.content);
-      setResponses([parsed.character1.character1_response, parsed.character2.character2_response ]);
+      const res = Object.keys(parsed).map((key) => {
+        const character = parsed[key];
+        const nameKey = Object.keys(character).find(k => k.includes('name'));
+        const responseKey = Object.keys(character).find(k => k.includes('response'));
+  
+        return {
+          name: character[nameKey!],
+          response: character[responseKey!]
+        };
+      });
+      setResponses(res);
     } catch (e) {
       addErrorMessages({
         message: 'レスポンスデータの解析中にエラーが発生しました。',

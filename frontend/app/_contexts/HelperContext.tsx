@@ -8,11 +8,15 @@ interface User {
   avatar: string;
 }
 
+interface CharacterProps extends Character {
+  avatar: string;
+}
+
 type HelperContextType = {
   userData: User | null;
   setUserData: React.Dispatch<React.SetStateAction<User | null>>;
-  characterData: Character[] | null;
-  setCharacterData: React.Dispatch<React.SetStateAction<Character[] | null>>;
+  characterData: CharacterProps[] | null;
+  setCharacterData: React.Dispatch<React.SetStateAction<CharacterProps[] | null>>;
   inputText: string;
   setInputText: React.Dispatch<React.SetStateAction<string>>;
   remainingTokens: number;
