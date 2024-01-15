@@ -206,7 +206,6 @@ export default function myPage() {
     }
 
     const bookmarkId = bookmarks.find(bookmark => bookmark.decision_id === decisionId)?.id;
-    console.log(bookmarkId);
     // ブックマークが存在していて、かつ、選択された相談がブックマークされていない場合
     if (isBookmarked && bookmarkId) {
       deleteBookmark(bookmarkId);

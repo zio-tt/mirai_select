@@ -469,6 +469,11 @@
   resolved "https://registry.npmjs.org/@types/crypto-js/-/crypto-js-4.2.1.tgz"
   integrity sha512-FSPGd9+OcSok3RsM0UZ/9fcvMOXJ1ENE/ZbLfOPlBWj7BgXtEAM8VYfTtT760GiLbQIMoVozwVuisjvsVwqYWw==
 
+"@types/gtag.js@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.npmjs.org/@types/gtag.js/-/gtag.js-0.0.18.tgz"
+  integrity sha512-GJxnIvuXuVhKaHfsOdzGipoOoXq72y3mdcncc9h6i6E7nlz89zBEj2wrLM7bqO5Xk9Lm2B94MwdQsSwRlaPSWw==
+
 "@types/json-schema@^7.0.5":
   version "7.0.15"
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.15.tgz"

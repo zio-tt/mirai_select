@@ -26,6 +26,7 @@ import { FadeInAnimation }  from '../root/FadeInAnimation';
 import { OpeningAnimation } from '../root/OpeningAnimation';
 // Features
 import AuthGuard           from '@/app/_features/auth/AuthGuard';
+import GoogleAnalytics     from '@/app/_features/GoogleAnalytics/GoogleAnalytics';
 
 // デフォルトではpreloadがtrueになっているのでsubsetsの指定が必要
 const inter = Inter({ subsets: ['latin'] })
@@ -104,8 +105,10 @@ const AppLayout = ({children}: AppLayoutProps) => {
   return (
     <html lang='ja'>
       <head>
+        <GoogleAnalytics />
         <link href='https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&display=swap' rel='stylesheet' />
       </head>
+      
       <body className={inter.className}>
         <SessionProvider>
         <TopPageProvider>
