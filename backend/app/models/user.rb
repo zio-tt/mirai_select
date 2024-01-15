@@ -5,8 +5,8 @@ class User < ApplicationRecord
   has_many :user_characters, dependent: :destroy
   has_many :characters, through: :user_characters
 
-  has_many :decision_bookmarks, through: :decision, source: :bookmarks
-  has_many :decision_comments, through: :decision, source: :comments
+  has_many :bookmarked_decisions, through: :bookmarks, source: :decision
+  has_many :commented_decisions, through: :comments, source: :decision
 
   after_create :create_default_user_characters
 

@@ -5,6 +5,7 @@ interface User {
   id: number;
   name: string;
   token: number;
+  avatar: string;
 }
 
 type HelperContextType = {

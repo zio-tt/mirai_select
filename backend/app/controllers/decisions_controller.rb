@@ -5,12 +5,32 @@ class DecisionsController < ApplicationController
 
   def index
     @users = User.all.select(:id, :name, :avatar)
+    @current_user = {
+      id:     current_user.id,
+      name:   current_user.name,
+      token:  current_user.token,
+      avatar: current_user.avatar
+    }
 
     # decisions_conditionパラメータに基づいて決定をフィルタリング
     if decisions_condition == "public"
       @decisions = Decision.public_decisions
     elsif decisions_condition == "private"
       @decisions = current_user.decisions
+    elsif decisions_condition == "bookmarked"
+      @decisions = current_user.bookmarked_decisions.includes(:comments, :bookmarks).order(created_at: :desc)
+    end
+
+    if @decisions.nil?
+      render json: { 
+        error: "Decisions could not be found.",
+        current_user: @current_user,
+        users:        @users,
+        decisions:    [],
+        tags:         [],
+        comments:     [],
+        bookmarks:    []
+      }, status: :ok and return
     end
   
     @decisions = @decisions.map do |decision|
@@ -36,8 +56,17 @@ class DecisionsController < ApplicationController
     decision_ids  = @decisions.map { |decision| decision["id"] }
     decision_tags = DecisionTag.where(decision_id: decision_ids)
     @tags         = Tag.where(id: decision_tags.pluck(:tag_id))
+    @comments     = Comment.where(decision_id: decision_ids)
+    @bookmarks    = Bookmark.where(decision_id: decision_ids)
 
-    render json: { users: @users, decisions: @decisions, tags: @tags, decision_ids: decision_ids }
+
+    render json: { current_user: @current_user,
+                   users:        @users,
+                   decisions:    @decisions,
+                   tags:         @tags,
+                   comments:     @comments,
+                   bookmarks:    @bookmarks
+                 }
   end
 
   def callback

@@ -1,17 +1,32 @@
 class CommentsController < ApplicationController
+  before_action :set_comment, only: [:destroy]
+  
   def create
-    decision_id = params[:selectedDecision]["id"]
-    user_uid = params[:selectedDecision]["uid"]
-    @user = User.find_by(uid: user_uid)
-    @decision = Decision.find(decision_id)
-    @comments = params[:comments]
-    @comments.each do |comment|
-      @decision.comments.create(
-        user_id: @user.id,
-        content: comment["content"]
-      )
+    @comment = Comment.new(
+      user_id: comment_params[:user_id],
+      decision_id: comment_params[:decision_id],
+      content: comment_params[:content]
+    )
+    if @comment.save
+      render json: { comments: Comment.all }
+    else
+      render json: { error: 'Unable to create comment.' }
     end
+  end
 
-    render json: { comments: @decision.comments }
+  def destroy
+    @comment.destroy!
+    
+    render json: { comments: Comment.all }
+  end
+
+  private
+
+  def comment_params
+    params.require(:comment).permit(:user_id, :decision_id, :content)
+  end
+
+  def set_comment
+    @comment = Comment.find(params[:id])
   end
 end
