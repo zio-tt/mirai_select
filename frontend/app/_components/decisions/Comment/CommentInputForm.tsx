@@ -5,7 +5,6 @@ const CommentInputForm = ({ onSubmit } : { onSubmit: (comment: string) => void }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(comment);
     onSubmit(comment);
     setComment('');
   };
@@ -16,7 +15,7 @@ const CommentInputForm = ({ onSubmit } : { onSubmit: (comment: string) => void }
         className="border p-2 rounded mb-2"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        placeholder="コメントを入力..."
+        placeholder="コメントを入力...（最大50文字）"
       />
       <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
         コメントする
