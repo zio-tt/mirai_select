@@ -95,7 +95,7 @@ const updateUser = async (
       withCredentials: true,
     });
     if (response.status === 200) {
-      return response.data;
+      return response.data.user;
     }
   } catch (error) {
     console.error('Error editing user', error);

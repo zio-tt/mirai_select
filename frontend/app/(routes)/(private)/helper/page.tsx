@@ -30,6 +30,7 @@ import { createConversation,
         } from '@/app/_features/fetchAPI';
 import { init } from 'next/dist/compiled/webpack/webpack';
 import { set } from 'zod';
+import { create } from 'domain';
 
 interface CharacterResponse {
   conversation_id: number;
@@ -173,25 +174,32 @@ export default function decisionHelper () {
       });
       return;
     }
+    if ( conversationCount === 2 && !userDecision ) {
+      addErrorMessages({
+        message: 'キャラクターを選択してください。',
+        kind: 'selectCharacter'
+      });
+      return;
+    }
 
     try {
       setIsLoading(true);
-      // set関数が非同期なのでダミーデータとしてcurrentDecisionを用意
       let currentDecision : any = decision ? decision : null;
-      // openAIに送信するためのデータを作成
-      // 1. ユーザーがテキストを入力して「相談する」ボタンを押す
-      // 2. queryTextをcreateDecision関数に渡す = Decisionを作成する
+
+      // 1. Decisionの作成
       if (conversationCount === 1) {
         const response  = await createDecision(token!);
         currentDecision = assignCurrentDecision(response);
         setDecision(currentDecision);
       }
-      // 2. decision.idとuserDecisionをupdateConversation関数に渡す = 1度目のConversationを更新する
+
+      // 1. 深掘りの場合は既存のConversationに対してユーザーの決定を反映する
       if (conversationCount === 2) {
         const updatedConversation = await updateConversation(token!, conversation!.id, queryText, userDecision!);
         setConversation(updatedConversation);
       }
 
+      // OpenAI APIに送信するデータを作成する
       const fetchData: OpenAiRequest = {
         queryText,
         decisionId         : currentDecision!.id,
@@ -200,25 +208,30 @@ export default function decisionHelper () {
         userDecision       : conversationCount === 1 ? null : userDecision!.response,
       }
 
-      // 3. queryTextをOpenAiRequest関数に渡す  = OpenAiにリクエストを送る
-      const openAiResponse = await OpenAiRequest(fetchData);
-      const processedResponse = JSON.parse(openAiResponse.response.choices[0].message.content);
-      const parsedResponse = parseResponse(processedResponse);
-
-      // 4. 2のdecision.idと3のCharacterResponsesをcreateConversation関数に渡す = Conversationを作成する
+      // 3. Decisionに紐づくConversationを作成する
       const createdConversation = await createConversation(
         token!,
         currentDecision!.id,
-        queryText,
+        queryText
+      );
+      setConversation(createdConversation);
+
+      // 4. OpenAI APIを叩いてResponseを整形する
+      const openAiResponse = await OpenAiRequest(fetchData);
+      const processedResponse = JSON.parse(openAiResponse.response.choices[0].message.content);
+      const parsedResponse = parseResponse(processedResponse, createdConversation);
+      console.log('parsedResponse', parsedResponse)
+
+      // 5. 4の結果を元にConversationに紐づく
+      await createCharacterResponses(
+        token!,
         parsedResponse
       );
-      setConversation(createdConversation.conversation);
-      setCharacterResponses(createdConversation.character_responses)
+      setCharacterResponses(parsedResponse);
 
       const user = await updateUser(token!, currentUser!.id, remainingTokens);
       setCurrentUser(user);
       setRemainingTokens(user.token);
-
 
       // 5. beforeQueryTextとbeforeCharacterResponsesを更新する
       setBeforeQueryText(queryText);
@@ -278,7 +291,10 @@ export default function decisionHelper () {
     }
   }
 
-  const parseResponse = (data: any) => {
+  const parseResponse = (
+    data: any,
+    conversation: Conversation
+  ) => {
     // オブジェクトのキーを使用して動的に処理
     return Object.keys(data).map(key => {
       const characterData = data[key];
@@ -370,7 +386,7 @@ export default function decisionHelper () {
         initializeState();
         setIsDrawerClick(false);
       } else {
-        if (window.confirm('現在の相談内容はそのまま保存されます。消費したトークンは戻ってきませんがよろしいですか？')) {
+        if (window.confirm('現在の相談内容はそのまま保存されます。\r\n後から相談内容の変更や深掘り・決断は行えません。\r\n消費したトークンは戻ってきませんがよろしいですか？')) {
           initializeState();
           setIsDrawerClick(false);
         } else {

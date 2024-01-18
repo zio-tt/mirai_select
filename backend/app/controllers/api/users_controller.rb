@@ -37,8 +37,9 @@ class Api::UsersController < ApplicationController
 
   def update
     @user.update(token: remaining_tokens_params)
+    @user = { id: @user.id, name: @user.name, avatar: @user.avatar, token: @user.token }
 
-    render json: { message: 'Success to update remaining_tokens' }
+    render json: { user: @user }
   end
 
   private

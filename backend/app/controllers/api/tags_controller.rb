@@ -4,8 +4,11 @@ class Api::TagsController < ApplicationController
   end
 
   def create
-    Tag.find_or_create_by(name: tags_params)
-    render json: { message: 'Success to create tag' }
+    tags.each do |tag|
+      Tag.create(name: tag)
+    end
+
+    render json: { message: 'Success to create tags' }
   end
 
   private

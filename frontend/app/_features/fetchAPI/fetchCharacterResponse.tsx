@@ -10,6 +10,12 @@ const defaultHeaders = (token: string) => {
   )
 };
 
+interface CharacterResponse {
+  conversation_id: number;
+  character_id?:   number;
+  response:        string;
+}
+
 const getCharacterResponses = async (token:string): Promise<UserCharacter[]> => {
   try {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/character_responses`;
@@ -29,16 +35,15 @@ const getCharacterResponses = async (token:string): Promise<UserCharacter[]> => 
 };
 
 const createCharacterResponses = async (
-  token:       string,
-  characterId: number,
-  characterResponse:    string,
+  token:               string,
+  parsedResponse:      CharacterResponse[],
 ) => {
   try {
     const response = await axios({
       method: 'post',
       url: `${process.env.NEXT_PUBLIC_API_URL}/api/character_responses`,
       headers: defaultHeaders(token),
-      data: { characterId, characterResponse },
+      data: { parsedResponse },
       withCredentials: true,
     });
     if (response.status === 200) {

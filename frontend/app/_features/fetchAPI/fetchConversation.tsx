@@ -24,10 +24,7 @@ const getConversations = async (token: string): Promise<{conversations: Conversa
       withCredentials: true,
     });
     if (response.status === 200) {
-      return {
-        conversations: response.data.conversations,
-        character_responses: response.data.character_responses,
-      }
+      return response.data.conversations;
     } else {
       throw new Error('Failed to fetch conversations');
     }
@@ -41,18 +38,17 @@ const createConversation = async (
   token:              string,
   decisionId:         number,
   queryText:          string,
-  parsedResponse:    CharacterResponse[],
 ) => {
   try {
     const response = await axios({
       method: 'post',
       url: `${process.env.NEXT_PUBLIC_API_URL}/api/conversations`,
       headers: defaultHeaders(token),
-      data: { decisionId, queryText, parsedResponse },
+      data: { decisionId, queryText },
       withCredentials: true,
     });
     if (response.status === 200) {
-      return response.data;
+      return response.data.conversation;
     }
   } catch (error) {
     console.error('Error creating conversation', error);

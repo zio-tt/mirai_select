@@ -12,17 +12,7 @@ class Api::ConversationsController < ApplicationController
     )
 
     if @conversation.save
-      parsed_response_params.map do |character_response|
-        @conversation.character_responses.create!(
-          character_id: character_response["character_id"],
-          response:     character_response["response"]
-        )
-      end
-
-      render json: {
-        conversation: @conversation,
-        character_responses: @conversation.character_responses
-      }
+      render json: { conversation: @conversation }
     end
   end
 
@@ -46,10 +36,6 @@ class Api::ConversationsController < ApplicationController
 
   def query_text_params
     params.require(:queryText)
-  end
-
-  def parsed_response_params
-    params.require(:parsedResponse)
   end
 
   def user_decision_params
