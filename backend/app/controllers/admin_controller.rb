@@ -3,7 +3,6 @@ class AdminController < ApplicationController
   skip_before_action :authenticate_admin, only: [:dont_sreep]
   skip_before_action :check_xhr_header, only: [:dont_sreep]
 
-
   require 'openssl'
   require 'base64'
 
