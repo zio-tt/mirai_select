@@ -1,18 +1,21 @@
 Rails.application.routes.draw do
-  # ユーザーの作成
-  post 'auth/:provider/callback', to: 'users#create'
-
   # OpenAI APIのコールバック
   post 'api/openai/v1/callback', to: 'open_ai#callback'
 
-  post 'helper', to: 'helper#callback'
-  # 一覧画面へのルーティング
-  post   'api/index', to: 'decisions#index'
-  post   'api/create', to: 'decisions#create'
-  post   'api/comment', to: 'comments#create'
-  delete 'api/comments/:id', to: 'comments#destroy'
-  post   'api/bookmark', to: 'bookmarks#create'
-  delete 'api/bookmarks/:id', to: 'bookmarks#destroy'
+  namespace :api, defaults: { format: :json } do
+    resources :bookmarks,           only: [:index, :create, :destroy]
+    resources :characters,          only: [:index, :create, :update, :destroy]
+    resources :comments,            only: [:index, :create, :update, :destroy]
+    resources :conversations,       only: [:index, :create, :update, :destroy]
+    resources :character_responses, only: [:index, :create]
+    resources :decisions,           only: [:index, :create, :update, :destroy]
+    resources :decision_tags,       only: [:index, :create, :update, :destroy]
+    resources :tags,                only: [:index, :create, :update, :destroy]
+    resources :users,               only: [:index, :update, :destroy]
+    resources :user_characters,     only: [:index, :update]
+    # users#createは特定のURLを指定する
+    post 'auth/:provider/callback', to: 'users#create'
+  end
 
   post '/awake' => 'admin#dont_sreep'
 

@@ -2,33 +2,29 @@
 
 users = [
   {
-    uid: '000000000000000000001',
-    provider: 'google',
-    name: 'test1',
-    email: 'test1@example.com',
-    avatar: '',
+    uid: "111111111111111111111",
+    provider: "google",
+    name: "テスト太郎",
+    email: "test@example.com",
+    avatar: "",
+    token: 300
   },
   {
-    uid: '000000000000000000002',
-    provider: 'google',
-    name: 'test2',
-    email: 'test2@example.com',
-    avatar: '',
+    uid: "222222222222222222222",
+    provider: "google",
+    name: "テスト次郎",
+    email: "test2@example.com",
+    avatar: "",
+    token: 300
   },
   {
-    uid: '000000000000000000003',
-    provider: 'google',
-    name: 'test3',
-    email: 'test3@example.com',
-    avatar: '',
-  },
-  {
-    uid: '000000000000000000004',
-    provider: 'google',
-    name: 'test4',
-    email: 'test4@example.com',
-    avatar: '',
-  },
+    uid: "333333333333333333333",
+    provider: "google",
+    name: "テスト三郎",
+    email: "test3@example.com",
+    avatar: "",
+    token: 300
+  }
 ]
 
 users.each do |user|

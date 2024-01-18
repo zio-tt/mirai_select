@@ -1,6 +1,10 @@
-class CommentsController < ApplicationController
+class Api::CommentsController < ApplicationController
   before_action :set_comment, only: [:destroy]
   
+  def index
+    render json: { comments: Comment.all }
+  end
+
   def create
     @comment = Comment.new(
       user_id: comment_params[:user_id],

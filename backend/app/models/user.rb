@@ -10,6 +10,8 @@ class User < ApplicationRecord
 
   after_create :create_default_user_characters
 
+  scope :select_attributes, -> { select(:id, :name, :avatar, :token) }
+
   def decrease_token(text_length)
     self.token -= text_length
     self.save!

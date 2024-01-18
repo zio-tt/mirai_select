@@ -1,5 +1,9 @@
-class BookmarksController < ApplicationController
+class Api::BookmarksController < ApplicationController
   before_action :set_bookmark, only: [:destroy]
+
+  def index
+    render json: { bookmarks: Bookmark.all }
+  end
 
   def create
     @bookmark = current_user.bookmarks.build(decision_id: bookmark_params)

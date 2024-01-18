@@ -3,6 +3,8 @@ class Character < ApplicationRecord
   has_many :user_characters, dependent: :destroy
   has_one_attached :avatar
 
+  scope :select_attribute, -> { select(:id, :name, :character1_welcome, :character2_welcome) }
+
   # 性格(MBTI)
   enum mbti_type: {
     ISTJ: 0,  # 管理者：実用的で事実に基づいた思考の持ち主。その信頼性は紛れもなく本物。
