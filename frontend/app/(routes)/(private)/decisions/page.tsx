@@ -7,48 +7,48 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { DecisionCard } from '@/app/_components/decisions/DecisionCard';
 import { DecisionDetail } from '@/app/_components/decisions/DecisionDetail';
-import { Decision, Conversation, CharacterResponse, Comment, Bookmark, Tag } from '@/app/_types';
+import { Bookmark, Character, CharacterResponse,
+         Comment, Conversation, Decision,
+         DecisionTag, Tag, User, UserCharacter } from '@/app/_types';
 import { Loading } from '@/app/_components/layouts/loading/layout';
+import { Pagination } from '@/app/_components/layouts/pagination/pagination';
+import { getBookmarks, getCharacters, getConversations, 
+         getComments, getDecisions, getTags, getUsers } from '@/app/_features/fetchAPI';
 
-interface ConversationIndex extends Conversation {
+interface MappedDecision extends Decision {
+  decision_tags: DecisionTag[];
+  comments: Comment[];
+  bookmarks: Bookmark[];
+}
+
+interface MappedConversation extends Conversation {
   character_responses: CharacterResponse[];
-}
-
-interface Character {
-  id:         number;
-  name:       string;
-  avatar:     string;
-}
-
-interface User {
-  id:     number;
-  name:   string;
-  token:  number;
-  avatar: string;
-}
-
-interface DecisionIndex extends Decision {
-  conversations:       ConversationIndex[];
-  characters:          Character[];
-  decision_tags:       number[]; // tag_id の配列
-  comments:            Comment[];
-  bookmarks:           Bookmark[];
 }
 
 export default function decisionIndex() {
   // initial state
-  const [users,     setUsers]     = useState<User[]>([]);
-  const [decisions, setDecisions] = useState<DecisionIndex[]>([]);
-  const [tags,      setTags]      = useState<Tag[]>([]);
-  const [comments,  setComments]  = useState<Comment[]>([]);
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const [bookmarks,     setBookmarks]               = useState<Bookmark[]>([]);
+  const [characters,    setCharacters]              = useState<Character[]>([]);
+  const [userCharacters, setUserCharacters]         = useState<UserCharacter[]>([]);
+  const [characterResponses, setCharacterResponses] = useState<CharacterResponse[]>([]);
+  const [comments,      setComments]                = useState<Comment[]>([]);
+  const [conversations, setConversations]           = useState<Conversation[]>([]);
+  const [decisions,     setDecisions]               = useState<Decision[]>([]);
+  const [tags,          setTags]                    = useState<Tag[]>([]);
+  const [users,         setUsers]                   = useState<User[]>([]);
+  const [decisionTags,  setDecisionTags]            = useState<DecisionTag[]>([]);
+
+  const [isDataFetched, setIsDataFetched]             = useState(false);
+  const [mapppedDecisions, setMappedDecisions]        = useState<MappedDecision[]>([]);
+  const [mappedConversations, setMappedConversations] = useState<MappedConversation[]>([]);
+
   const [isLoading, setIsLoading] = useState(false);
   const { data: session, status } = useSession();
   const { userData, setUserData } = useHelper();
 
   // 検索結果,詳細表示用のstate
-  const [filteredDecisions, setFilteredDecisions] = useState<DecisionIndex[]>([]);
-  const [selectedDecision, setSelectedDecision] = useState<DecisionIndex>();
+  const [filteredDecisions, setFilteredDecisions] = useState<MappedDecision[]>([]);
+  const [selectedDecision, setSelectedDecision] = useState<MappedDecision>();
 
   const { openModal, setOpenModal } = useIndex();
 
@@ -69,40 +69,78 @@ export default function decisionIndex() {
   const autoCompleteTagsRef = useRef<HTMLDivElement>(null);
   const blankTag = { id: 0, name: '' }
 
-  {/* ページ読み込み時の動作 */}
-  useEffect(() => {
-    fetchDecisions();
-  }, []);
-
   // アカウント認識用のJWTトークン
   const token = session?.appAccessToken;
 
-  const fetchDecisions = async () => {
-    setIsLoading(true);
-    const fetchDecisionsCondition = "public"
-    try {
-      const response = await axios({
-        method: 'post',
-        url: `${process.env.NEXT_PUBLIC_API_URL}/api/index/`,
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-          'Authorization': `Bearer ${token}`
-        },
-        data: { fetchDecisionsCondition },
-        withCredentials: true,
-      });
-      if (response.status === 200) {
-        if (!userData) setUserData(response.data.current_user);
-        setUsers(response.data.users);
-        setDecisions(response.data.decisions);
-        setTags(response.data.tags);
-        setComments(response.data.comments);
-        setBookmarks(response.data.bookmarks);
+  {/* ページ読み込み時の動作 */}
+  useEffect(() => {
+    if (token) {
+      setIsLoading(true);
+      Promise.all([
+        getBookmarks(token),
+        getCharacters(token),
+        getComments(token),
+        getConversations(token),
+        getDecisions({token: token, condition: "public"}),
+        getTags(token),
+        getUsers(token, "all")
+      ])
+      .then(([bookmarks, characters, comments, conversations, decisions, tags, users]) => {
+        setBookmarks(bookmarks);
+        setCharacters(characters);
+        setComments(comments);
+        setConversations(conversations.conversations);
+        setCharacterResponses(conversations.character_responses);
+        setDecisions(decisions.decisions);
+        setDecisionTags(decisions.decision_tags);
+        setTags(tags);
+        setUsers(users.users);
+        setUserCharacters(users.user_characters);
+        setUserData(users.current_user);
+      })
+      .catch(error => {
+        console.error('Error fetching data', error);
+      })
+      .finally(() => {
+        mappingDecisions();
+        mappingConversations();
         setIsLoading(false);
-      }
-    } catch (error) {
-      console.error('Error fetching decisions', error);
+      });
     }
+  }, [token]);
+
+  const mappingDecisions = () => {
+    const mapDecisions = decisions.map(decision => {
+      // decision_tagsの中で、decision.idと一致するものを抽出
+      const decision_tags = decisionTags.filter(decision_tag => decision_tag.decision_id === decision.id);
+      // commentsの中で、decision.idと一致するものを抽出
+      const decision_comments = comments.filter(comment => comment.decision_id === decision.id);
+      // bookmarksの中で、decision.idと一致するものを抽出
+      const decision_bookmarks = bookmarks.filter(bookmark => bookmark.decision_id === decision.id);
+
+      return {
+        ...decision,
+        decision_tags: decision_tags,
+        comments: decision_comments,
+        bookmarks: decision_bookmarks,
+      };
+    });
+
+    setMappedDecisions(mapDecisions);
+  };
+
+  const mappingConversations = () => {
+    const mapConversations = conversations.map(conversation => {
+      // character_responsesの中で、conversation.idと一致するものを抽出
+      const conversation_character_responses = characterResponses.filter(character_response => character_response.conversation_id === conversation.id);
+
+      return {
+        ...conversation,
+        character_responses: conversation_character_responses,
+      };
+    });
+
+    setMappedConversations(mapConversations);
   }
 
   {/* コメント機能 */}
@@ -276,21 +314,26 @@ export default function decisionIndex() {
   const paginateFirst = () => setCurrentPage(1);
   const paginateLast = () => setCurrentPage(pageNumbers.length);
 
-
+  useEffect(() => {
+    mappingConversations();
+  }, [conversations, characterResponses]);
 
   useEffect(() => {
-    // decisions が更新されたら、filteredDecisions も更新
+    mappingDecisions();
+  }, [decisions, decisionTags, comments, bookmarks]);
+
+  useEffect(() => {
     let sortedDecisions = [...filteredDecisions];
     sortedDecisions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    setFilteredDecisions(decisions);
-  }, [decisions]);
+    setFilteredDecisions(mapppedDecisions);
+  }, [mapppedDecisions])
 
   useEffect(() => {
     // searchQuery が更新されたら、filteredDecisions も更新
     handleSearch();
   }, [searchQuery, selectedTag, sortOrder]);
 
-  const handleDecisionClick = (decision: DecisionIndex) => {
+  const handleDecisionClick = (decision: MappedDecision) => {
     setSelectedDecision(decision);
     setOpenModal(true);
   };
@@ -301,24 +344,30 @@ export default function decisionIndex() {
   };
 
   const handleSearch = () => {
-    let filtered = decisions;
+    let filtered = mapppedDecisions;
   
     if (selectedTag) {
       filtered = filtered.filter(decision => {
         // decision_tags に紐づく各タグが selectedTag と一致するか確認
-        return decision.decision_tags.some(decision_tag => {
+        const filteredDecisionTags = decisionTags.filter(decisionTag => decisionTag.decision_id === decision.id);
+        return filteredDecisionTags.some(decision_tag => {
           // 対応するタグを tags 配列から検索
-          const tag = tags.find(tag => tag.id === decision_tag);
+          const tag = tags.find(tag => tag.id === decision_tag.tag_id);
           return tag && tag.name === selectedTag;
         });
       });
     }
   
     if (searchQuery) {
-      filtered = filtered.filter(decision => 
-        decision.conversations.some(convo => convo.query_text && convo.query_text.includes(searchQuery)) ||
-        decision.conversations.some(convo => convo.character_responses.some(res => res.response && res.response.includes(searchQuery)))
-      );
+      filtered = filtered.filter(decision => {
+        const decisionConversations = mappedConversations.filter(convo => convo.decision_id === decision.id);
+        if (!decisionConversations) return false;
+        const decisionCharacterResponses = decisionConversations.map(convo => convo.character_responses).flat();
+        return (
+          decisionConversations.some(convo => convo.query_text && convo.query_text.includes(searchQuery)) ||
+          decisionCharacterResponses.some(res => res.response && res.response.includes(searchQuery))
+        );
+      });
     }
   
     setFilteredDecisions(filtered);
@@ -344,12 +393,12 @@ export default function decisionIndex() {
   };
 
   const handleSearchWithTag = (tagToSearch: string) => {
-    let filtered = decisions;
+    let filtered = mapppedDecisions;
 
     if (tagToSearch) {
       filtered = filtered.filter(decision => {
         return decision.decision_tags.some(decision_tag => {
-          const tag = tags.find(tag => tag.id === decision_tag);
+          const tag = tags.find(tag => tag.id === decision_tag.tag_id);
           return tag && tag.name === tagToSearch;
         });
       });
@@ -433,17 +482,17 @@ export default function decisionIndex() {
           <>
             <div className='w-[70vw] mb-[5vh]'>
               {currentDecisions.map((decision) => {
-                const decisionTags      = tags      && tags.length      > 0 ? tags.filter((tag) => decision.decision_tags.includes(tag.id)) : [];
-                const decisionComments  = comments  && comments.length  > 0 ? comments.filter((comment) => comment.decision_id === decision.id) : [];
-                const decisionBookmarks = bookmarks && bookmarks.length > 0 ? bookmarks.filter((bookmark) => bookmark.decision_id === decision.id) : [];
+                const decisionTags          = tags          && tags.length          > 0 ? tags.filter((tag) => decision.decision_tags.find(decision_tag => decision_tag.tag_id  == tag.id)) : [];
+                const decisionComments      = comments      && comments.length      > 0 ? comments.filter((comment) => comment.decision_id === decision.id) : [];
+                const decisionBookmarks     = bookmarks     && bookmarks.length     > 0 ? bookmarks.filter((bookmark) => bookmark.decision_id === decision.id) : [];
+                const decisionConversations = conversations && conversations.length > 0 ? conversations.filter((conversation) => conversation.decision_id === decision.id) : [];
+                const sortedConversations   = decisionConversations.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
                 return (
                   <div key={decision.id}
                       className='mb-4 shadow-lg rounded-lg'
                       onClick={() => handleDecisionClick(decision)}>
                     <DecisionCard
-                      decision_id={decision.id}
-                      query_text={decision.conversations[0].query_text}
-                      user={users.find((user) => user.id === decision.user_id)}
+                      query_text={sortedConversations[0].query_text}
                       comments={decisionComments}
                       bookmarks={decisionBookmarks}
                       decision_tags={decisionTags}
@@ -453,21 +502,14 @@ export default function decisionIndex() {
               )}
             </div>
   
-            <div className='pagination flex justify-center items-center my-4'>
-              <button onClick={paginateFirst} className='page-link text-lg mx-2 text-black'>{'<<'}</button>
-              {pageNumbers.map(number => (
-                number >= currentPage - 2 && number <= currentPage + 2 && (
-                  <button
-                    key={number}
-                    onClick={() => paginate(number)}
-                    className={`page-link text-lg mx-2 ${currentPage === number ? 'text-blue-500 font-bold' : 'text-black'}`}
-                  >
-                    {number}
-                  </button>
-                )
-              ))}
-              <button onClick={paginateLast} className='page-link text-lg mx-2 text-black'>{'>>'}</button>
-            </div>
+            <Pagination
+              postsPerPage={itemsPerPage}
+              totalPosts={filteredDecisions.length}
+              paginate={paginate}
+              currentPage={currentPage}
+              paginateFirst={paginateFirst}
+              paginateLast={paginateLast}
+            />
   
             {selectedDecision && (
               <div className='fixed inset-0 flex items-center justify-center z-10'>
@@ -479,8 +521,12 @@ export default function decisionIndex() {
                         users={users}
                         decision={selectedDecision}
                         currentUserId={userData!.id}
-                        conversations={selectedDecision.conversations}
-                        characters={selectedDecision.characters}
+                        conversations={mappedConversations && mappedConversations.length > 0 ? mappedConversations.filter(conversation => conversation.decision_id === selectedDecision.id) : null}
+                        characters={
+                          users.find(user => user.id === selectedDecision.user_id) ?
+                          characters.filter(character => userCharacters.find(userCharacter => userCharacter.character_id === character.id && userCharacter.user_id === selectedDecision.user_id)) :
+                          null
+                        }
                         comments={comments && comments.length > 0 ? comments.filter(comment => comment.decision_id === selectedDecision.id) : null}
                         onCommentSubmit={onCommentSubmit}
                         deleteComment={deleteComment}

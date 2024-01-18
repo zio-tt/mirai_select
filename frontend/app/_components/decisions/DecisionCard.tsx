@@ -12,15 +12,13 @@ type User = {
 }
 
 interface DecisionCardProps {
-  decision_id: number;
   query_text: string;
-  user: User | undefined;
   comments: Comment[] | null;
   bookmarks: Bookmark[] | null;
   decision_tags: decisionTagsProps[] | null;
 }
 
-const DecisionCard = ({ decision_id, query_text, user, comments, bookmarks, decision_tags }: DecisionCardProps) => {
+const DecisionCard = ({ query_text, comments, bookmarks, decision_tags }: DecisionCardProps) => {
   return (
     <div className="bg-white shadow-lg rounded-lg p-4">
       <div className="flex flex-row justify-between">

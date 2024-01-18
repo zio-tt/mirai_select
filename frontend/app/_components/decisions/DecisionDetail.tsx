@@ -18,7 +18,7 @@ interface Character {
   avatar:     string;
 }
 
-interface ConversationIndex extends Conversation {
+interface MappedConversation extends Conversation {
   character_responses: CharacterResponse[];
 }
 
@@ -26,8 +26,8 @@ interface DecisionDetailProps {
   users: User[];
   decision: Decision;
   currentUserId: number;
-  conversations: ConversationIndex[];
-  characters: Character[];
+  conversations: MappedConversation[] | null;
+  characters: Character[] | null;
   comments: Comment[] | null;
   onCommentSubmit: (comment: string) => void;
   deleteComment: (commentId: number) => Promise<void>;
@@ -57,14 +57,14 @@ const DecisionDetail = ({
   return (
     <>
       <div className='flex flex-col w-[70%] h-[70vh] items-start justify-start overflow-auto mr-5'>
-        {conversations.map((conversation, index) => (
+        {conversations && conversations.map((conversation, index) => (
           <div key={index} className='flex flex-col w-full items-center justify-center border p-3 mb-3 '>
             <div className='flex flex-row w-full'>
               <div className='flex flex-col w-full h-full mr-4'>
                 <div className='query-text flex w-full h-[15vh] text-center border-gray-200 border-2 rounded items-center justify-center text-lg mb-5'>
                   {conversation.query_text}
                 </div>
-                {characters.map((character, charIndex) => {
+                {characters && characters.map((character, charIndex) => {
                   // 適切なレスポンスを検索
                   const character_response = conversation.character_responses.find((character_response: CharacterResponse ) => 
                     character_response.character_id === character.id

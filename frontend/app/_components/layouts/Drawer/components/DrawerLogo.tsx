@@ -1,9 +1,14 @@
 import Link from 'next/link';
 
-const DrawerLogo = () => {
+interface DrawerLogoProps {
+  url: string;
+  onClick: (e: React.MouseEvent<HTMLElement>) => void;
+}
+
+const DrawerLogo = ({url, onClick}: DrawerLogoProps) => {
   return(
     <div className='flex h-[15vh] w-[70%] border-black border-2 rounded-lg items-center justify-center hover:bg-[#ffcf82]'>
-      <Link href='/'>
+      <Link id={url} href={url} onClick={onClick}>
         <p className='text-xl text-center'>ミライセレクト</p>
         <p className='text-xs text-center'>あなたの選択をサポートする</p>
       </Link>

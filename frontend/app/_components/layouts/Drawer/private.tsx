@@ -13,6 +13,7 @@ import { handleLogout } from '@/app/_features/auth/function';
 
 const PrivateDrawer = () => {
   const { isDrawerClick, setIsDrawerClick } = useHelper();
+  const { drawerLink, setDrawerLink } = useHelper();
   const [ avatar, setAvatar ]= useState<string>('');
   const { data: session } = useSession();
   const { remainingTokens } = useHelper();
@@ -28,13 +29,14 @@ const PrivateDrawer = () => {
 
   const initState = (e: React.MouseEvent<HTMLElement>) => {
     setIsDrawerClick(true);
+    setDrawerLink(e.currentTarget.id);
   };
 
   return (
     <>
       <div id='logo-space'
           className='flex h-[20vh] w-full items-center justify-center'>
-        <DrawerLogo />
+        <DrawerLogo url='/' onClick={initState} />
       </div>
       <div id='menu-space'
            className='flex flex-col h-[60vh] w-full items-center justify-start'>
