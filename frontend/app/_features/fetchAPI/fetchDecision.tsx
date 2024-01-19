@@ -15,7 +15,7 @@ interface getDecisionProps {
   condition: string;
 }
 
-const getDecisions = async ({token, condition}: getDecisionProps): Promise<{decisions: Decision[], decision_tags: DecisionTag[]}> => {
+const getDecisions = async ({token, condition}: getDecisionProps): Promise<Decision[]> => {
   try {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/decisions`;
     const response = await axios.get(url, {
@@ -24,10 +24,7 @@ const getDecisions = async ({token, condition}: getDecisionProps): Promise<{deci
       withCredentials: true,
     });
     if (response.status === 200) {
-      return {
-        decisions: response.data.decisions,
-        decision_tags: response.data.decision_tags,
-      }
+      return response.data;
     } else {
       throw new Error('Failed to fetch decisions');
     }

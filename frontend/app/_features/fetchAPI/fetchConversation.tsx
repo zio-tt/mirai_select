@@ -16,11 +16,18 @@ const defaultHeaders = (token: string) => {
   )
 };
 
-const getConversations = async (token: string): Promise<{conversations: Conversation[], character_responses: CharacterResponse[]}> => {
+const getConversations = async ({
+  token, decisionId, condition
+} : {
+  token : string,
+  decisionId?: number,
+  condition?: string,
+}): Promise<Conversation[]> => {
   try {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/conversations`;
     const response = await axios(url, {
       headers: defaultHeaders(token),
+      params: { decisionId, condition },
       withCredentials: true,
     });
     if (response.status === 200) {

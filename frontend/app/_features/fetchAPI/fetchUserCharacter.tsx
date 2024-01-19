@@ -16,8 +16,8 @@ interface UserCharacterProps {
 };
 
 const getUserCharacters = async (
-  token:     string,
-  condition: string,
+  token:      string,
+  condition?: string,
 ): Promise<UserCharacterProps> => {
   try{
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/user_characters`;

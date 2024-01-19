@@ -1,6 +1,6 @@
 class Api::CharacterResponsesController < ApplicationController
   def index
-    @character_responses = CharacterResponse.all
+    @character_responses = CharacterResponse.select_response
     render json: @character_responses
   end
 

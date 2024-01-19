@@ -1,6 +1,10 @@
 class Api::DecisionTagsController < ApplicationController
   before_action :set_decision, only: [:create, :update, :destroy]
 
+  def index
+    render json: { decision_tags: DecisionTag.all }
+  end
+
   def create
     tags_params.each do |tag|
       decision_tag = Tag.find_or_create_by(name: tag)

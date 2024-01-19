@@ -1,61 +1,34 @@
-// Built-in components
-import Image from 'next/image';
-import Link from 'next/link';
 // Hooks
-import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useHelper } from '@/app/_contexts/HelperContext';
+import { useHelper }   from '@/app/_contexts/HelperContext';
 // Components
-import { DrawerLogo } from './components/DrawerLogo';
-import { DrawerMenu } from './components/DrawerMenu';
-import { handleLogout } from '@/app/_features/auth/function';
+import { DrawerLogo }       from './components/DrawerLogo';
+import { DrawerMenu }       from './components/DrawerMenu';
 
 const PrivateDrawer = () => {
-  const { isDrawerClick, setIsDrawerClick } = useHelper();
-  const { drawerLink, setDrawerLink } = useHelper();
-  const [ avatar, setAvatar ]= useState<string>('');
-  const { data: session } = useSession();
-  const { remainingTokens } = useHelper();
+  const { remainingTokens }  = useHelper();
   const isRoot = usePathname();
-
-  useEffect(() => {
-    if (session?.user.image) {
-      setAvatar(session.user.image);
-    } else {
-      setAvatar('/images/logo.png');
-    }
-  });
-
-  const initState = (e: React.MouseEvent<HTMLElement>) => {
-    setIsDrawerClick(true);
-    setDrawerLink(e.currentTarget.id);
-  };
 
   return (
     <>
       <div id='logo-space'
           className='flex h-[20vh] w-full items-center justify-center'>
-        <DrawerLogo url='/' onClick={initState} />
+        <DrawerLogo url='/' />
       </div>
       <div id='menu-space'
            className='flex flex-col h-[60vh] w-full items-center justify-start'>
         <div className="divider divider-neutral mb-6">Menu</div>
         <DrawerMenu url='/helper'
                     imageURL="/images/comment.png"
-                    onClick={initState}
                     text='決断ヘルパー' />
         <DrawerMenu url='/decisions'
                     imageURL="/images/sns.png"
-                    onClick={initState}
                     text='みんなの悩みごと' />
         <DrawerMenu url='/mypage'
                     imageURL="/images/human.png"
-                    onClick={initState}
                     text='マイページ' />
-        <DrawerMenu url='#'
+        <DrawerMenu url='logout'
                     imageURL="/images/exit.png"
-                    onClick={handleLogout}
                     text='ログアウト' />
       </div>
       <div className="information flex flex-col min-h-[20vh] items-center justify-start">

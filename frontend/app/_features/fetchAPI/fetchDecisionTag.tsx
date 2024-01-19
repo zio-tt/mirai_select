@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UserCharacter } from "@/app/_types";
+import { DecisionTag } from "@/app/_types";
 
 const defaultHeaders = (token: string) => {
   return (
@@ -10,7 +10,7 @@ const defaultHeaders = (token: string) => {
   )
 };
 
-const getDecisionTags = async (token: string): Promise<UserCharacter[]> => {
+const getDecisionTags = async (token: string): Promise<DecisionTag[]> => {
   try {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/decision_tags`;
     const response = await axios.get(url, {
@@ -73,7 +73,6 @@ const updateDecisionTags = async (
 const deleteDecisionTags = async (
   token: string,
   id: string,
-  handleDeleteDecisionTag: (data: any) => void
 ) => {
   try {
     const response = await axios({
@@ -84,7 +83,7 @@ const deleteDecisionTags = async (
       withCredentials: true,
     });
     if (response.status === 200) {
-      handleDeleteDecisionTag(response.data);
+      return response.data;
     }
   } catch (error) {
     console.error('Error deleting decision_tag', error);

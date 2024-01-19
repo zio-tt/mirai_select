@@ -28,13 +28,14 @@ const UserInterface = ({ tags, setTags, isPublic, setIsPublic, saveDecision }: U
   };
 
   useEffect(() => {
-    if (inputTags.split(',').length > 6) {
-      const alertMessages = [...alert, 'タグの個数が6個を超えています。']
-      setLabelBgColor('bg-red-400');
-      setLabelTextColor('text-red-800');
-      setAlert(alertMessages);
-      setIsTagAlert(true);
-    } else if (inputTags.split(',').some(tag => tag.length > 10)) {
+    if (inputTags.split(',').length > 6 && !alert.includes('タグの個数が6個を超えています。')) {
+      // alertMessagesに「タグの個数が6個を超えています。」がない場合追加
+        const alertMessages = [...alert, 'タグの個数が6個を超えています。']
+        setAlert(alertMessages);
+        setLabelBgColor('bg-red-400');
+        setLabelTextColor('text-red-800');
+        setIsTagAlert(true);
+    } else if (inputTags.split(',').some(tag => tag.length > 10) && !alert.includes('タグの文字数が10文字を超えています。')) {
       const alertMessages = [...alert, 'タグの文字数が10文字を超えています。']
       setLabelBgColor('bg-red-400');
       setLabelTextColor('text-red-800');

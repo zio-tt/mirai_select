@@ -1,11 +1,25 @@
-import { useState } from 'react';
+import { useState } from "react";
+import { useDecisions } from "@/app/_contexts/DecisionsContext";
+import { createComment } from "@/app/_features/fetchAPI/fetchComment";
 
-const CommentInputForm = ({ onSubmit } : { onSubmit: (comment: string) => void }) => {
-  const [comment, setComment] = useState('');
+const CommentInputForm = () => {
+  const [comment,  setComment]  = useState<string>('');
+  const {comments, setComments} = useDecisions();
+  const {selectedDecision}      = useDecisions();
+  const {token}                 = useDecisions();
+
+  const createCommentsData = async () => {
+    if (token) {
+      const data = await createComment(token, comment, selectedDecision!.id);
+      setComments(data);
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(comment);
+
+    if (comment.length > 50) return;
+    createCommentsData();
     setComment('');
   };
 

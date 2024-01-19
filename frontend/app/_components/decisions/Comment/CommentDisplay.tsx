@@ -1,42 +1,35 @@
-import { Comment } from "@/app/_types";
 import Image from "next/image";
+import { useDecisions } from "@/app/_contexts/DecisionsContext";
 
-interface User {
-  id:     number;
-  name:   string;
-  token:  number;
-  avatar: string;
-}
+const CommentsDisplay = () => {
+  // initial state
+  const { currentUser, users, comments, selectedDecision} = useDecisions();
+  if (!currentUser || !users || !comments) return null;
 
-interface CommentDisplayProps {
-  users: User[];
-  currentUserId: number;
-  comments: Comment[] | null;
-  deleteComment: (commentId: number) => Promise<void>;
-}
+  const decisionComments = comments.filter((comment) => comment.decision_id === selectedDecision!.id);
 
-const CommentsDisplay = ({ users, currentUserId, comments, deleteComment }: CommentDisplayProps) => (
-  <div className="flex flex-col flex-grow w-full border overflow-auto h-[50vh]">
-    {comments && comments!.map((comment, index) => {
-      const user = users?.find((user) => user.id === comment.user_id);
-      return (
-        <div key={index} className="flex flex-row border-b p-2 items-center">
-          <Image alt={user!.name} 
-                 src={user!.avatar || '/images/logo.png'}
-                 width={50} height={50}
-                 className="flex" />
-          <div className="flex grow">{comment.content}</div>
-          { currentUserId === comment.user_id && (
-            <Image alt="削除" 
-                   src="/images/delete_button.png"
-                   width={20} height={20}
-                   onClick={() => deleteComment(comment.id)}
-                   className="flex ml-2 opacity-20" />
-          )}
-        </div>
+  return (
+    <div className="flex flex-col flex-grow w-full border overflow-auto h-[50vh]">
+      {decisionComments.map((comment, index) => {
+        const user = users?.find((user) => user.id === comment.user_id);
+        return (
+          <div key={index} className="flex flex-row border-b p-2 items-center">
+            <Image alt={user!.name}
+                   src={user!.avatar || '/images/logo.png'}
+                   width={50} height={50}
+                   className="flex" />
+            <div className="flex grow">{comment.content}</div>
+            { currentUser.id === comment.user_id && (
+              <Image alt="削除"
+                     src="/images/delete_button.png"
+                     width={20} height={20}
+                     className="flex ml-2 opacity-20" />
+            )}
+          </div>
+        )}
       )}
-    )}
-  </div>
-);
+    </div>
+  )
+};
 
 export { CommentsDisplay };

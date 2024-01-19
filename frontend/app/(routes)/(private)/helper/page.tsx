@@ -12,6 +12,7 @@ import { Loading }            from '@/app/_components/layouts/loading/layout';
 import { useErrorHandling }   from './_hooks/useErrorHandling';
 // Hooks
 import { useState, useEffect } from 'react';
+import { useDrawer }           from '@/app/_contexts/DrawerContext';
 import { useHelper }           from '@/app/_contexts/HelperContext';
 import { useSession }          from 'next-auth/react';
 // Custom Hooks
@@ -28,9 +29,6 @@ import { createConversation,
          createTag,
          createDecisionTags,
         } from '@/app/_features/fetchAPI';
-import { init } from 'next/dist/compiled/webpack/webpack';
-import { set } from 'zod';
-import { create } from 'domain';
 
 interface CharacterResponse {
   conversation_id: number;
@@ -44,10 +42,10 @@ export default function decisionHelper () {
   const { userCharacters,
           currentUser,
           setCurrentUser,
-          fetchHelperInitData } = useHelperInitData();
+          fetchHelperInitData } = useHelper();
   // ドロワーとの連携
-  const { isDrawerClick, setIsDrawerClick } = useHelper();
-  const { drawerLink,    setDrawerLink }    = useHelper();
+  const { isDrawerClick, setIsDrawerClick } = useDrawer();
+  const { drawerLink,    setDrawerLink }    = useDrawer();
   // 深掘り機能
   const [ beforeQueryText,          setBeforeQueryText ]          = useState('');
   const [ beforeCharacterResponses, setBeforeCharacterResponses ] = useState<CharacterResponse[]>([]);
@@ -80,44 +78,44 @@ export default function decisionHelper () {
 
   //////////////////// Debug ////////////////////
 
-  {/* init data */}
-  useEffect(() => {
-    console.log("Update init data")
-    console.log('userCharacters', userCharacters);
-    console.log('currentUser', currentUser);
-  }, [userCharacters, currentUser]);
+  // {/* init data */}
+  // useEffect(() => {
+  //   console.log("Update init data")
+  //   console.log('userCharacters', userCharacters);
+  //   console.log('currentUser', currentUser);
+  // }, [userCharacters, currentUser]);
 
-  {/* state */}
-  useEffect(() => {
-    console.log("Update state");
-    console.log('queryText', queryText);
-    console.log('characterResponses', characterResponses);
-    console.log('decision', decision);
-    console.log('conversation', conversation);
-    console.log('isResponse', isResponse);
-  }, [queryText, characterResponses, decision, conversation, isResponse]);
+  // {/* state */}
+  // useEffect(() => {
+  //   console.log("Update state");
+  //   console.log('queryText', queryText);
+  //   console.log('characterResponses', characterResponses);
+  //   console.log('decision', decision);
+  //   console.log('conversation', conversation);
+  //   console.log('isResponse', isResponse);
+  // }, [queryText, characterResponses, decision, conversation, isResponse]);
 
-  {/* error */}
-  useEffect(() => {
-    console.log("Update error")
-    console.log('errors', errors);
-    console.log('isError', isError);
-  }, [errors, isError]);
+  // {/* error */}
+  // useEffect(() => {
+  //   console.log("Update error")
+  //   console.log('errors', errors);
+  //   console.log('isError', isError);
+  // }, [errors, isError]);
 
-  {/* user interface */}
-  useEffect(() => {
-    console.log("Update user interface")
-    console.log('tags', tags);
-    console.log('userDecision', userDecision);
-    console.log('isPublic', isPublic);
-  }, [tags, userDecision, isPublic]);
+  // {/* user interface */}
+  // useEffect(() => {
+  //   console.log("Update user interface")
+  //   console.log('tags', tags);
+  //   console.log('userDecision', userDecision);
+  //   console.log('isPublic', isPublic);
+  // }, [tags, userDecision, isPublic]);
 
-  {/* helper */}
-  useEffect(() => {
-    console.log("Update helper")
-    console.log('isDrawerClick', isDrawerClick);
-    console.log('remainingTokens', remainingTokens);
-  }, [isDrawerClick, remainingTokens]);
+  // {/* helper */}
+  // useEffect(() => {
+  //   console.log("Update helper")
+  //   console.log('isDrawerClick', isDrawerClick);
+  //   console.log('remainingTokens', remainingTokens);
+  // }, [isDrawerClick, remainingTokens]);
 
   ///////////////////////////////////////////////
 
@@ -134,7 +132,7 @@ export default function decisionHelper () {
 
   useEffect(() => {
     if(token){
-      fetchHelperInitData();
+      fetchHelperInitData(token);
       resetErrorMessages();
     }
   }, [token]);
@@ -220,7 +218,6 @@ export default function decisionHelper () {
       const openAiResponse = await OpenAiRequest(fetchData);
       const processedResponse = JSON.parse(openAiResponse.response.choices[0].message.content);
       const parsedResponse = parseResponse(processedResponse, createdConversation);
-      console.log('parsedResponse', parsedResponse)
 
       // 5. 4の結果を元にConversationに紐づく
       await createCharacterResponses(
@@ -354,7 +351,7 @@ export default function decisionHelper () {
         kind: 'openai'
       });
     } finally {
-      fetchHelperInitData();
+      fetchHelperInitData(token);
       setIsLoading(false);
     }
   }
@@ -396,13 +393,6 @@ export default function decisionHelper () {
     }
   }, [isDrawerClick, drawerLink]);
 
-
-  useEffect(() => {
-    if(tags.length > 0 && userDecision!.response !== '') {
-      removeErrorMessages('validation');
-    }
-  }, [tags, userDecision]);
-
   // 入力フォームの内容が変更された場合の処理
   useEffect(() => {
     const queryTextLength = queryText.length;
@@ -429,6 +419,8 @@ export default function decisionHelper () {
         message: `トークン数が不足しています。（残りトークン数：${remainingTokens}）`,
         kind: 'token'
       });
+    } else {
+      removeErrorMessages('token');
     }
   }, [remainingTokens])
 

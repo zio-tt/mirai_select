@@ -1,9 +1,14 @@
-import { Decision, Conversation, CharacterResponse, Comment, Bookmark } from '@/app/_types';
+import { Decision, Conversation, Comment, Bookmark } from '@/app/_types';
 import { CharacterAvatarWindow } from './Character/CharacterAvatarWindow';
 import { CharacterTextWindow } from './Character/CharacterTextWindow';
 import { CommentInputForm } from './Comment/CommentInputForm';
 import { CommentsDisplay } from './Comment/CommentDisplay';
-import { useEffect } from 'react';
+
+interface CharacterResponse {
+  conversation_id: number;
+  character_id?:   number;
+  response:        string;
+}
 
 interface User {
   id:     number;
@@ -18,19 +23,14 @@ interface Character {
   avatar:     string;
 }
 
-interface MappedConversation extends Conversation {
-  character_responses: CharacterResponse[];
-}
-
 interface DecisionDetailProps {
   users: User[];
   decision: Decision;
   currentUserId: number;
-  conversations: MappedConversation[] | null;
+  conversations: Conversation[] | null;
+  character_responses: CharacterResponse[];
   characters: Character[] | null;
   comments: Comment[] | null;
-  onCommentSubmit: (comment: string) => void;
-  deleteComment: (commentId: number) => Promise<void>;
   bookmarks: Bookmark[] | null;
   isBookmarked: boolean;
   setIsBookmarked: (isBookmarked: boolean) => void;
@@ -42,17 +42,16 @@ const DecisionDetail = ({
   users,
   currentUserId,
   conversations,
+  character_responses,
   decision,
   characters,
   comments,
-  onCommentSubmit,
-  deleteComment,
   bookmarks,
   isBookmarked,
   setIsBookmarked,
   onBookmarkToggle }: DecisionDetailProps) => {
 
-  const user     = users.find((user) => user.id === currentUserId);
+  const user = users.find((user) => user.id === currentUserId);
 
   return (
     <>
@@ -66,7 +65,7 @@ const DecisionDetail = ({
                 </div>
                 {characters && characters.map((character, charIndex) => {
                   // 適切なレスポンスを検索
-                  const character_response = conversation.character_responses.find((character_response: CharacterResponse ) => 
+                  const character_response = character_responses.find((character_response) => 
                     character_response.character_id === character.id
                   );
 
@@ -92,11 +91,8 @@ const DecisionDetail = ({
             </div>
           )
         }
-        <CommentInputForm onSubmit={onCommentSubmit} />
-        <CommentsDisplay users={users}
-                        currentUserId={currentUserId}
-                        comments={comments}
-                        deleteComment={deleteComment} />
+        <CommentInputForm />
+        <CommentsDisplay />
       </div>
     </>
   );

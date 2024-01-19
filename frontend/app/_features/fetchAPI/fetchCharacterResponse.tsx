@@ -16,15 +16,19 @@ interface CharacterResponse {
   response:        string;
 }
 
-const getCharacterResponses = async (token:string): Promise<UserCharacter[]> => {
+const getCharacterResponses = async (
+  token: string,
+  decisionId: number,
+): Promise<CharacterResponse[]> => {
   try {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/character_responses`;
     const response = await axios.get(url, {
       headers: defaultHeaders(token),
+      params: { decisionId },
       withCredentials: true,
     });
     if (response.status === 200) {
-      return response.data.character_responses;
+      return response.data;
     } else {
       throw new Error('Failed to fetch character_responses');
     }

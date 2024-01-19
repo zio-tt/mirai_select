@@ -8,15 +8,14 @@ const PublicDrawer = () => {
     <>
       <div id='logo-space'
           className='flex h-[20vh] w-full items-center justify-center'>
-        <DrawerLogo />
+        <DrawerLogo url="/" />
       </div>
       <div id='menu-space'
            className='flex flex-col h-[60vh] w-full items-center justify-start'>
         <div className="divider divider-neutral mb-6">Menu</div>
-        <DrawerMenu url='/'
+        <DrawerMenu url='login'
                     text='Google認証'
-                    imageURL='/images/google.png'
-                    onClick={handleLogin} />
+                    imageURL='/images/google.png'/>
         <DrawerMenu url='#'
                     text='体験ページ¥¥¥（現在準備中）'
                     imageURL='/images/wakaba.png'/>

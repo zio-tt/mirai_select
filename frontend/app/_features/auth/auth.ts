@@ -104,16 +104,21 @@ export const options: NextAuthOptions = {
                                   .sign(secretKey);
       const https = require('https');
       const httpsAgent = new https.Agent({ rejectUnauthorized: false });
-
       try {
-        if (!account?.provider) {
-          throw new Error('Provider is undefined');
-        }
         // UsersController#createを呼び出し、ユーザー作成または確認
-        const userCreateResponse = await createUser(account?.provider, token, httpsAgent);
-        // crateUserでstatusが200の場合responseを返す様にしているので
-        // 呼び出し元であるこの関数ではresponseを返す必要はない
-        return Promise.resolve(true);
+        const userCreateResponse = await axios({
+          method: 'post',
+          url: `${process.env.NEXT_PUBLIC_WEB_URL}/auth/${account?.provider}/callback/`,
+          headers: { 'X-Requested-With': 'XMLHttpRequest',
+                     'Authorization': `Bearer ${token}`,
+                     'Content-Type': 'application/json' },
+          data: { token },
+          withCredentials: true,
+          httpsAgent,
+        });
+
+        // ユーザー作成が成功した場合（ステータスコード200）
+        return userCreateResponse.status === 200
       } catch (error) {
         console.error('エラー', error);
         return false;

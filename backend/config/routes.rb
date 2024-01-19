@@ -14,6 +14,9 @@ Rails.application.routes.draw do
     resources :users,               only: [:index, :update, :destroy]
     resources :user_characters,     only: [:index, :update]
     # users#createは特定のURLを指定する
+  end
+  
+  scope module: :api, defaults: { format: :json } do
     post 'auth/:provider/callback', to: 'users#create'
   end
 

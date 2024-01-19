@@ -16,7 +16,7 @@ class Api::DecisionsController < ApplicationController
 
     @decisions = @decisions
 
-    render json: { decisions: @decisions, decision_tags: DecisionTag.all }
+    render json: @decisions
   end
 
   def create

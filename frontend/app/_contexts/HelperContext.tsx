@@ -1,17 +1,17 @@
 import { useState, createContext, useContext } from 'react';
 import { User, Character } from '@/app/_types'; 
+import { useHelperInitData } from '../(routes)/(private)/helper/_hooks/useHelperInitData';
 
 type HelperContextType = {
-  userData: User | null;
-  setUserData: React.Dispatch<React.SetStateAction<User | null>>;
+  currentUser: User | undefined;
+  setCurrentUser: React.Dispatch<React.SetStateAction<User | undefined>>;
+  userCharacters: Character[] | undefined;
+  setUserCharacters: React.Dispatch<React.SetStateAction<Character[] | undefined>>;
   inputText: string;
   setInputText: React.Dispatch<React.SetStateAction<string>>;
   remainingTokens: number;
   setRemainingTokens: React.Dispatch<React.SetStateAction<number>>;
-  isDrawerClick: boolean;
-  setIsDrawerClick: React.Dispatch<React.SetStateAction<boolean>>;
-  drawerLink: string;
-  setDrawerLink: React.Dispatch<React.SetStateAction<string>>;
+  fetchHelperInitData: (token: string) => Promise<void>;
 };
 
 type ChildrenType = {
@@ -29,19 +29,19 @@ export const useHelper = () => {
 };
 
 export const HelperProvider = ({ children }: ChildrenType) => {
-  const [ userData, setUserData ] = useState<User | null>(null);
+  const { currentUser, setCurrentUser } = useHelperInitData();
+  const { userCharacters, setUserCharacters } = useHelperInitData();
   const [ inputText, setInputText ] = useState<string>('');
   const [ remainingTokens, setRemainingTokens ] = useState<number>(0);
-  const [ isDrawerClick, setIsDrawerClick ] = useState<boolean>(false);
-  const [ drawerLink, setDrawerLink ] = useState<string>('');
+  const { fetchHelperInitData } = useHelperInitData();
 
   return (
     <HelperContext.Provider 
-      value={{ userData, setUserData, 
+      value={{ currentUser, setCurrentUser,
+               userCharacters, setUserCharacters,
                inputText, setInputText,
                remainingTokens, setRemainingTokens,
-               isDrawerClick, setIsDrawerClick,
-               drawerLink, setDrawerLink}}>
+               fetchHelperInitData}}>
       {children}
     </HelperContext.Provider>
   );

@@ -4,7 +4,7 @@ class Api::TagsController < ApplicationController
   end
 
   def create
-    tags.each do |tag|
+    tags_params.each do |tag|
       Tag.create(name: tag)
     end
 

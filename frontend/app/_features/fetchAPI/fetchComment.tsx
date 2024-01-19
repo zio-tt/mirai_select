@@ -31,8 +31,7 @@ const getComments = async (token: string): Promise<Comment[]> => {
 const createComment = async (
   token: string,
   content: string,
-  decisionId: string,
-  handleCreateComment: (data: any) => void
+  decisionId: number,
 ) => {
   try {
     const response = await axios({
@@ -43,7 +42,7 @@ const createComment = async (
       withCredentials: true,
     });
     if (response.status === 200) {
-      handleCreateComment(response.data);
+      return response.data;
     }
   } catch (error) {
     console.error('Error creating comment', error);
