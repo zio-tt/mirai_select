@@ -3,6 +3,7 @@ import type { DefaultSession, DefaultUser, NextAuthOptions, Session, User } from
 import type { DefaultJWT, JWT } from 'next-auth/jwt';
 import GoogleProvider from 'next-auth/providers/google';
 import axios from 'axios';
+import { createUser } from '@/app/_features/fetchAPI'
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
@@ -103,7 +104,6 @@ export const options: NextAuthOptions = {
                                   .sign(secretKey);
       const https = require('https');
       const httpsAgent = new https.Agent({ rejectUnauthorized: false });
-
       try {
         // UsersController#createを呼び出し、ユーザー作成または確認
         const userCreateResponse = await axios({

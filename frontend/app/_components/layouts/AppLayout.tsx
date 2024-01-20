@@ -4,16 +4,16 @@
 // Built-in components
 import Image from 'next/image';
 // Contexts
-import { SessionProvider } from 'next-auth/react';
-import { HelperProvider }  from '@/app/_contexts/HelperContext';
-import { TopPageProvider } from '@/app/_contexts/TopPageContext';
-import { IndexProvider }   from '@/app/_contexts/IndexContext';
+import { SessionProvider   } from 'next-auth/react';
+import { HelperProvider    } from '@/app/_contexts/HelperContext';
+import { TopPageProvider   } from '@/app/_contexts/TopPageContext';
+import { DecisionsProvider } from '@/app/_contexts/DecisionsContext';
+import { DrawerProvider    } from '@/app/_contexts/DrawerContext';
 // Hooks
 import { useState, useEffect } from 'react';
 import { usePathname }         from 'next/navigation';
 import { useSession }          from 'next-auth/react';
 import { useTopPage }          from '@/app/_contexts/TopPageContext';
-import { useIndex }            from '@/app/_contexts/IndexContext';
 import { useRouter }           from 'next/navigation';
 // Fonts
 import { Inter }    from 'next/font/google'
@@ -37,7 +37,6 @@ export type AppLayoutProps = {
 
 const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { isViewed, setIsViewed } = useTopPage(); // Opening Animation Flag
-  const { openModal, setOpenModal } = useIndex(); // Index Modal Flag
   const [ isAuth, setIsAuth ] = useState<string | null>(null); // 認証状態
   const [ isAdmin, setIsAdmin ] = useState<boolean>(false); // 管理者権限
   const { status } = useSession();
@@ -89,7 +88,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
                       <main className='flex w-full min-h-[calc(100vh-4rem)] z-10 items-center'>
                         <AuthGuard children={children} />
                       </main>
-                      {!openModal && <Footer />}
+                      <Footer />
                     </>
                   }
                 </div>
@@ -108,14 +107,16 @@ const AppLayout = ({children}: AppLayoutProps) => {
         <GoogleAnalytics />
         <link href='https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&display=swap' rel='stylesheet' />
       </head>
-      
+
       <body className={inter.className}>
         <SessionProvider>
         <TopPageProvider>
         <HelperProvider>
-        <IndexProvider>
+        <DecisionsProvider>
+        <DrawerProvider>
           <LayoutContent children={children} />
-        </IndexProvider>
+        </DrawerProvider>
+        </DecisionsProvider>
         </HelperProvider>
         </TopPageProvider>
         </SessionProvider>

@@ -1,14 +1,18 @@
-class CommentsController < ApplicationController
+class Api::CommentsController < ApplicationController
   before_action :set_comment, only: [:destroy]
   
+  def index
+    render json: { comments: Comment.all }
+  end
+
   def create
     @comment = Comment.new(
-      user_id: comment_params[:user_id],
-      decision_id: comment_params[:decision_id],
-      content: comment_params[:content]
+      user_id: current_user.id,
+      decision_id: decision_id_params,
+      content: content_params
     )
     if @comment.save
-      render json: { comments: Comment.all }
+      render json: Comment.all
     else
       render json: { error: 'Unable to create comment.' }
     end
@@ -22,11 +26,15 @@ class CommentsController < ApplicationController
 
   private
 
-  def comment_params
-    params.require(:comment).permit(:user_id, :decision_id, :content)
-  end
-
   def set_comment
     @comment = Comment.find(params[:id])
+  end
+
+  def content_params
+    params.require(:content)
+  end
+
+  def decision_id_params
+    params.require(:decisionId)
   end
 end

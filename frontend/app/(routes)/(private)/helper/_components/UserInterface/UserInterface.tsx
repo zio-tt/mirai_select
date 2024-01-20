@@ -28,13 +28,14 @@ const UserInterface = ({ tags, setTags, isPublic, setIsPublic, saveDecision }: U
   };
 
   useEffect(() => {
-    if (inputTags.split(',').length > 6) {
-      const alertMessages = [...alert, 'タグの個数が6個を超えています。']
-      setLabelBgColor('bg-red-400');
-      setLabelTextColor('text-red-800');
-      setAlert(alertMessages);
-      setIsTagAlert(true);
-    } else if (inputTags.split(',').some(tag => tag.length > 10)) {
+    if (inputTags.split(',').length > 6 && !alert.includes('タグの個数が6個を超えています。')) {
+      // alertMessagesに「タグの個数が6個を超えています。」がない場合追加
+        const alertMessages = [...alert, 'タグの個数が6個を超えています。']
+        setAlert(alertMessages);
+        setLabelBgColor('bg-red-400');
+        setLabelTextColor('text-red-800');
+        setIsTagAlert(true);
+    } else if (inputTags.split(',').some(tag => tag.length > 10) && !alert.includes('タグの文字数が10文字を超えています。')) {
       const alertMessages = [...alert, 'タグの文字数が10文字を超えています。']
       setLabelBgColor('bg-red-400');
       setLabelTextColor('text-red-800');
@@ -76,7 +77,7 @@ const UserInterface = ({ tags, setTags, isPublic, setIsPublic, saveDecision }: U
 
       {/* 保存ボタンと公開設定 */}
       <div className='w-[70%] mx-auto flex flex-col items-end space-y-2 mb-4'>
-        <button className='btn btn-lg w-full text-2xl bg-white text-black hover:text-white' onClick={saveDecision}>保存する</button>
+        <button className='btn btn-lg w-full text-2xl bg-white text-black hover:text-white' onClick={saveDecision}>決断する</button>
         <label className="label cursor-pointer space-x-2">
           <span className="label-text text-md text-black">全体に公開する</span>
           <input type="checkbox" className="checkbox checkbox-primary" checked={isPublic} onChange={handlePublicChange} />

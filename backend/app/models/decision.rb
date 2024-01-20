@@ -60,8 +60,8 @@ class Decision < ApplicationRecord
     return message
   end
 
-  def second_message(input_text, before_query_text, user_decision)
-    message="前回の質問文: #{before_query_text}, 前回の回答: #{user_decision}, 今回の質問文: #{input_text}"
+  def second_message(query_text, before_query_text, user_decision)
+    message="前回の質問文: #{before_query_text}, 前回の回答: #{user_decision}, 今回の質問文: #{query_text}"
   end
 
   def assistant_message(character1, character2)

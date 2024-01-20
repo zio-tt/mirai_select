@@ -1,14 +1,29 @@
 import { useEffect, useState } from 'react';
 
+interface CharacterResponse {
+  conversation_id: number;
+  character_id?:   number;
+  response:        string;
+}
 interface InputFormProps {
   inputText: string;
-  setInputText: (inputText: string) => void;
   handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  sendText: (e: React.MouseEvent<HTMLElement>) => void;
   placeholder: string;
+  sendText: (e: React.MouseEvent<HTMLElement>) => Promise<void>;
+  token: string;
+  decisionId: number;
+  characterResponses: CharacterResponse[];
 }
 
-const InputForm = ({ inputText, setInputText, handleChange, sendText, placeholder } : InputFormProps) => {
+const InputForm = ({
+  inputText,
+  handleChange,
+  sendText,
+  placeholder,
+  token,
+  decisionId,
+  characterResponses,
+} : InputFormProps) => {
   const [ textColor, setTextColor ] = useState('text-black');
   const [ alertText, setAlertText ] = useState('');
 
@@ -35,7 +50,12 @@ const InputForm = ({ inputText, setInputText, handleChange, sendText, placeholde
         <p className={`flex font-extrabold ${textColor}`}>
           {alertText}
         </p>
-        <button className='flex btn btn-lg w-[70%] bg-white text-2xl text-black hover:text-white' onClick={sendText}>相談する</button>
+        <button 
+          className='flex btn btn-lg w-[70%] bg-white text-2xl text-black hover:text-white' 
+          onClick={(e) => sendText(e)}
+        >
+          相談する
+        </button>
       </div>
     </>
   );

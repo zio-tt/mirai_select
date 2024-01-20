@@ -1,28 +1,17 @@
 import { useState, createContext, useContext } from 'react';
-import { Character } from '@/app/_types'; 
-
-interface User {
-  id: number;
-  name: string;
-  token: number;
-  avatar: string;
-}
-
-interface CharacterProps extends Character {
-  avatar: string;
-}
+import { User, Character } from '@/app/_types'; 
+import { useHelperInitData } from '../(routes)/(private)/helper/_hooks/useHelperInitData';
 
 type HelperContextType = {
-  userData: User | null;
-  setUserData: React.Dispatch<React.SetStateAction<User | null>>;
-  characterData: CharacterProps[] | null;
-  setCharacterData: React.Dispatch<React.SetStateAction<CharacterProps[] | null>>;
+  currentUser: User | undefined;
+  setCurrentUser: React.Dispatch<React.SetStateAction<User | undefined>>;
+  userCharacters: Character[] | undefined;
+  setUserCharacters: React.Dispatch<React.SetStateAction<Character[] | undefined>>;
   inputText: string;
   setInputText: React.Dispatch<React.SetStateAction<string>>;
   remainingTokens: number;
   setRemainingTokens: React.Dispatch<React.SetStateAction<number>>;
-  isDrawerClick: boolean;
-  setIsDrawerClick: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchHelperInitData: (token: string) => Promise<void>;
 };
 
 type ChildrenType = {
@@ -40,19 +29,19 @@ export const useHelper = () => {
 };
 
 export const HelperProvider = ({ children }: ChildrenType) => {
-  const [ userData, setUserData ] = useState<User | null>(null);
-  const [ characterData, setCharacterData ] = useState<Character[] | null>(null);
+  const { currentUser, setCurrentUser } = useHelperInitData();
+  const { userCharacters, setUserCharacters } = useHelperInitData();
   const [ inputText, setInputText ] = useState<string>('');
   const [ remainingTokens, setRemainingTokens ] = useState<number>(0);
-  const [ isDrawerClick, setIsDrawerClick ] = useState<boolean>(false);
+  const { fetchHelperInitData } = useHelperInitData();
 
   return (
     <HelperContext.Provider 
-      value={{ userData, setUserData, 
-               characterData, setCharacterData, 
+      value={{ currentUser, setCurrentUser,
+               userCharacters, setUserCharacters,
                inputText, setInputText,
                remainingTokens, setRemainingTokens,
-               isDrawerClick, setIsDrawerClick}}>
+               fetchHelperInitData}}>
       {children}
     </HelperContext.Provider>
   );
