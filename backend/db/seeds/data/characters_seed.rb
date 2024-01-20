@@ -1,7 +1,7 @@
 characters = [
   {
     name:          '天使',
-    avatar:        'public/top/angel.png',
+    avatar:        'public/character_avatars/angel.png',
     mbti_type:     :INFJ,
     tone:          :polite,
     first_person:  '私',
@@ -12,7 +12,7 @@ characters = [
   },
   {
     name:          '悪魔',
-    avatar:        'public/top/devil.png',
+    avatar:        'public/character_avatars/devil.png',
     mbti_type:     :ENTP,
     tone:          :casual,
     first_person:  'オレ様',
