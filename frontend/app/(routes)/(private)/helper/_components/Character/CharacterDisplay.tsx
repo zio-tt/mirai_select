@@ -2,10 +2,8 @@ import { CharacterAvatarWindow } from './CharacterAvatarWindow';
 import { CharacterTextWindow } from './CharacterTextWindow';
 import { Character } from '@/app/_types';
 
-import { useState, useEffect } from 'react';
-import { useHelper } from '@/app/_contexts/HelperContext';
-import { set } from 'zod';
-import exp from 'constants';
+import { useEffect } from 'react';
+import { useDrawer } from '@/app/_contexts/DrawerContext';
 
 interface CharacterResponse {
   conversation_id: number;
@@ -23,7 +21,7 @@ interface CharacterDisplayProps {
 }
 
 const CharacterDisplay = ({ conversationId, userCharacters, responses, userDecision, setUserDecision, isResponse }: CharacterDisplayProps) => {
-  const { isDrawerClick } = useHelper();
+  const { isDrawerClick } = useDrawer();
 
   useEffect(() => {
     if (isDrawerClick) {
