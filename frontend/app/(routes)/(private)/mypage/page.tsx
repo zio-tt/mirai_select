@@ -1,14 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loading }  from '@/app/_components/layouts/loading/layout';
-import MyDecisions       from './_components/MyDecisions';
-import FavoriteDecisions from './_components/FavoriteDecisions';
 import { useDecisions } from '@/app/_contexts/DecisionsContext';
+import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData';
+import DecisionIndex from '@/app/_components/decisions/DecisionIndex';
+import { getDecisions } from '@/app/_features/fetchAPI';
 
-export default function Decisions() {
+export default function MyPageDecisions() {
+  const { setDecisions } = useDecisions();
   const { isLoading } = useDecisions();
-  const [selectMenu, setSelectMenu] = useState('private');
+  const { token } = useDecisionsData();
+  const { decisionsCondition, setDecisionsCondition } = useDecisions();
+
+  const getDecisionsData = async (condition: string) => {
+    if (token) {
+      const decisions = await getDecisions({ token: token, condition: condition });
+      setDecisions(decisions);
+    }
+  }
+
+  const handleFetchDecisions = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const condition = e.currentTarget.id;
+    getDecisionsData(condition);
+    setDecisionsCondition(condition);
+  };
+
+  useEffect(() => {
+    setDecisionsCondition('private');
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      getDecisionsData(decisionsCondition);
+    }
+  }, [decisionsCondition]);
 
   return (
     <>
@@ -18,18 +44,19 @@ export default function Decisions() {
         {/* マイページメニュー */}
         <div className='w-[70vw] mt-[2vh] flex justify-start'>
           <button 
-            className={`px-4 py-2 ${selectMenu === 'private' ? 'bg-blue-500 text-white' : ''}`} 
-            onClick={() => setSelectMenu('private')}>
+            id='private'
+            className={`px-4 py-2 ${decisionsCondition === 'private' ? 'bg-blue-500 text-white' : ''}`} 
+            onClick={(e) => handleFetchDecisions(e)}>
             My Posts
           </button>
           <button 
-            className={`px-4 py-2 ${selectMenu === 'favorite' ? 'bg-blue-500 text-white' : ''}`} 
-            onClick={() => setSelectMenu('favorite')}>
+            id='favorite'
+            className={`px-4 py-2 ${decisionsCondition === 'favorite' ? 'bg-blue-500 text-white' : ''}`} 
+            onClick={(e) => handleFetchDecisions(e)}>
             Favorites
           </button>
         </div>
-        { selectMenu === 'private'  && <MyDecisions />}
-        { selectMenu === 'favorite' && <FavoriteDecisions />}
+        <DecisionIndex />
       </div>
     )}
     </>

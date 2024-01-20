@@ -10,11 +10,9 @@ class Api::DecisionsController < ApplicationController
       @decisions = Decision.public_decisions
     when "private"
       @decisions = current_user.decisions
-    when "bookmarked"
+    when "favorite"
       @decisions = current_user.bookmarked_decisions
     end
-
-    @decisions = @decisions
 
     render json: @decisions
   end

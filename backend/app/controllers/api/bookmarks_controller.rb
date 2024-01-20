@@ -6,13 +6,11 @@ class Api::BookmarksController < ApplicationController
   end
 
   def create
-    @bookmark = current_user.bookmarks.build(decision_id: bookmark_params)
-
-    if @bookmark.save
-      render json: { bookmarks: Bookmark.all }
-    else
-      render json: { error: 'Unable to create bookmark.' }
-    end
+    # decision_id = bookmark_params, user_id = current_user.idの条件を満たすbookmarkが存在するかどうか
+    # 存在する場合はそのままrender json: { bookmarks: Bookmark.all }を返す
+    # 存在しない場合はBookmark.new(decision_id: bookmark_params, user_id: current_user.id)を作成してsaveする
+    @bookmark = Bookmark.find_or_create_by!(decision_id: bookmark_params, user_id: current_user.id)
+    render json: { bookmarks: Bookmark.all }
   end
 
   def destroy

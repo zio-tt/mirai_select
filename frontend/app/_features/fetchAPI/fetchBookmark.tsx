@@ -30,8 +30,7 @@ const getBookmarks = async (token: string): Promise<Bookmark[]> => {
 
 const createBookmark = async (
   token: string,
-  decisionId: string,
-  handleCreateBookmark: (data: any) => void
+  decisionId: number,
 ) => {
   try {
     const response = await axios({
@@ -42,7 +41,7 @@ const createBookmark = async (
       withCredentials: true,
     });
     if (response.status === 200) {
-      handleCreateBookmark(response.data);
+      return response.data.bookmarks;
     }
   } catch (error) {
     console.error('Error creating bookmark', error);
@@ -51,8 +50,7 @@ const createBookmark = async (
 
 const deleteBookmark = async (
   token: string,
-  id: string,
-  handleDeleteBookmark: (data: any) => void
+  id: number,
 ) => {
   try {
     const response = await axios({
@@ -63,7 +61,7 @@ const deleteBookmark = async (
       withCredentials: true,
     });
     if (response.status === 200) {
-      handleDeleteBookmark(response.data);
+      return response.data.bookmarks;
     }
   } catch (error) {
     console.error('Error deleting bookmark', error);

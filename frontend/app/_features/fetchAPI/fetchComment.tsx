@@ -51,8 +51,7 @@ const createComment = async (
 
 const deleteComment = async (
   token: string,
-  id: string,
-  handleDeleteComment: (data: any) => void
+  id: number,
 ) => {
   try {
     const response = await axios({
@@ -62,7 +61,7 @@ const deleteComment = async (
       withCredentials: true,
     });
     if (response.status === 200) {
-      handleDeleteComment(response.data);
+      return response.data.comments;
     }
   } catch (error) {
     console.error('Error deleting comment', error);

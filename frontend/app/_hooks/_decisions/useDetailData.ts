@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { getConversations,
-         getUserCharacters,
+import { getCharacters,
          getCharacterResponses } from '@/app/_features/fetchAPI';
 import { Decision,
          Conversation,
@@ -36,10 +35,10 @@ export const useDetailData = (decision: Decision) => {
     if (token) {
       setIsLoading(true);
       try {
-        const decisionCharactersData = await getUserCharacters(token, "user");
+        const decisionCharactersData = await getCharacters(token, "decision", decision.id);
         const characterResponsesData = await getCharacterResponses(token, decision.id);
 
-        setDecisionCharacters(decisionCharactersData.charactersData);
+        setDecisionCharacters(decisionCharactersData);
         setCharacterResponses(characterResponsesData);
 
       } catch (error) {

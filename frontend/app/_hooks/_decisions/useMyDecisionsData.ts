@@ -30,19 +30,16 @@ export const useMyDecisionsData = () => {
     }
   }, [session]);
 
-  useEffect(() => {
-    if (token) {
-      fetchDecisionsData(token);
-    }
-  }, [token]);
-
-  const fetchDecisionsData = async (token: string) => {
+  const fetchDecisionsData = async (
+    token: string,
+    decisions_condition: string,
+  ) => {
     console.log('fetchDecisionsData');
     setIsLoading(true);
     try {
       const currentUser       = await getUsers(token, "current_user");
       const userData          = await getUsers(token, "all");
-      const decisionsData     = await getDecisions({token: token, condition: "private"});
+      const decisionsData     = await getDecisions({token: token, condition: decisions_condition});
       const conversationsData = await getConversations({token: token, condition: "all"});
       const commentsData      = await getComments(token);
       const bookmarksData     = await getBookmarks(token);

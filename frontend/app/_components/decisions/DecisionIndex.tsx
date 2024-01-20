@@ -3,42 +3,32 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { DecisionCard } from '@/app/_components/decisions/DecisionCard';
-import { DecisionModal } from '@/app/_components/decisions/DecisionModal';
-import { Bookmark, CharacterResponse,
-         Comment, Conversation, Decision, Tag } from '@/app/_types';
-import { Loading } from '@/app/_components/layouts/loading/layout';
-import { Pagination } from '@/app/_components/layouts/pagination/pagination';
+import { DecisionModal } from '@/app/_components/decisions/Detail/DecisionModal';
+import { Decision } from '@/app/_types';
+import { Pagination } from '@/app/_components/decisions/Pagination/Pagination';
 import { useDecisions } from '@/app/_contexts/DecisionsContext';
 import { useMyDecisionsData } from '@/app/_hooks/_decisions/useMyDecisionsData';
-import { useFavoriteDecisionsData } from '@/app/_hooks/_decisions/useFavoriteDecisionsData';
-import { usePathname } from 'next/navigation';
+import { useSearchDecisions } from '@/app/_hooks/_decisions/useSearchDecisions';
 import { useDrawer } from '@/app/_contexts/DrawerContext';
 
-interface MappedDecision extends Decision {
-  decision_tags?: Tag[];
-  comments?:      Comment[];
-  bookmarks?:     Bookmark[];
-}
-
-export default function MyDecisions() {
+export default function DecisionIndex() {
   // initial state
   const { selectedDecision, setSelectedDecision } = useDecisions();
+  const { decisionsCondition } = useDecisions();
   const { token, setToken } = useMyDecisionsData();
 
-  const { currentUser,
-          users,
-          decisions,
+  const { decisions,
           conversations,
           comments,
           bookmarks,
           decisionTags,
-          tags } = useMyDecisionsData();
-
-  const { fetchDecisionsData } = useMyDecisionsData();
-
-  const [isLoading, setIsLoading] = useState(false);
-
+          tags,
+        } = useMyDecisionsData();
+        
   const { data: session } = useSession();
+
+  console.log('decisionsCondition: ', decisionsCondition);
+  console.log('decisions: ', decisions);
 
   // 検索結果,詳細表示用のstate
   const [filteredDecisions, setFilteredDecisions] = useState<Decision[]>([]);
@@ -67,36 +57,6 @@ export default function MyDecisions() {
   }, [session]);
 
   useEffect(() => {
-    if(token){
-      fetchDecisionsData(token);
-    }
-  }, [token]);
-
-  {/* コメント機能 */}
-
-  // const onCommentSubmit = (comment: string) => {
-  //   // コメントのエラーハンドリング
-  //   if(!selectedDecision || !currentUser || !comment || comment.length > 50) {
-  //     setCommentError(true);
-  //     return; // ここで処理を終了させる
-  //   }
-
-  //   // エラーがない場合、コメントを追加
-  //   const newComment: Comment = {
-  //     id: comments!.length + 1,
-  //     content:     comment,
-  //     user_id:     currentUser.id,
-  //     decision_id: selectedDecision.id,
-  //     created_at:  new Date().toISOString(),
-  //     updated_at:  new Date().toISOString(),
-  //   };
-
-  //   setNewComment(newComment); // コメントを追加
-  //   setIsCommentSet(true); // コメントが追加されたことを示すフラグを設定
-  //   setCommentError(false); // エラー状態をリセット
-  // }
-
-  useEffect(() => {
     setFilteredDecisions(decisions!);
   }, [decisions]);
 
@@ -105,66 +65,47 @@ export default function MyDecisions() {
       // ページ内のすべてのstateを初期化
       setSearchQuery('');
       setSelectedTag('');
+      setSelectedDecision(undefined);
       setSortOrder('date_new');
       setCurrentPage(1);
       setIsDrawerClick(false);
     }
   }, [isDrawerClick]);
 
-  {/* ブックマーク機能 */}
-  const [isBookmarked, setIsBookmarked] = useState(false);
-
-  const onBookmarkToggle = (decisionId: number | null) => {
-    // ブックマークが1つも存在しない場合
-    if (!bookmarks || bookmarks.length === 0) {
-      // handleBookmark();
-      return;
-    }
-
-    const bookmarkId = bookmarks.find(bookmark => bookmark.decision_id === decisionId)?.id;
-    // ブックマークが存在していて、かつ、選択された相談がブックマークされていない場合
-    if (isBookmarked && bookmarkId) {
-      // deleteBookmark(bookmarkId);
-    } else {
-      // handleBookmark();
-    }
-    setIsBookmarked(!isBookmarked);
-  }
-
-  useEffect(() => {
-    if (selectedDecision && bookmarks!.map(bookmark => bookmark.decision_id).includes(selectedDecision.id)) {
-      setIsBookmarked(true);
-    } else if (selectedDecision && !bookmarks!.map(bookmark => bookmark.decision_id).includes(selectedDecision.id)) {
-      setIsBookmarked(false);
-    }
-  }, [bookmarks])
+  const pageNumbers = [];
 
   // ページネーションのために、表示するdecisionsを計算
   const indexOfLastItem  = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentDecisions = filteredDecisions.slice(indexOfFirstItem, indexOfLastItem);
+  const currentDecisions = filteredDecisions && filteredDecisions.slice(indexOfFirstItem, indexOfLastItem);
 
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(filteredDecisions.length / itemsPerPage); i++) {
-    pageNumbers.push(i);
-  }
+  useEffect(() => {
+    if (!filteredDecisions) return;
+    for (let i = 1; i <= Math.ceil(filteredDecisions.length / itemsPerPage); i++) {
+      pageNumbers.push(i);
+    }
+  }, [filteredDecisions]);
 
   // ページ番号を設定する関数
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
   const paginateFirst = () => setCurrentPage(1);
   const paginateLast = () => setCurrentPage(pageNumbers.length);
 
-  // useEffect(() => {
-  //   let sortedDecisions = [...filteredDecisions];
-  //   sortedDecisions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-  //   setFilteredDecisions(sortedDecisions);
-  // }, [decisions])
-
   useEffect(() => {
-    handleSearch();
+    useSearchDecisions(
+      decisions,
+      conversations,
+      tags,
+      decisionTags,
+      searchQuery,
+      selectedTag,
+      sortOrder,
+      filteredDecisions,
+      setFilteredDecisions
+    );
   }, [searchQuery, selectedTag, sortOrder]);
 
-  const handleDecisionClick = (decision: MappedDecision) => {
+  const handleDecisionClick = (decision: Decision) => {
     setSelectedDecision(decision);
   };
 
@@ -172,37 +113,6 @@ export default function MyDecisions() {
     setSelectedDecision(undefined);
   };
 
-  const handleSearch = () => {
-    let filtered = decisions!;
-
-    if (!searchQuery && !selectedTag) {
-      setFilteredDecisions(decisions!);
-      return;
-    }
-  
-    if (selectedTag) {
-      filtered = filtered.filter(decision => {
-        // decision_tags に紐づく各タグが selectedTag と一致するか確認
-        const filteredDecisionTags = decisionTags!.filter(decisionTag => decisionTag.decision_id === decision.id);
-        return filteredDecisionTags.some(decision_tag => {
-          // 対応するタグを tags 配列から検索
-          const tag = tags!.find(tag => tag.id === decision_tag.tag_id);
-          return tag && tag.name === selectedTag;
-        });
-      });
-    }
-  
-    if (searchQuery) {
-      filtered = filtered.filter(decision => {
-        // decisionに紐づくconversationを取得
-        // conversationのquery_textにsearchQueryが含まれているか確認
-        const filteredConversations = conversations!.filter(conversation => conversation.decision_id === decision.id);
-        return filteredConversations.some(conversation => conversation.query_text.includes(searchQuery));
-      });
-    }
-    setFilteredDecisions(filtered);
-  };
-  
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement> ) => {
     const newSortOrder = e.target.value;
     setSortOrder(newSortOrder);
@@ -282,7 +192,7 @@ export default function MyDecisions() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder='相談文を検索...'
-          className='border p-2 mr-2'
+          className='min-w-[20%] border p-2 mr-2'
         />
         <div className='flex flex-col'>
           <input
@@ -296,7 +206,7 @@ export default function MyDecisions() {
             onFocus={() => setIsTagInputFocused(true)}
             onBlur={(e) => handleBlurSelectTag(e)}
             placeholder='タグを検索...'
-            className='border p-2 mr-2'
+            className='min-w-[20%] border p-2 mr-2'
           />
           {/* オートコンプリートリスト */}
           {isTagInputFocused && (
@@ -310,15 +220,12 @@ export default function MyDecisions() {
           )}
         </div>
 
-        <select onChange={handleSortChange} id='selectSort' className='ml-2'>
+        <select onChange={handleSortChange} id='selectSort' className='min-w-[20%] ml-2'>
           <option value='date_new'>新しい順</option>
           <option value='date_old'>古い順</option>
           <option value='comments'>コメント数順</option>
           <option value='bookmarks'>ブックマーク数順</option>
         </select>
-        <button onClick={handleSearch} className='ml-2 bg-blue-500 text-white px-4 py-2 rounded'>
-          検索
-        </button>
       </div>
 
       { !decisions && (
@@ -326,8 +233,8 @@ export default function MyDecisions() {
       )}
       { decisions && (
         <>
-          <div className='w-[70vw] mb-[5vh]'>
-            {currentDecisions.map((decision) => {
+          <div className='w-[70vw] mb-[5vh] flex justify-start flex-col'>
+            {currentDecisions && currentDecisions.map((decision) => {
               // DecisionCardに渡すpropsを設定
               // targetTags: (decision.id == decisionTagsの各要素decisionTag.decision_id)
               //             の条件を満たすdecisionTagsの各要素のtag_idに対応するtagsの各要素
@@ -338,16 +245,24 @@ export default function MyDecisions() {
               const decisionBookmarks     = bookmarks     && bookmarks.length     > 0 ? bookmarks.filter((bookmark) => bookmark.decision_id === decision.id) : [];
               const decisionConversations = conversations && conversations.length > 0 ? conversations.filter((conversation) => conversation.decision_id === decision.id) : [];
               const sortedConversations   = decisionConversations.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+
+              if ( !sortedConversations[0] ) return;
               return (
                 <div key={decision.id}
-                    className='mb-4 shadow-lg rounded-lg'
-                    onClick={() => handleDecisionClick(decision)}>
-                  <DecisionCard
-                    query_text={sortedConversations[0].query_text}
-                    comments={decisionComments}
-                    bookmarks={decisionBookmarks}
-                    decision_tags={targetTags!}
-                  />
+                     className='flex flex-row items-center'>
+                  <div className='flex mb-4 mr-6 w-[80%] shadow-lg rounded-lg'
+                       onClick={() => handleDecisionClick(decision)}>
+                    <DecisionCard
+                      query_text={sortedConversations[0].query_text}
+                      comments={decisionComments}
+                      bookmarks={decisionBookmarks}
+                      decision_tags={targetTags!}
+                    />
+                  </div>
+                  { decisionsCondition === 'private' && <div className='w-[15%] h-[70%] mb-4 flex'>
+                      <button className='bg-blue-500 text-white px-4 py-2 rounded'>削除</button>
+                    </div>
+                  }
                 </div>
               )}
             )}
@@ -355,7 +270,7 @@ export default function MyDecisions() {
 
           <Pagination
             postsPerPage={itemsPerPage}
-            totalPosts={filteredDecisions.length}
+            totalPosts={filteredDecisions ? filteredDecisions.length : 0}
             paginate={paginate}
             currentPage={currentPage}
             paginateFirst={paginateFirst}
@@ -367,9 +282,6 @@ export default function MyDecisions() {
               decision={selectedDecision}
               conversations={conversations ? conversations.filter(convo => convo.decision_id === selectedDecision.id) : []}
               handleCloseDetail={handleCloseDetail}
-              onBookmarkToggle={onBookmarkToggle}
-              isBookmarked={isBookmarked}
-              setIsBookmarked={setIsBookmarked}
             />
           )}
         </>

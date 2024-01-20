@@ -35,6 +35,6 @@ class Api::CommentsController < ApplicationController
   end
 
   def decision_id_params
-    params.require(:decision_id)
+    params.require(:decisionId)
   end
 end

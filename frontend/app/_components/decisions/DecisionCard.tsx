@@ -1,16 +1,10 @@
 import { Comment, Bookmark } from '@/app/_types';
+import { useDecisions } from '@/app/_contexts/DecisionsContext';
 
 type decisionTagsProps = {
   id: number;
   name: string | undefined;
 }
-
-type User = {
-  id:     number;
-  name:   string;
-  avatar: string;
-}
-
 interface DecisionCardProps {
   query_text: string;
   comments: Comment[] | null;
@@ -20,9 +14,9 @@ interface DecisionCardProps {
 
 const DecisionCard = ({ query_text, comments, bookmarks, decision_tags }: DecisionCardProps) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-4">
-      <div className="flex flex-row justify-between">
-        <div className="flex flex-col">
+    <div className="w-full bg-white shadow-lg rounded-lg p-4">
+      <div className="w-full flex flex-row justify-between">
+        <div className="w-[75%] flex flex-col">
           <div className="text-lg font-bold">{query_text}</div>
           <div className='flex flex-row'>
             {decision_tags!.map((decision_tag) => (
@@ -30,7 +24,7 @@ const DecisionCard = ({ query_text, comments, bookmarks, decision_tags }: Decisi
             ))}
           </div>
         </div>
-        <div className="flex flex-col justify-end items-end">
+        <div className="w-[25%] flex flex-col justify-end items-end">
           <div className="flex text-sm text-gray-500">
             コメント数: {comments?.length || 0}
           </div>

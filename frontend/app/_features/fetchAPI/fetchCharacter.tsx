@@ -10,11 +10,16 @@ const defaultHeaders = (token: string) => {
   )
 };
 
-const getCharacters = async (token: string): Promise<Character[]> => {
+const getCharacters = async (
+  token: string,
+  condition: string,
+  decisionId?: number,
+): Promise<Character[]> => {
   try {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/characters`;
     const response = await axios(url, {
       headers: defaultHeaders(token),
+      params: { condition, decisionId },
       withCredentials: true,
     });
     if (response.status === 200) {

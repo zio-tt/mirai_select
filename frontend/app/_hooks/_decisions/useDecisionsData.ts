@@ -10,14 +10,15 @@ import { getBookmarks,
          getUsers } from '@/app/_features/fetchAPI';
 
 export const useDecisionsData = () => {
-  const { currentUser,   setCurrentUser,
-          users,         setUsers,
-          decisions,     setDecisions,
-          conversations, setConversations,
-          comments,      setComments,
-          bookmarks,     setBookmarks,
-          decisionTags,  setDecisionTags,
-          tags,          setTags } = useDecisions();
+  const { currentUser,        setCurrentUser,
+          users,              setUsers,
+          decisions,          setDecisions,
+          conversations,      setConversations,
+          comments,           setComments,
+          bookmarks,          setBookmarks,
+          decisionTags,       setDecisionTags,
+          tags,               setTags,
+          decisionsCondition, setDecisionsCondition} = useDecisions();
 
   const { data: session } = useSession();
 
@@ -37,12 +38,11 @@ export const useDecisionsData = () => {
   }, [token]);
 
   const fetchDecisionsData = async (token: string) => {
-    console.log('fetchDecisionsData');
     setIsLoading(true);
     try {
       const currentUser       = await getUsers(token, "current_user");
       const userData          = await getUsers(token, "all");
-      const decisionsData     = await getDecisions({token: token, condition: "public"});
+      const decisionsData     = await getDecisions({token: token, condition: decisionsCondition});
       const conversationsData = await getConversations({token: token, condition: "all"});
       const commentsData      = await getComments(token);
       const bookmarksData     = await getBookmarks(token);
