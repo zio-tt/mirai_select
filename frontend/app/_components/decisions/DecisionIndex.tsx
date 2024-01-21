@@ -55,9 +55,7 @@ export default function DecisionIndex() {
   const autoCompleteTagsRef = useRef<HTMLDivElement>(null);
   const blankTag = { id: 0, name: '' }
 
-  // エラーハンドリング
-  // 状態を取得、更新時に特定の値が空の場合、return要素に何も表示しない
-  // 特に、decisions, filteredDecisions, conversationsが空の場合は表示しない
+  const { setIsModalOpen } = useDecisions();
 
   useEffect(() => {
     if(session) {
@@ -128,10 +126,12 @@ export default function DecisionIndex() {
 
   const handleDecisionClick = (decision: Decision) => {
     setSelectedDecision(decision);
+    setIsModalOpen(true);
   };
 
   const handleCloseDetail = () => {
     setSelectedDecision(undefined);
+    setIsModalOpen(false);
   };
 
 

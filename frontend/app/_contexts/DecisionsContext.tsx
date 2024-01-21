@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useRef } from 'react';
+import { useState, createContext, useContext } from 'react';
 import { User, Decision, Conversation, Comment, Bookmark, DecisionTag, Tag } from '../_types';
 
 type DecisionsContextType = {
@@ -12,6 +12,7 @@ type DecisionsContextType = {
   tags:                  Tag[];
   selectedDecision:      Decision | undefined;
   decisionsCondition:    string;
+  isModalOpen:           boolean;
   isLoading:             boolean;
   setUsers:              React.Dispatch<React.SetStateAction<User[]>>;
   setCurrentUser:        React.Dispatch<React.SetStateAction<User>>;
@@ -23,6 +24,7 @@ type DecisionsContextType = {
   setTags:               React.Dispatch<React.SetStateAction<Tag[]>>;
   setSelectedDecision:   React.Dispatch<React.SetStateAction<Decision | undefined>>;
   setDecisionsCondition: React.Dispatch<React.SetStateAction<string>>;
+  setIsModalOpen:        React.Dispatch<React.SetStateAction<boolean>>;
   setIsLoading:          React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -63,6 +65,7 @@ export const DecisionsProvider = ({ children }: ChildrenType) => {
 
   // Decisionsで選択されたDecision
   const [ selectedDecision, setSelectedDecision ] = useState<Decision | undefined>();
+  const [ isModalOpen,      setIsModalOpen ]      = useState<boolean>(false);
 
   // Decisionsで選択された条件
   const [ decisionsCondition, setDecisionsCondition ] = useState<string>('public');
@@ -84,6 +87,7 @@ export const DecisionsProvider = ({ children }: ChildrenType) => {
         selectedDecision,   setSelectedDecision,
         decisionsCondition, setDecisionsCondition,
         isLoading,          setIsLoading,
+        isModalOpen,        setIsModalOpen
       }}>
       {children}
     </DecisionsContext.Provider>

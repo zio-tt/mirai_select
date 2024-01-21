@@ -7,6 +7,7 @@ import { UserQueryDisplay } from './UserQueryDisplay';
 import { useDecisions } from '@/app/_contexts/DecisionsContext';
 
 interface CharacterResponse {
+  id:              number;
   conversation_id: number;
   character_id?:   number;
   response:        string;
@@ -24,17 +25,16 @@ interface DecisionDetailProps {
 
 const DecisionDetail = ({ 
   users,
-  currentUserId,
   conversations,
   decisionCharacters,
   characterResponses,
-  decision, }: DecisionDetailProps) => {
+}: DecisionDetailProps) => {
 
   const { selectedDecision } = useDecisions();
 
   return (
     <>
-      <div className='flex flex-col w-[90%] h-[70vh] items-start justify-start overflow-auto mr-5' data-theme="fantasy">
+      <div className='flex flex-col w-[90%] h-[90%] items-center justify-start overflow-auto' data-theme="fantasy">
         {conversations && conversations.map((conversation, index) => {
           // conversationに対するcharacterResponsesを取得
           const conversationCharacterResponses = characterResponses ? characterResponses.filter((character_response) => character_response.conversation_id === conversation.id) : null;
@@ -50,7 +50,9 @@ const DecisionDetail = ({
 
                   return (
                     <div key={character.id} className='character-response w-full flex items-start justify-start mb-5'>
-                      <CharacterResponseDisplay decisionCharacter={character} characterResponse={characterResponse!} />
+                      <CharacterResponseDisplay decisionCharacter={character} 
+                                                characterResponse={characterResponse!}
+                                                userDecision={conversation.user_decision} />
                     </div>
                   );
                 })}
