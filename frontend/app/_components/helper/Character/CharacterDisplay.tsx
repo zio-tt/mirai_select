@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useDrawer } from '@/app/_contexts/DrawerContext';
 
 interface CharacterResponse {
+  id:              number;
   conversation_id: number;
   character_id?:   number;
   response:        string;
@@ -27,6 +28,7 @@ const CharacterDisplay = ({ conversationId, userCharacters, responses, userDecis
     if (isDrawerClick) {
       setUserDecision(
         {
+          id:              0,
           conversation_id: conversationId,
           character_id:    undefined,
           response:        '',
@@ -46,6 +48,7 @@ const CharacterDisplay = ({ conversationId, userCharacters, responses, userDecis
   }) => {
     if (isResponse) {
       setUserDecision({
+        id:              0,
         conversation_id: conversation_id,
         character_id:    character_id,
         response:        response,

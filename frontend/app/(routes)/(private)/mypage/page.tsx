@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Loading }  from '@/app/_components/layouts/loading/layout';
+import { useEffect } from 'react';
 import { useDecisions } from '@/app/_contexts/DecisionsContext';
 import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData';
 import DecisionIndex from '@/app/_components/decisions/DecisionIndex';
