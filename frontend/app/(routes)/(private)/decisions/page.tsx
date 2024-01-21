@@ -9,7 +9,7 @@ import { getDecisions } from '@/app/_features/fetchAPI';
 
 export default function MyPageDecisions() {
   const { setDecisions } = useDecisions();
-  const { isLoading } = useDecisions();
+  const { isLoading, setIsLoading } = useDecisions();
   const { token } = useDecisionsData();
   const { decisionsCondition, setDecisionsCondition } = useDecisions();
 

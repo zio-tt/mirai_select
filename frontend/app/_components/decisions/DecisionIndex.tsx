@@ -1,21 +1,29 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, use } from 'react';
 import { useSession } from 'next-auth/react';
 import { DecisionCard } from '@/app/_components/decisions/DecisionCard';
 import { DecisionModal } from '@/app/_components/decisions/Detail/DecisionModal';
 import { Decision } from '@/app/_types';
 import { Pagination } from '@/app/_components/decisions/Pagination/Pagination';
 import { useDecisions } from '@/app/_contexts/DecisionsContext';
-import { useMyDecisionsData } from '@/app/_hooks/_decisions/useMyDecisionsData';
+import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData';
 import { useSearchDecisions } from '@/app/_hooks/_decisions/useSearchDecisions';
+import { useSortDecisions } from '@/app/_hooks/_decisions/useSortDecisions';
 import { useDrawer } from '@/app/_contexts/DrawerContext';
+import { deleteDecision } from '@/app/_features/fetchAPI';
+
+import { HeartIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
+import { TrashIcon } from '@heroicons/react/24/outline';
 
 export default function DecisionIndex() {
   // initial state
   const { selectedDecision, setSelectedDecision } = useDecisions();
   const { decisionsCondition } = useDecisions();
-  const { token, setToken } = useMyDecisionsData();
+  const { token, setToken } = useDecisionsData();
+  const { setIsLoading } = useDecisions();
+  const { setDecisions } = useDecisions();
 
   const { decisions,
           conversations,
@@ -23,12 +31,9 @@ export default function DecisionIndex() {
           bookmarks,
           decisionTags,
           tags,
-        } = useMyDecisionsData();
+        } = useDecisionsData();
         
   const { data: session } = useSession();
-
-  console.log('decisionsCondition: ', decisionsCondition);
-  console.log('decisions: ', decisions);
 
   // 検索結果,詳細表示用のstate
   const [filteredDecisions, setFilteredDecisions] = useState<Decision[]>([]);
@@ -49,6 +54,10 @@ export default function DecisionIndex() {
   const [isTagInputFocused, setIsTagInputFocused] = useState(false);
   const autoCompleteTagsRef = useRef<HTMLDivElement>(null);
   const blankTag = { id: 0, name: '' }
+
+  // エラーハンドリング
+  // 状態を取得、更新時に特定の値が空の場合、return要素に何も表示しない
+  // 特に、decisions, filteredDecisions, conversationsが空の場合は表示しない
 
   useEffect(() => {
     if(session) {
@@ -105,6 +114,18 @@ export default function DecisionIndex() {
     );
   }, [searchQuery, selectedTag, sortOrder]);
 
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    useSortDecisions(
+      e.target.value,
+      setSortOrder,
+      filteredDecisions,
+      setFilteredDecisions,
+      comments,
+      bookmarks,
+    );
+  }
+
   const handleDecisionClick = (decision: Decision) => {
     setSelectedDecision(decision);
   };
@@ -113,38 +134,6 @@ export default function DecisionIndex() {
     setSelectedDecision(undefined);
   };
 
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement> ) => {
-    const newSortOrder = e.target.value;
-    setSortOrder(newSortOrder);
-  
-    let sortedDecisions = [...filteredDecisions];
-    
-    if (newSortOrder === 'date_new') {
-      sortedDecisions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    } else if (newSortOrder === 'date_old') {
-      sortedDecisions.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-    } else if (newSortOrder === 'comments') {
-      // 各decisionのidとcommentsのdecision_idを比較
-      // commentsの数でソート
-      // decisionの配列を更新
-      sortedDecisions.sort((a, b) => {
-        const aComments = comments!.filter(comment => comment.decision_id === a.id);
-        const bComments = comments!.filter(comment => comment.decision_id === b.id);
-        return bComments.length - aComments.length;
-      });
-    } else if (newSortOrder === 'bookmarks') {
-      // 各decisionのidとbookmarksのdecision_idを比較
-      // bookmarksの数でソート
-      // decisionの配列を更新
-      sortedDecisions.sort((a, b) => {
-        const aBookmarks = bookmarks!.filter(bookmark => bookmark.decision_id === a.id);
-        const bBookmarks = bookmarks!.filter(bookmark => bookmark.decision_id === b.id);
-        return bBookmarks.length - aBookmarks.length;
-      });
-    }
-
-    setFilteredDecisions(sortedDecisions);
-  };
 
   const handleSearchWithTag = (tagToSearch: string) => {
     let filtered = decisions!;
@@ -182,10 +171,21 @@ export default function DecisionIndex() {
     }, 200); // 100ミリ秒の遅延
   };
 
+  const handleDeleteDecision = (decisionId: number) => async () => {
+    if (confirm('本当に削除しますか？')) {
+      setIsLoading(true);
+      const response = await deleteDecision({ token: token!, decisionId: decisionId });
+      setDecisions(response);
+      setFilteredDecisions(response);
+      setIsLoading(false);
+    }
+  }
+
+  if (!decisions || !filteredDecisions || !conversations) return <></>;
   return (
     <>
       {/* 検索フォーム */}
-      <div className='w-[70vw] mt-[2vh] mb-[3vh] flex'>
+      <div className='w-[70vw] mt-[2vh] mb-[3vh] flex relative '>
         <input
           id='searchText'
           type='text'
@@ -194,7 +194,7 @@ export default function DecisionIndex() {
           placeholder='相談文を検索...'
           className='min-w-[20%] border p-2 mr-2'
         />
-        <div className='flex flex-col'>
+        <div className='flex flex-col relative'>
           <input
             id='searchTag'
             type='text'
@@ -206,13 +206,27 @@ export default function DecisionIndex() {
             onFocus={() => setIsTagInputFocused(true)}
             onBlur={(e) => handleBlurSelectTag(e)}
             placeholder='タグを検索...'
-            className='min-w-[20%] border p-2 mr-2'
+            className='border p-2 mr-2'
           />
           {/* オートコンプリートリスト */}
           {isTagInputFocused && (
-            <div ref={autoCompleteTagsRef} className='absolute z-10 bg-white border rounded max-h-40 overflow-auto top-24 border-black shadow-lg'>
+            <div
+              ref={autoCompleteTagsRef}
+              className='absolute z-10 bg-white border rounded max-h-40 overflow-auto'
+              style={{
+                top: '100%', // 入力フォームの直下
+                left: '0',
+                right: '0',
+                // width: '100%' // 必要に応じて追加
+              }}
+            >
+              {/* タグのリスト */}
               {[blankTag, ...tags!].map(tag => (
-                <div key={tag.id} onClick={() => handleSelectTag(tag.name)} className='p-2 hover:bg-gray-100 text-black'>
+                <div
+                  key={tag.id}
+                  onClick={() => handleSelectTag(tag.name)}
+                  className='p-2 hover:bg-gray-100 text-black'
+                >
                   {tag.name}
                 </div>
               ))}
@@ -259,10 +273,9 @@ export default function DecisionIndex() {
                       decision_tags={targetTags!}
                     />
                   </div>
-                  { decisionsCondition === 'private' && <div className='w-[15%] h-[70%] mb-4 flex'>
-                      <button className='bg-blue-500 text-white px-4 py-2 rounded'>削除</button>
-                    </div>
-                  }
+                  { decisionsCondition === 'private' && (
+                      <TrashIcon onClick={handleDeleteDecision(decision.id)} className='w-[3vw] flex text-black' />
+                  )}
                 </div>
               )}
             )}
