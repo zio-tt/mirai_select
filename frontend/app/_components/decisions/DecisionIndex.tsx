@@ -65,6 +65,7 @@ export default function DecisionIndex() {
 
   useEffect(() => {
     setDecisions([]);
+    setIsLoading(true);
   }, []);
 
   useEffect(() => {
