@@ -109,6 +109,15 @@ export default function decisionHelper () {
     setQueryText(event.target.value);
   }
 
+  useEffect(() => {
+    if (queryText.length <= 50) {
+      removeErrorMessages('inputText');
+    }
+    if (conversationCount === 2 && userDecision) {
+      removeErrorMessages('selectCharacter');
+    }
+  }, [userDecision, queryText])
+
   // 「相談する」ボタンを押した時の処理
   const handleCreateConversation = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
