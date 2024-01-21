@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Character } from "@/app/_types";
 
 interface CharacterResponse {
+  id:              number;
   conversation_id: number;
   character_id?:   number;
   response:        string;
@@ -11,11 +12,15 @@ interface CharacterResponse {
 interface CharacterResponseDisplayProps {
   decisionCharacter: Character;
   characterResponse: CharacterResponse;
+  userDecision:      number;
 }
 
-const CharacterResponseDisplay = (
-  { decisionCharacter, characterResponse }: CharacterResponseDisplayProps
-) => {
+const CharacterResponseDisplay = ({
+  decisionCharacter,
+  characterResponse,
+  userDecision
+}: CharacterResponseDisplayProps) => {
+  const [ isUserDecision, setIsUserDecision ] = useState<boolean>(false);
   const [ avatarURL, setAvatarURL ] = useState<string>("/images/logo.png");
 
   useEffect(() => {
@@ -27,23 +32,32 @@ const CharacterResponseDisplay = (
         setAvatarURL(avatar);
       }
     }
+
+    if (characterResponse.id === userDecision) {
+      setIsUserDecision(true);
+    }
   }, []);
 
   return (
     <div className="chat chat-start">
-      <div className="chat-image avatar">
-        <div className="w-10 rounded-full">
-          <Image alt={decisionCharacter.name}
-                 src={avatarURL}
-                 width={40}
-                 height={40}
-          />
-        </div>
+      <div className={`w-10 rounded-full chat-image avatar mr-2 p-1 ${isUserDecision ? 'ring ring-secondary ring-offset-1' : 'ring ring-primary ring-offset-1'} `}>
+        <Image alt={decisionCharacter.name}
+               src={avatarURL}
+               width={30}
+               height={30}
+        />
       </div>
       <div className="chat-header">
         {decisionCharacter.name}
       </div>
-      <div className="chat-bubble">{characterResponse.response}</div>
+      <div className={`chat-bubble ${isUserDecision ? 'chat-bubble-secondary' : 'chat-bubble-primary'}`}>
+        {characterResponse.response}
+      </div>
+      {isUserDecision && (
+        <div className="chat-footer opacity-50">
+          ユーザーが選択した選択肢
+        </div>
+      )}
     </div>
   );
 }

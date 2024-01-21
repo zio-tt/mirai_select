@@ -7,6 +7,7 @@ import { Decision,
          Character } from '@/app/_types';
 
 interface CharacterResponse {
+  id:              number;
   conversation_id: number;
   character_id?:   number;
   response:        string;

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { UserCharacter } from "@/app/_types";
 
 const defaultHeaders = (token: string) => {
   return (
@@ -11,6 +10,7 @@ const defaultHeaders = (token: string) => {
 };
 
 interface CharacterResponse {
+  id:              number;
   conversation_id: number;
   character_id?:   number;
   response:        string;
