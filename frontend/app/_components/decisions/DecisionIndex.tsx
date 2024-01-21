@@ -29,7 +29,7 @@ export default function DecisionIndex() {
           decisionTags,
           tags,
         } = useDecisionsData();
-        
+
   const { data: session } = useSession();
 
   // 検索結果,詳細表示用のstate
@@ -64,13 +64,22 @@ export default function DecisionIndex() {
   const { setIsModalOpen } = useDecisions();
 
   useEffect(() => {
+    setDecisions([]);
+  }, []);
+
+  useEffect(() => {
     if(session) {
       setToken(session?.appAccessToken!);
     }
   }, [session]);
 
   useEffect(() => {
-    setFilteredDecisions(decisions!);
+    if(!decisions) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+      setFilteredDecisions(decisions!);
+    }
   }, [decisions]);
 
   useEffect(() => {
@@ -143,10 +152,6 @@ export default function DecisionIndex() {
     let filtered = decisions!;
 
     if (tagToSearch) {
-      // decisionのidとdecision_tagsのdecision_idを比較
-      // decision_tagsのtag_idとtagsのidを比較
-      // tagsのnameとtagToSearchを比較
-      // tagが一致するdecisionをfilteredに追加
       filtered = filtered.filter(decision => {
         const filteredDecisionTags = decisionTags!.filter(decisionTag => decisionTag.decision_id === decision.id);
         return filteredDecisionTags.some(decision_tag => {
