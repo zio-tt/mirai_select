@@ -13,13 +13,14 @@ import { useSortDecisions } from '@/app/_hooks/_decisions/useSortDecisions';
 import { useDrawer } from '@/app/_contexts/DrawerContext';
 import { deleteDecision } from '@/app/_features/fetchAPI';
 import { TrashIcon } from '@heroicons/react/24/outline';
+import { Loading } from '@/app/_components/layouts/loading/layout';
 
 export default function DecisionIndex() {
   // initial state
   const { selectedDecision, setSelectedDecision } = useDecisions();
   const { decisionsCondition } = useDecisions();
   const { token, setToken } = useDecisionsData();
-  const { setIsLoading } = useDecisions();
+  const { isLoading, setIsLoading } = useDecisions();
   const { setDecisions } = useDecisions();
 
   const { decisions,
@@ -62,11 +63,7 @@ export default function DecisionIndex() {
   const blankTag = { id: 0, name: '' }
 
   const { setIsModalOpen } = useDecisions();
-
-  useEffect(() => {
-    setIsLoading(true);
-    setDecisions([]);
-  }, []);
+  const { isResetDecisions, setIsResetDecisions } = useDecisions();
 
   useEffect(() => {
     if(session) {
@@ -75,9 +72,15 @@ export default function DecisionIndex() {
   }, [session]);
 
   useEffect(() => {
-    if(decisions) setFilteredDecisions(decisions!);
-    setIsLoading(false);
+    setFilteredDecisions(decisions!);
+    setIsResetDecisions(false);
   }, [decisions]);
+
+  useEffect(() => {
+    if (!isResetDecisions) {
+      setIsLoading(false);
+    }
+  }, [isResetDecisions]);
 
   useEffect(() => {
     if(isDrawerClick) {
@@ -251,6 +254,11 @@ export default function DecisionIndex() {
 
       { !currentDecisions && (
         <div></div>
+      )}
+      {isLoading && (
+        <div className='w-full min-h-screen'>
+          <Loading />
+        </div>
       )}
       { currentDecisions && (
         <>
