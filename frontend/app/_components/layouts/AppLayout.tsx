@@ -43,6 +43,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   const [ isLoading, setIsLoading ] = useState<boolean>(false); // ローディング画面
   const { data: session, status } = useSession();
   const { isModalOpen, setIsModalOpen } = useDecisions();
+  const { isResetDecisions, setIsResetDecisions } = useDecisions();
   const router = useRouter();
   const isRoot = usePathname();
 
@@ -66,6 +67,11 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       setIsAdmin(false);
     }
   }, [status]);
+
+  useEffect(() => {
+    setIsLoading(false);
+    setIsResetDecisions(false);
+  }, []);
 
   return(
     <div className={`relative w-screen min-h-screen ${kiwimaru.className}`}>
