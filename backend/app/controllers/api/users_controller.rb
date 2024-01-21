@@ -1,13 +1,13 @@
 class Api::UsersController < ApplicationController
   include ErrorHandler
   before_action :set_user, only: [:update]
+  before_action :add_token, only: [:index, :update]
 
   def index
     case condition_params
     when 'all'
       render json: { users: User.select_attributes }
     when 'current_user'
-      add_token(current_user)
       user = { id: current_user.id, name: current_user.name, avatar: current_user.avatar, token: current_user.token }
       render json: { current_user: user }
     else

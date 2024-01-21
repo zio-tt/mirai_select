@@ -260,7 +260,7 @@ export default function DecisionIndex() {
           <Loading />
         </div>
       )}
-      { currentDecisions && (
+      { !isLoading && currentDecisions && (
         <>
           <div className='w-[70vw] mb-[5vh] flex justify-start flex-col'>
             {currentDecisions.map((decision) => {

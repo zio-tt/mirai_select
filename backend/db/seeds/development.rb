@@ -1,3 +1,4 @@
+load Rails.root.join('db/seeds/data/characters_seed.rb')
 load Rails.root.join('db/seeds/data/users_seed.rb')
 load Rails.root.join('db/seeds/data/tags_seed.rb')
 load Rails.root.join('db/seeds/data/decisions_seed.rb')
