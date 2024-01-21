@@ -73,7 +73,6 @@ export default function DecisionIndex() {
 
   useEffect(() => {
     setFilteredDecisions(decisions!);
-    setIsResetDecisions(false);
   }, [decisions]);
 
   useEffect(() => {
@@ -105,6 +104,7 @@ export default function DecisionIndex() {
     setIndexOfFirstItem(indexOfLast);
     setIndexOfLastItem(indexOfFirst);
     setCurrentDecisions(targetDecisions);
+    setIsResetDecisions(false);
   }, [currentPage, filteredDecisions]);
 
   useEffect(() => {
