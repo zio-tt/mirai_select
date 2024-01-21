@@ -12,9 +12,6 @@ import { useSearchDecisions } from '@/app/_hooks/_decisions/useSearchDecisions';
 import { useSortDecisions } from '@/app/_hooks/_decisions/useSortDecisions';
 import { useDrawer } from '@/app/_contexts/DrawerContext';
 import { deleteDecision } from '@/app/_features/fetchAPI';
-
-import { HeartIcon } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { TrashIcon } from '@heroicons/react/24/outline';
 
 export default function DecisionIndex() {
@@ -47,8 +44,17 @@ export default function DecisionIndex() {
   const [sortOrder, setSortOrder] = useState('date_new'); // 並べ替えの順序
 
   // ページネーション
-  const [currentPage, setCurrentPage] = useState(1);
+  const pageNumbers  = [];
   const itemsPerPage = 10; // 1ページあたりのアイテム数
+  const [currentPage,      setCurrentPage]      = useState(1);
+  const [indexOfLastItem,  setIndexOfLastItem]  = useState(0);
+  const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
+  const [currentDecisions, setCurrentDecisions] = useState<Decision[]>([]);
+
+  // ページ番号を設定する関数
+  const paginate      = (pageNumber: number) => setCurrentPage(pageNumber)
+  const paginateFirst = () => setCurrentPage(1);
+  const paginateLast  = () => setCurrentPage(pageNumbers.length);
 
   // オートコンプリート
   const [isTagInputFocused, setIsTagInputFocused] = useState(false);
@@ -79,24 +85,22 @@ export default function DecisionIndex() {
     }
   }, [isDrawerClick]);
 
-  const pageNumbers = [];
-
-  // ページネーションのために、表示するdecisionsを計算
-  const indexOfLastItem  = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentDecisions = filteredDecisions && filteredDecisions.slice(indexOfFirstItem, indexOfLastItem);
-
   useEffect(() => {
     if (!filteredDecisions) return;
+
+    // ページネーションのために、表示するdecisionsを計算
+    const indexOfLast     = currentPage * itemsPerPage;
+    const indexOfFirst    = indexOfLast - itemsPerPage;
+    const targetDecisions = filteredDecisions && filteredDecisions.slice(indexOfFirst, indexOfLast);
+
+    setIndexOfFirstItem(indexOfLast);
+    setIndexOfLastItem(indexOfFirst);
+    setCurrentDecisions(targetDecisions);
+
     for (let i = 1; i <= Math.ceil(filteredDecisions.length / itemsPerPage); i++) {
       pageNumbers.push(i);
     }
-  }, [filteredDecisions]);
-
-  // ページ番号を設定する関数
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
-  const paginateFirst = () => setCurrentPage(1);
-  const paginateLast = () => setCurrentPage(pageNumbers.length);
+  }, [currentPage, filteredDecisions]);
 
   useEffect(() => {
     useSearchDecisions(
@@ -181,7 +185,6 @@ export default function DecisionIndex() {
     }
   }
 
-  if (!decisions || !filteredDecisions || !conversations) return <></>;
   return (
     <>
       {/* 検索フォーム */}
@@ -242,13 +245,13 @@ export default function DecisionIndex() {
         </select>
       </div>
 
-      { !decisions && (
+      { !currentDecisions && (
         <div></div>
       )}
-      { decisions && (
+      { currentDecisions && (
         <>
           <div className='w-[70vw] mb-[5vh] flex justify-start flex-col'>
-            {currentDecisions && currentDecisions.map((decision) => {
+            {currentDecisions.map((decision) => {
               // DecisionCardに渡すpropsを設定
               // targetTags: (decision.id == decisionTagsの各要素decisionTag.decision_id)
               //             の条件を満たすdecisionTagsの各要素のtag_idに対応するtagsの各要素

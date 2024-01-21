@@ -1,6 +1,6 @@
 import { useState, createContext, useContext } from 'react';
 import { User, Character } from '@/app/_types'; 
-import { useHelperInitData } from '../(routes)/(private)/helper/_hooks/useHelperInitData';
+import { useHelperInitData } from '../_hooks/_helper/useHelperInitData';
 
 type HelperContextType = {
   currentUser: User | undefined;

@@ -45,6 +45,7 @@ const CharacterResponseDisplay = ({
                src={avatarURL}
                width={30}
                height={30}
+               className="rounded-full"
         />
       </div>
       <div className="chat-header">

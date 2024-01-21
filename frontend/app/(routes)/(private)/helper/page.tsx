@@ -1,22 +1,19 @@
 'use client';
 
-import './style.css';
 import axios from 'axios';
 
 // Components
-import { AlertMessage }       from './_components/AlertMessage';
-import { CharacterDisplay }   from './_components/Character/CharacterDisplay';
-import { InputForm }          from './_components/UserInterface/InputForm';
-import { UserInterface }      from './_components/UserInterface/UserInterface';
+import { AlertMessage }       from '@/app/_components/helper/AlertMessage';
+import { CharacterDisplay }   from '@/app/_components/helper/Character/CharacterDisplay';
+import { InputForm }          from '@/app/_components/helper/UserInterface/InputForm';
+import { UserInterface }      from '@/app/_components/helper/UserInterface/UserInterface';
 import { Loading }            from '@/app/_components/layouts/loading/layout';
-import { useErrorHandling }   from './_hooks/useErrorHandling';
+import { useErrorHandling }   from '@/app/_hooks/_helper/useErrorHandling';
 // Hooks
 import { useState, useEffect } from 'react';
 import { useDrawer }           from '@/app/_contexts/DrawerContext';
 import { useHelper }           from '@/app/_contexts/HelperContext';
 import { useSession }          from 'next-auth/react';
-// Custom Hooks
-import { useHelperInitData } from './_hooks/useHelperInitData';
 // Types
 import { Conversation, Decision } from '@/app/_types';
 import { createConversation,
@@ -31,6 +28,7 @@ import { createConversation,
         } from '@/app/_features/fetchAPI';
 
 interface CharacterResponse {
+  id:              number;
   conversation_id: number;
   character_id?:   number;
   response:        string;
@@ -75,50 +73,6 @@ export default function decisionHelper () {
   const { remainingTokens, setRemainingTokens } = useHelper();
   // 通信用JWTトークン
   const [ token, setToken ] = useState<string>('');
-
-  //////////////////// Debug ////////////////////
-
-  // {/* init data */}
-  // useEffect(() => {
-  //   console.log("Update init data")
-  //   console.log('userCharacters', userCharacters);
-  //   console.log('currentUser', currentUser);
-  // }, [userCharacters, currentUser]);
-
-  // {/* state */}
-  // useEffect(() => {
-  //   console.log("Update state");
-  //   console.log('queryText', queryText);
-  //   console.log('characterResponses', characterResponses);
-  //   console.log('decision', decision);
-  //   console.log('conversation', conversation);
-  //   console.log('isResponse', isResponse);
-  // }, [queryText, characterResponses, decision, conversation, isResponse]);
-
-  // {/* error */}
-  // useEffect(() => {
-  //   console.log("Update error")
-  //   console.log('errors', errors);
-  //   console.log('isError', isError);
-  // }, [errors, isError]);
-
-  // {/* user interface */}
-  // useEffect(() => {
-  //   console.log("Update user interface")
-  //   console.log('tags', tags);
-  //   console.log('userDecision', userDecision);
-  //   console.log('isPublic', isPublic);
-  // }, [tags, userDecision, isPublic]);
-
-  // {/* helper */}
-  // useEffect(() => {
-  //   console.log("Update helper")
-  //   console.log('isDrawerClick', isDrawerClick);
-  //   console.log('remainingTokens', remainingTokens);
-  // }, [isDrawerClick, remainingTokens]);
-
-  ///////////////////////////////////////////////
-
 
   ///////////////////////////////////////////////
   //////////////// Set init data ////////////////
@@ -251,7 +205,10 @@ export default function decisionHelper () {
       });
       // 一連の流れでエラーが発生した場合、作成したDecisionを削除する
       if (decision) {
-        await deleteDecision(token!, decision.id);
+        await deleteDecision({
+          token:      token!,
+          decisionId: decision.id
+        });
       }
     } finally {
       setIsLoading(false);
@@ -305,6 +262,7 @@ export default function decisionHelper () {
       const characterResponse = characterData[responseKey!];
 
       return {
+        id: 0,
         conversation_id: conversation?.id!,
         character_id: characterId,
         response: characterResponse

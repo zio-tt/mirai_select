@@ -41,7 +41,14 @@ const UserInterface = ({ tags, setTags, isPublic, setIsPublic, saveDecision }: U
       setLabelTextColor('text-red-800');
       setAlert(alertMessages);
       setIsTagAlert(true);
-    } else {
+    // 空白のタグを許容しない
+    } else if (inputTags.split(',').some(tag => tag.length === 0) && !alert.includes('空白のタグは許容されません。')) {
+      const alertMessages = [...alert, '空白のタグは許容されません。']
+      setLabelBgColor('bg-red-400');
+      setLabelTextColor('text-red-800');
+      setAlert(alertMessages);
+      setIsTagAlert(true);
+    } else if (inputTags.split(',').length <= 6 && inputTags.split(',').every(tag => tag.length <= 10 && tag.length > 0)) {
       setLabelBgColor('bg-blue-100');
       setLabelTextColor('text-blue-800');
       setAlert([]);
