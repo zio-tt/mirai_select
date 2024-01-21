@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Decision, Tag, DecisionTag, Conversation } from '@/app/_types';
 
 const useSearchDecisions = (
@@ -15,10 +14,12 @@ const useSearchDecisions = (
   if (!decisions) return;
   let filtered: Decision[] = [];
 
-  if (filteredDecisions.length === 0) {
+  if (filteredDecisions.length === 0 && decisions.length > 0) {
     filtered = [...decisions];
-  } else {
+  } else if (filteredDecisions.length > 0) {
     filtered = [...filteredDecisions];
+  } else {
+    return;
   }
 
   if (selectedTag) {

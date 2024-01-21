@@ -15,6 +15,11 @@ interface getDecisionProps {
   condition: string;
 }
 
+interface deleteDecisionProps {
+  token:      string;
+  decisionId: number;
+}
+
 const getDecisions = async ({token, condition}: getDecisionProps): Promise<Decision[]> => {
   try {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/decisions`;
@@ -50,10 +55,10 @@ const createDecision = async (token: string) => {
   }
 }
 
-const deleteDecision = async (
-  token: string,
-  decisionId: number
-) => {
+const deleteDecision = async ({
+  token,
+  decisionId
+}: deleteDecisionProps) => {
   try {
     const response = await axios({
       method: 'delete',
