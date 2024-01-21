@@ -64,6 +64,7 @@ export default function DecisionIndex() {
   const { setIsModalOpen } = useDecisions();
 
   useEffect(() => {
+    setIsLoading(true);
     setDecisions([]);
   }, []);
 
@@ -75,6 +76,7 @@ export default function DecisionIndex() {
 
   useEffect(() => {
     if(decisions) setFilteredDecisions(decisions!);
+    setIsLoading(false);
   }, [decisions]);
 
   useEffect(() => {
