@@ -14,10 +14,12 @@ export default function MyPageDecisions() {
   const { decisionsCondition, setDecisionsCondition } = useDecisions();
 
   const getDecisionsData = async (condition: string) => {
+    setIsLoading(true);
     if (token) {
       const decisions = await getDecisions({ token: token, condition: condition });
       setDecisions(decisions);
     }
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -32,7 +34,7 @@ export default function MyPageDecisions() {
 
   return (
     <>
-    {isLoading && <Loading />}
+    {isLoading && <div className='w-full min-h-screen'><Loading /></div>}
     {!isLoading && (
       <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[5vh]'>
         <DecisionIndex />
