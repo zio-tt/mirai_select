@@ -56,7 +56,6 @@ export default function DecisionIndex() {
   const paginateFirst = () => setCurrentPage(1);
   const paginateLast  = () => setCurrentPage(pageNumbers.length);
 
-  console.log(pageNumbers.length)
   // オートコンプリート
   const [isTagInputFocused, setIsTagInputFocused] = useState(false);
   const autoCompleteTagsRef = useRef<HTMLDivElement>(null);
@@ -65,7 +64,6 @@ export default function DecisionIndex() {
   const { setIsModalOpen } = useDecisions();
 
   useEffect(() => {
-    setIsLoading(true);
     setDecisions([]);
   }, []);
 
@@ -76,12 +74,7 @@ export default function DecisionIndex() {
   }, [session]);
 
   useEffect(() => {
-    if(!decisions) {
-      setIsLoading(true);
-    } else {
-      setIsLoading(false);
-      setFilteredDecisions(decisions!);
-    }
+    if(decisions) setFilteredDecisions(decisions!);
   }, [decisions]);
 
   useEffect(() => {

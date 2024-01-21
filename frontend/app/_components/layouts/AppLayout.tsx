@@ -40,8 +40,9 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { isViewed, setIsViewed } = useTopPage(); // Opening Animation Flag
   const [ isAuth, setIsAuth ] = useState<string | null>(null); // 認証状態
   const [ isAdmin, setIsAdmin ] = useState<boolean>(false); // 管理者権限
-  const { status } = useSession();
-  const { isModalOpen } = useDecisions();
+  const [ isLoading, setIsLoading ] = useState<boolean>(false); // ローディング画面
+  const { data: session, status } = useSession();
+  const { isModalOpen, setIsModalOpen } = useDecisions();
   const router = useRouter();
   const isRoot = usePathname();
 
@@ -71,9 +72,6 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       {/* 背景画像とTopPageアニメーション */}
       <Image src='/images/background.png' alt='background' fill
               className='absolute top-50% left-50% min-w-full min-h-full object-cover z-0'/>
-      {/* <FloatingCircles /> */}
-      {/* ローディング画面 */}
-      {/* status == 'loading' && <Loading /> */}
       {/* オープニングアニメーション */}
       { isRoot == "/" && status != 'loading' && !isViewed && <OpeningAnimation /> }
       { isAdmin && (children)}
