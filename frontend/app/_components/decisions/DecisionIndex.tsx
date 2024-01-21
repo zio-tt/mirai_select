@@ -56,6 +56,7 @@ export default function DecisionIndex() {
   const paginateFirst = () => setCurrentPage(1);
   const paginateLast  = () => setCurrentPage(pageNumbers.length);
 
+  console.log(pageNumbers.length)
   // オートコンプリート
   const [isTagInputFocused, setIsTagInputFocused] = useState(false);
   const autoCompleteTagsRef = useRef<HTMLDivElement>(null);
@@ -64,8 +65,8 @@ export default function DecisionIndex() {
   const { setIsModalOpen } = useDecisions();
 
   useEffect(() => {
-    setDecisions([]);
     setIsLoading(true);
+    setDecisions([]);
   }, []);
 
   useEffect(() => {
@@ -106,10 +107,6 @@ export default function DecisionIndex() {
     setIndexOfFirstItem(indexOfLast);
     setIndexOfLastItem(indexOfFirst);
     setCurrentDecisions(targetDecisions);
-
-    for (let i = 1; i <= Math.ceil(filteredDecisions.length / itemsPerPage); i++) {
-      pageNumbers.push(i);
-    }
   }, [currentPage, filteredDecisions]);
 
   useEffect(() => {
@@ -125,6 +122,12 @@ export default function DecisionIndex() {
       setFilteredDecisions
     );
   }, [searchQuery, selectedTag, sortOrder]);
+
+  if (filteredDecisions && filteredDecisions.length > 0) {
+    for (let i = 1; i <= Math.ceil(filteredDecisions.length / itemsPerPage); i++) {
+      pageNumbers.push(i);
+    }
+  }
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     e.preventDefault();
