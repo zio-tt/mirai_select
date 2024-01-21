@@ -90,12 +90,12 @@ export default function DecisionIndex() {
   }, [isDrawerClick]);
 
   useEffect(() => {
-    if (!filteredDecisions) return;
+    if (!filteredDecisions || !Array.isArray(filteredDecisions)) return;
 
     // ページネーションのために、表示するdecisionsを計算
     const indexOfLast     = currentPage * itemsPerPage;
     const indexOfFirst    = indexOfLast - itemsPerPage;
-    const targetDecisions = filteredDecisions && filteredDecisions.slice(indexOfFirst, indexOfLast);
+    const targetDecisions = filteredDecisions.slice(indexOfFirst, indexOfLast);
 
     setIndexOfFirstItem(indexOfLast);
     setIndexOfLastItem(indexOfFirst);
