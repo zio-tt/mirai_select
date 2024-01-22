@@ -5,7 +5,6 @@ import { useDecisions } from '@/app/_contexts/DecisionsContext';
 import { CommentInputForm } from '@/app/_components/decisions/Comment/CommentInputForm';
 import { CommentsDisplay } from '@/app/_components/decisions/Comment/CommentDisplay';
 import { CommentButton } from '../Comment/CommentButton';
-import { useEffect } from 'react';
 
 const DecisionModal = ({
   decision,
@@ -19,15 +18,21 @@ const DecisionModal = ({
   const { users, currentUser } = useDecisions();
   const { decisionCharacters, characterResponses } = useDetailData(decision);
 
+  // モーダルのコンテンツをクリックしたときにイベントの伝播を止める
+  const handleModalContentClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  };
+
   return (
     <>
       { decisionCharacters && characterResponses && (
-        <div className='fixed inset-0 flex items-center justify-center z-20'>
-          <div className='fixed inset-0 bg-black bg-opacity-50' onClick={handleCloseDetail} data-theme="fantasy">
-          </div>
-          <div className="flex w-[80vw] ml-[20vw] h-[100vh] items-center justify-center">
-            <div className="flex flex-col w-[60%] h-[90%] bg-white p-5 rounded-lg items-center mr-2 z-30">
-              <div className='flex h-full justify-center items-center'>
+        // モーダルの外側をクリックしたときにモーダルを閉じる
+        <div className='fixed inset-0 flex items-center justify-center z-40'>
+          <div className='fixed inset-0 bg-black bg-opacity-50 z-60'/>
+          {/* ここをクリックしても何も起きないようにstopPropagationを呼び出す */}
+          <div className="fixed flex w-full h-full items-center justify-center z-50" onClick={handleCloseDetail}>
+            <div className="flex flex-col w-[50%] h-[80%] bg-white p-5 rounded-lg items-center mr-2" onClick={handleModalContentClick}>
+              <div className='flex h-full w-full justify-center items-center'>
                 <DecisionDetail
                   users={users!}
                   currentUserId={currentUser!.id}
@@ -38,8 +43,8 @@ const DecisionModal = ({
                 />
               </div>
             </div>
-            <div className="flex flex-col w-[30%] h-[90%] bg-white py-5 rounded-lg items-center ml-4 z-20">
-              <div className="flex flex-col w-full h-full justify-between" data-theme="fantasy">
+            <div className="flex flex-col w-[30%] h-[80%] bg-white py-5 rounded-lg items-center ml-4" onClick={handleModalContentClick}>
+              <div className="flex flex-col w-full h-full justify-between">
                 <CommentsDisplay />
                 <CommentButton />
                 <CommentInputForm />

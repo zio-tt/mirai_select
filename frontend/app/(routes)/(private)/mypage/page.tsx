@@ -43,7 +43,7 @@ export default function MyPageDecisions() {
 
   return (
     <>
-      <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[5vh]'>
+      <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[3rem]'>
         {/* マイページメニュー */}
         <div className="w-[70vw] h-[5vh] flex justify-start">
           <button id='private'

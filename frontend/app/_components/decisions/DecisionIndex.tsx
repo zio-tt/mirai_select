@@ -195,7 +195,7 @@ export default function DecisionIndex() {
   return (
     <>
       {/* 検索フォーム */}
-      <div className='w-[70vw] mt-[2vh] mb-[3vh] flex relative '>
+      <div className='w-[70vw] mt-[2vh] mb-[3vh] flex relative'>
         <input
           id='searchText'
           type='text'
