@@ -16,6 +16,7 @@ import { useSession }          from 'next-auth/react';
 import { useTopPage }          from '@/app/_contexts/TopPageContext';
 import { useRouter }           from 'next/navigation';
 import { useDecisions }        from '@/app/_contexts/DecisionsContext';
+import { useDrawer }           from '@/app/_contexts/DrawerContext';
 // Fonts
 import { Inter }    from 'next/font/google'
 import { kiwimaru } from '@/app/_utils/font';
@@ -45,6 +46,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { data: session, status } = useSession();
   const { isModalOpen, setIsModalOpen } = useDecisions();
   const { isResetDecisions, setIsResetDecisions } = useDecisions();
+  const { isHamburgerClick } = useDrawer();
   const router = useRouter();
   const isRoot = usePathname();
 
@@ -72,7 +74,12 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   useEffect(() => {
     setIsLoading(false);
     setIsResetDecisions(false);
+    setIsModalOpen(false);
   }, []);
+
+  console.log('isModalOpen', isModalOpen)
+  console.log('status', status) 
+  console.log('isHamburgerClick', isHamburgerClick)
 
   return(
     <div className={`relative w-screen min-h-screen ${kiwimaru.className}`} data-theme='wireframe'>
@@ -85,27 +92,31 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       {/* メインコンテンツ */}
       { isViewed && !isAdmin && (
         <div className='flex w-full h-full'>
-          <FadeInAnimation>
-            <div className='flex flex-col w-screen h-full'>
-              <Header /> 
-              <div className='flex flex-row w-screen h-full'>
-                <div className='flex'>
-                  <Drawer />
+          { status == 'loading' && <Loading /> }
+          { status != 'loading' && (
+            <FadeInAnimation>
+              <div className='flex flex-col w-screen h-full'>
+                <div className='flex w-full z-30'>
+                  <Header />
                 </div>
-                <div className='flex flex-col w-[80%] h-full ml-[20vw]'>
-                  { status == 'loading' && <Loading /> }
-                  { status != 'loading' && 
-                    <>
-                      <main className='flex w-full min-h-[calc(100vh-4rem)] z-10 items-center'>
-                        <AuthGuard children={children} />
-                      </main>
-                      { !isModalOpen && <Footer /> }
-                    </>
-                  }
+                <div className='flex flex-row w-full h-full'>
+                  { status == 'authenticated' && (
+                    <div className='flex h-full z-20'>
+                      <Drawer />
+                    </div>
+                  )}
+                  <div className={`flex flex-col w-full h-full ${status === 'authenticated' ? ( isHamburgerClick ? 'ml-[15rem]' : 'ml-[4rem]' ) : '' } mt-[2rem]`}>
+                    <main className={`flex w-full min-h-[calc(100vh-3rem)] ${isModalOpen ? 'z-50' : 'z-20'} items-center`}>
+                      <AuthGuard children={children} />
+                    </main>
+                    <div className='flex z-20'>
+                      <Footer />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </FadeInAnimation>
+            </FadeInAnimation>
+          )}
         </div>
       )}
     </div>

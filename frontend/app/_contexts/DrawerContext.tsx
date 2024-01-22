@@ -5,6 +5,10 @@ type DrawerContextType = {
   setIsDrawerClick: React.Dispatch<React.SetStateAction<boolean>>;
   drawerLink: string;
   setDrawerLink: React.Dispatch<React.SetStateAction<string>>;
+  isHamburgerClick: boolean;
+  setIsHamburgerClick: React.Dispatch<React.SetStateAction<boolean>>;
+  drawerWidth: string;
+  setDrawerWidth: React.Dispatch<React.SetStateAction<string>>;
 };
 
 type ChildrenType = {
@@ -22,8 +26,10 @@ export const useDrawer = () => {
 };
 
 export const DrawerProvider = ({ children }: ChildrenType) => {
-  const [isDrawerClick, setIsDrawerClick] = useState<boolean>(false);
-  const [drawerLink,    setDrawerLink]    = useState<string>('');
+  const [isDrawerClick,    setIsDrawerClick]    = useState<boolean>(false);
+  const [drawerLink,       setDrawerLink]       = useState<string>('');
+  const [isHamburgerClick, setIsHamburgerClick] = useState<boolean>(false);
+  const [drawerWidth,      setDrawerWidth]      = useState<string>('w-[5vw]');
 
   return (
     <DrawerContext.Provider 
@@ -31,7 +37,11 @@ export const DrawerProvider = ({ children }: ChildrenType) => {
         isDrawerClick,
         setIsDrawerClick,
         drawerLink,
-        setDrawerLink
+        setDrawerLink,
+        isHamburgerClick,
+        setIsHamburgerClick,
+        drawerWidth,
+        setDrawerWidth,
       }}>
       {children}
     </DrawerContext.Provider>

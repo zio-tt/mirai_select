@@ -18,6 +18,8 @@ const DrawerMenu = ({ url, text, imageURL }: DrawerMenuProps) => {
   const [ urlPath, setUrlPath] = useState<string>('/');
   const { setIsDrawerClick }   = useDrawer();
   const { setDrawerLink }      = useDrawer();
+  const { isHamburgerClick }   = useDrawer();
+
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     if (url === 'login') {
@@ -50,19 +52,18 @@ const DrawerMenu = ({ url, text, imageURL }: DrawerMenuProps) => {
   }, []);
 
   return (
-    <div className='flex flex-row h-[4rem] w-[70%] items-center justify-center mb-[3vh]'>
-      <div className="flex h-12 w-10 mr-2 items-center justify-center overflow-hidden">
-        <Image src={imageURL} alt={text} width={100} height={100} className='flex object-cover' />
-      </div>
-      <div className='w-[80%] flex h-[10vh] p-1 border-black border-2 rounded-lg items-center justify-center hover:bg-[#ffcf82]'>
-        <Link id={url}
-              href={urlPath}
-              onClick={handleClick}
-              className='text-[0.9rem] font-bold leading-5 mr-3 ml-3 text-center'>
-                {textElements}
-        </Link>
-      </div>
-    </div>
+    <>
+      <Link id={url}
+            title={text}
+            href={urlPath}
+            onClick={handleClick}
+            className={`flex ${ isHamburgerClick ? 'flex-row' : 'flex-col' } items-center justify-center ml-2 mb-4 p-3 rounded-lg hover:bg-[#ffcf82]`}>
+        <div className={`flex h-6 w-6 items-center justify-center overflow-hidden ${ isHamburgerClick ? 'mr-2' : '' }`}>
+          <Image src={imageURL} alt={text} width={100} height={100} className='flex object-cover' />
+        </div>
+        <div className={`flex ${isHamburgerClick ? 'text-md' : 'hidden'}`}>{textElements}</div>
+      </Link>
+    </>
   );
 }
 
