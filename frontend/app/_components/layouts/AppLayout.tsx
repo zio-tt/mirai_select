@@ -20,9 +20,10 @@ import { useDecisions }        from '@/app/_contexts/DecisionsContext';
 import { Inter }    from 'next/font/google'
 import { kiwimaru } from '@/app/_utils/font';
 // Layouts
+import { Header }           from './Header/layout';
 import { Drawer }           from './Drawer/layout';
-import { Footer }           from './footer/layout';
-import { Loading }          from './loading/layout';
+import { Footer }           from './Footer/layout';
+import { Loading }          from './Loading/layout';
 import { FadeInAnimation }  from '../root/FadeInAnimation';
 import { OpeningAnimation } from '../root/OpeningAnimation';
 // Features
@@ -74,7 +75,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   }, []);
 
   return(
-    <div className={`relative w-screen min-h-screen ${kiwimaru.className}`}>
+    <div className={`relative w-screen min-h-screen ${kiwimaru.className}`} data-theme='wireframe'>
       {/* 背景画像とTopPageアニメーション */}
       <Image src='/images/background.png' alt='background' fill
               className='absolute top-50% left-50% min-w-full min-h-full object-cover z-0'/>
@@ -85,9 +86,13 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
       { isViewed && !isAdmin && (
         <div className='flex w-full h-full'>
           <FadeInAnimation>
-            <div className='flex flex-row w-screen h-full'>
-              <Drawer />
-                <div className='flex flex-col w-[80vw] h-full ml-[20vw]'>
+            <div className='flex flex-col w-screen h-full'>
+              <Header /> 
+              <div className='flex flex-row w-screen h-full'>
+                <div className='flex'>
+                  <Drawer />
+                </div>
+                <div className='flex flex-col w-[80%] h-full ml-[20vw]'>
                   { status == 'loading' && <Loading /> }
                   { status != 'loading' && 
                     <>
@@ -98,6 +103,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
                     </>
                   }
                 </div>
+              </div>
             </div>
           </FadeInAnimation>
         </div>
