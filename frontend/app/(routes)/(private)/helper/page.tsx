@@ -7,7 +7,7 @@ import { AlertMessage }       from '@/app/_components/helper/AlertMessage';
 import { CharacterDisplay }   from '@/app/_components/helper/Character/CharacterDisplay';
 import { InputForm }          from '@/app/_components/helper/UserInterface/InputForm';
 import { UserInterface }      from '@/app/_components/helper/UserInterface/UserInterface';
-import { Loading }            from '@/app/_components/layouts/loading/layout';
+import { Loading }            from '@/app/_components/layouts/Loading/layout';
 import { useErrorHandling }   from '@/app/_hooks/_helper/useErrorHandling';
 // Hooks
 import { useState, useEffect } from 'react';

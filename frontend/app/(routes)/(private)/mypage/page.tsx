@@ -7,7 +7,7 @@ import DecisionIndex from '@/app/_components/decisions/DecisionIndex';
 import { getDecisions } from '@/app/_features/fetchAPI';
 import { HomeIcon } from '@heroicons/react/24/outline';
 import { HeartIcon } from '@heroicons/react/24/outline';
-import { Loading } from '@/app/_components/layouts/loading/layout';
+import { Loading } from '@/app/_components/layouts/Loading/layout';
 
 export default function MyPageDecisions() {
   const { setDecisions } = useDecisions();
