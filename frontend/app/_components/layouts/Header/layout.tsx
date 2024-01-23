@@ -6,12 +6,14 @@ import { useDecisions } from "@/app/_contexts/DecisionsContext"
 import { useSession } from "next-auth/react"
 import { GoogleLoginButton } from "@/app/_components/ui"
 import { handleLogout } from "@/app/_features/auth/function"
+import { useHelper } from "@/app/_contexts/HelperContext"
 
 const Header = () => {
   const { isHamburgerClick, setIsHamburgerClick } = useDrawer();
   const { setDrawerWidth } = useDrawer();
   const { data: session, status } = useSession();
   const { setDecisionsCondition } = useDecisions();
+  const { remainingTokens } = useHelper();
 
   const handleHamburgerClick = () => {
     if (isHamburgerClick) {
@@ -20,6 +22,16 @@ const Header = () => {
     } else {
       setDrawerWidth('w-[15rem]');
       setIsHamburgerClick(true);
+    }
+  }
+
+  const handleMenuClick =(
+    condition: string
+  ) => {
+    if (condition === 'logout') {
+      handleLogout();
+    } else {
+      setDecisionsCondition(condition);
     }
   }
 
@@ -42,22 +54,24 @@ const Header = () => {
       <div className="flex-none mr-2">
         { status === 'unauthenticated' && <GoogleLoginButton /> }
         { status === 'authenticated' && (
-          <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-circle btn-ghost">
-              <div className="h-full">
-                <Image src={session?.user?.image!}
-                      alt={session?.user?.name!}
-                      width={100}
-                      height={100}
-                      className='flex object-cover rounded-full' />
+          <>
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn btn-circle btn-ghost">
+                <div className="h-full">
+                  <Image src={session?.user?.image!}
+                        alt={session?.user?.name!}
+                        width={100}
+                        height={100}
+                        className='flex object-cover rounded-full' />
+                </div>
               </div>
+              <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                <li><Link href='/mypage' onClick={() => handleMenuClick('private')}>保存した決断</Link></li>
+                <li><Link href='/mypage' onClick={() => handleMenuClick('favorite')}>お気に入り</Link></li>
+                <li><Link href='#'       onClick={() => handleMenuClick('logout')}>ログアウト</Link></li>
+              </ul>
             </div>
-            <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-              <li><Link href='/mypage' onClick={() => setDecisionsCondition('private')}>保存した決断</Link></li>
-              <li><Link href='/mypage' onClick={() => setDecisionsCondition('favorite')}>お気に入り</Link></li>
-              <li><Link href='#'       onClick={() => handleLogout}>ログアウト</Link></li>
-            </ul>
-          </div>
+          </>
         )}
       </div>
     </div>

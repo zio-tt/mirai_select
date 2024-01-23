@@ -17,12 +17,14 @@ import { useTopPage }          from '@/app/_contexts/TopPageContext';
 import { useRouter }           from 'next/navigation';
 import { useDecisions }        from '@/app/_contexts/DecisionsContext';
 import { useDrawer }           from '@/app/_contexts/DrawerContext';
+import { useHelper }           from '@/app/_contexts/HelperContext';
 // Fonts
 import { Inter }    from 'next/font/google'
 import { kiwimaru } from '@/app/_utils/font';
 // Layouts
 import { Header }           from './Header/layout';
 import { Drawer }           from './Drawer/layout';
+import { Information }      from './Information/layout';
 import { Footer }           from './Footer/layout';
 import { Loading }          from './Loading/layout';
 import { FadeInAnimation }  from '../root/FadeInAnimation';
@@ -47,6 +49,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   const { isModalOpen, setIsModalOpen } = useDecisions();
   const { isResetDecisions, setIsResetDecisions } = useDecisions();
   const { isHamburgerClick } = useDrawer();
+  const { isClickInformation, setIsClickInformation } = useHelper();
   const router = useRouter();
   const isRoot = usePathname();
 
@@ -69,6 +72,10 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
     } else {
       setIsAdmin(false);
     }
+
+    if (isRoot != '/helper') {
+      setIsClickInformation(false);
+    }
   }, [status]);
 
   useEffect(() => {
@@ -77,12 +84,8 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
     setIsModalOpen(false);
   }, []);
 
-  console.log('isModalOpen', isModalOpen)
-  console.log('status', status) 
-  console.log('isHamburgerClick', isHamburgerClick)
-
   return(
-    <div className={`relative w-screen min-h-screen ${kiwimaru.className}`} data-theme='wireframe'>
+    <div className={`relative w-screen min-h-screen ${kiwimaru.className}`} data-theme='pastel'>
       {/* 背景画像とTopPageアニメーション */}
       <Image src='/images/background.png' alt='background' fill
               className='absolute top-50% left-50% min-w-full min-h-full object-cover z-0'/>
@@ -105,14 +108,19 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
                       <Drawer />
                     </div>
                   )}
-                  <div className={`flex flex-col w-full h-full ${status === 'authenticated' ? ( isHamburgerClick ? 'ml-[15rem]' : 'ml-[4rem]' ) : '' } mt-[2rem]`}>
-                    <main className={`flex w-full min-h-[calc(100vh-3rem)] ${isModalOpen ? 'z-50' : 'z-20'} items-center`}>
+                  <div className={`flex flex-col grow h-full ${status === 'authenticated' ? ( isHamburgerClick ? 'ml-[15rem]' : 'ml-[4rem]' ) : '' } ${isClickInformation ? 'mr-[30rem]' : ''} mt-[2rem]`}>
+                    <main className={`flex w-full min-h-[calc(100vh-4rem)] ${isModalOpen ? 'z-50' : 'z-20'} items-center`}>
                       <AuthGuard children={children} />
                     </main>
                     <div className='flex z-20'>
                       <Footer />
                     </div>
                   </div>
+                  { status == 'authenticated' && isClickInformation && (
+                    <div className='flex h-full z-20'>
+                      <Information />
+                    </div>
+                  )}
                 </div>
               </div>
             </FadeInAnimation>

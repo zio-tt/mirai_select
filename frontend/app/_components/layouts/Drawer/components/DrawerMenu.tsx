@@ -25,7 +25,7 @@ const DrawerMenu = ({ url, text, imageURL }: DrawerMenuProps) => {
     if (url === 'login') {
       handleLogin(e);
     } else if (url === 'logout') {
-      handleLogout(e);
+      handleLogout();
     } else {
       setIsDrawerClick(true);
       setDrawerLink(e.currentTarget.id);

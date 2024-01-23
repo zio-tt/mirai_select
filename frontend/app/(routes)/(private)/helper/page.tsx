@@ -3,12 +3,13 @@
 import axios from 'axios';
 
 // Components
-import { AlertMessage }       from '@/app/_components/helper/AlertMessage';
-import { CharacterDisplay }   from '@/app/_components/helper/Character/CharacterDisplay';
-import { InputForm }          from '@/app/_components/helper/UserInterface/InputForm';
-import { UserInterface }      from '@/app/_components/helper/UserInterface/UserInterface';
-import { Loading }            from '@/app/_components/layouts/Loading/layout';
-import { useErrorHandling }   from '@/app/_hooks/_helper/useErrorHandling';
+import { AlertMessage }             from '@/app/_components/helper/AlertMessage';
+import { CharacterResponseDisplay } from '@/app/_components/helper/Character/CharacterResponseDisplay';
+import { Loading }                  from '@/app/_components/layouts/Loading/layout';
+import { useErrorHandling }         from '@/app/_hooks/_helper/useErrorHandling';
+import { QueryInputForm }           from '@/app/_components/helper/UserInterface/QueryInputForm';
+import { TagInputForm }             from '@/app/_components/helper/UserInterface/TagInputForm';
+import { Steps }                    from '@/app/_components/helper/Information/Steps';
 // Hooks
 import { useState, useEffect } from 'react';
 import { useDrawer }           from '@/app/_contexts/DrawerContext';
@@ -26,6 +27,12 @@ import { createConversation,
          createTag,
          createDecisionTags,
         } from '@/app/_features/fetchAPI';
+import { ChatBubbleBottomCenterIcon as ChatIconOutline } from '@heroicons/react/24/outline';
+import { ChatBubbleBottomCenterIcon as ChatIconSolid } from '@heroicons/react/24/solid';
+import { BookOpenIcon as BookIconOutline } from '@heroicons/react/24/outline';
+import { BookOpenIcon as BookIconSolid }   from '@heroicons/react/24/solid';
+import { InformationCircleIcon as InformationIconOutline } from '@heroicons/react/24/outline';
+import { InformationCircleIcon as InformationIconSolid }   from '@heroicons/react/24/solid';
 
 interface CharacterResponse {
   id:              number;
@@ -45,11 +52,11 @@ export default function decisionHelper () {
   const { isDrawerClick, setIsDrawerClick } = useDrawer();
   const { drawerLink,    setDrawerLink }    = useDrawer();
   // 深掘り機能
-  const [ beforeQueryText,          setBeforeQueryText ]          = useState('');
+  const { beforeQueryText,          setBeforeQueryText }          = useHelper();
   const [ beforeCharacterResponses, setBeforeCharacterResponses ] = useState<CharacterResponse[]>([]);
-  const [ conversationCount,        setConversationCount ]        = useState<number>(1);
+  const { conversationCount,        setConversationCount }        = useHelper();
   // データ格納用
-  const [ queryText,          setQueryText ]          = useState<string>('');
+  const { queryText,          setQueryText }          = useHelper();
   const [ characterResponses, setCharacterResponses ] = useState<CharacterResponse[]>([]);
   const [ decision,           setDecision ]           = useState<Decision>();
   const [ conversation,       setConversation ]       = useState<Conversation>();
@@ -62,17 +69,20 @@ export default function decisionHelper () {
           addErrorMessages,
           removeErrorMessages,
           resetErrorMessages } = useErrorHandling();
-  // チェックボックス関係
-  const [ isCheckModal, setIsCheckModal ] = useState<boolean>(false);
   // ユーザーインターフェース関係
-  const [ tags,         setTags ]         = useState<string[]>([]);
-  const [ userDecision, setUserDecision ] = useState<CharacterResponse>();
-  const [ isPublic,     setIsPublic ]     = useState<boolean>(false);
+  const [ tags,               setTags ]               = useState<string[]>([]);
+  const { userDecision,       setUserDecision }       = useHelper();
+  const { tagAlert }                                  = useHelper();
+  const { beforeUserDecision, setBeforeUserDecision } = useHelper();
+  const [ isPublic,           setIsPublic ]           = useState<boolean>(false);
   // 入力フォーム
   const [ placeholder,     setPlaceholder     ] = useState<string>('悩みを入力してください（50文字以内）');
   const { remainingTokens, setRemainingTokens } = useHelper();
+  const { isSaveDecision,  setIsSaveDecision  } = useHelper();
   // 通信用JWTトークン
   const [ token, setToken ] = useState<string>('');
+  // informationウインドウの管理
+  const {isClickInformation, setIsClickInformation} = useHelper();
 
   ///////////////////////////////////////////////
   //////////////// Set init data ////////////////
@@ -86,10 +96,18 @@ export default function decisionHelper () {
 
   useEffect(() => {
     if(token){
+      initializeState();
       fetchHelperInitData(token);
       resetErrorMessages();
     }
   }, [token]);
+
+  useEffect(() => {
+    if (conversationCount == 1){
+      initializeState();
+      setIsClickInformation(false);
+    }
+  }, [conversationCount]);
 
   ///////////////////////////////////////////////
   /////////////// Create Decision ///////////////
@@ -104,11 +122,6 @@ export default function decisionHelper () {
     userDecision:      string | null;
   }
 
-  //  入力フォームに値が入力された時の処理
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setQueryText(event.target.value);
-  }
-
   useEffect(() => {
     if (queryText.length <= 50) {
       removeErrorMessages('inputText');
@@ -119,9 +132,7 @@ export default function decisionHelper () {
   }, [userDecision, queryText])
 
   // 「相談する」ボタンを押した時の処理
-  const handleCreateConversation = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-
+  const handleCreateConversation = async () => {
     // エラーハンドリング
     if (isError) return;
     if (!queryText) {
@@ -156,6 +167,7 @@ export default function decisionHelper () {
 
       // 1. 深掘りの場合は既存のConversationに対してユーザーの決定を反映する
       if (conversationCount === 2) {
+        setBeforeUserDecision(userDecision!);
         const updatedConversation = await updateConversation(token!, conversation!.id, queryText, userDecision!);
         setConversation(updatedConversation);
       }
@@ -194,11 +206,13 @@ export default function decisionHelper () {
       setRemainingTokens(user.token);
 
       // 5. beforeQueryTextとbeforeCharacterResponsesを更新する
-      setBeforeQueryText(queryText);
+      if (conversationCount === 1) {
+        setBeforeQueryText(queryText);
+        setQueryText('');
+      }
       setBeforeCharacterResponses(createdConversation.character_responses);
 
       // 6. beforeQueryTextとbeforeCharacterResponsesを表示する
-      setQueryText('');
 
       if (conversationCount === 1) {
         setIsResponse(true);
@@ -283,11 +297,15 @@ export default function decisionHelper () {
   //////////////// Save Decision ////////////////
   ///////////////////////////////////////////////
 
-  const handleSaveDecision = async (e: React.MouseEvent<HTMLElement>) => {
+  const handleSaveDecision = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     // エラーハンドリング
     if (isError) return;
+    if (tagAlert.length > 0) { 
+      setIsClickInformation(true);
+      return;
+    }
     if (!tags || tags.length === 0 || !userDecision) {
       alert('タグを入力し、どちらかのキャラクターを選択してください。');
       return;
@@ -337,6 +355,7 @@ export default function decisionHelper () {
     setUserDecision(undefined);
     setIsPublic(false);
     setConversationCount(1);
+    setIsSaveDecision(false);
 
     return;
   }
@@ -398,57 +417,136 @@ export default function decisionHelper () {
     }
   })
 
+  // 情報ディスプレイを開く
+  const handleClickInformation = () => {
+    setIsClickInformation(!isClickInformation);
+  }
+
   return (
     <>
       { !userCharacters && <div className='w-full min-h-screen'><Loading /></div> }
       { isLoading && <div className='w-full min-h-screen'><Loading /></div> }
       { userCharacters && !isLoading && (
-        <div className='flex flex-col w-full min-h-screen items-center justify-center py-[3vh]'>
+        <div className='flex flex-col w-full min-h-screen items-center justify-start pt-3 mt-14'>
         { isError && <AlertMessage errors={errors} />}
-          <div id='main-contents' className='w-[70vw] h-[90vh] bg-gray-200/30 rounded-md border-2 border-black shadow-lg flex flex-col items-center justify-center p-3 overflow-hidden'>
-            <div className='flex flex-row w-full h-[70%]'>
-              <div className='flex flex-col w-[70%] h-full border-2 rounded-md border-black justify-center items-center'>
-                { isResponse && (
-                  <>
-                    <div className='flex w-[90%] h-[10%] border-2 rounded-md border-black bg-white mx-6 mt-6 mb-2 items-center justify-center text-black'>
-                      <div className='flex'>相談内容：{beforeQueryText}</div>
-                    </div>
-                    <div className='flex w-[60%] h-[10%] rounded-xl bg-pink-200 items-center justify-center text-black'>
-                      良いと思った方の意見を選択してください。
-                    </div>
-                  </>
-                )}
-                <CharacterDisplay
-                  conversationId={conversation?.id!}
-                  userCharacters={userCharacters!}
-                  responses={characterResponses}
-                  userDecision={userDecision!}
-                  setUserDecision={setUserDecision}
-                  isResponse={isResponse} />
-              </div>
-              <div id='control-window' className='flex flex-col w-[30%] h-full border-2 border-black ml-3 rounded-md items-center justify-end'>
-                { isResponse && <UserInterface
-                  tags={tags}
-                  setTags={setTags}
-                  isPublic={isPublic}
-                  setIsPublic={setIsPublic}
-                  saveDecision={handleSaveDecision}
-                   />
-                }
-              </div>
+          <div id='main-contents'
+               className='w-[60%] min-h-[80vh] rounded-md border shadow-lg flex flex-col py-3 overflow-hidden'>
+            <div className="sticky justify-center inset-x-0 top-1 mx-auto min-h-20 z-10">
+              <Steps />
             </div>
-            <div id='input-form' className='w-full grow-[3] flex items-center justify-center border-2 rounded-md border-black mt-3'>
-              { conversationCount != 3 && 
-                <InputForm
-                  inputText={queryText}
-                  handleChange={handleChange}
-                  placeholder={placeholder}
-                  sendText={handleCreateConversation}
-                  token={token}
-                  decisionId={decision?.id!}
-                  characterResponses={characterResponses}
-                />
-              }
+            <div className='flex flex-col w-full h-full items-center justify-center py-10'>
+              { conversationCount === 1 && (
+                <>
+                  <div className='flex flex-col items-center justify-center w-[80%] min-h-[60%] max-h-[80%] border pt-6 pb-3 mb-6 overflow-auto'>
+                    { userCharacters.map ((character, index) => {
+                      // characterの中にcharacter1_welcome,character2_welcomeがあり、indexに応じてどちらを表示するかを判断する
+                      const whichWelcome = index === 0 ? 'character1_welcome' : 'character2_welcome';
+                      const welcome = character[whichWelcome];
+                      return(
+                        <CharacterResponseDisplay
+                          key={character.id}
+                          decisionCharacter={character}
+                          characterResponse={null}
+                          setUserDecision={setUserDecision}
+                          isResponse={isResponse}
+                          welcome={welcome} />
+                      );
+                    })}
+                  </div>
+                  <div className='flex flex-col w-full items-center justify-center'>
+                    <div className='flex flex-row w-full items-center justify-center'>
+                      <div className='flex w-[80%]'>
+                        <QueryInputForm handleCreateConversation={handleCreateConversation} />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+              { conversationCount === 2 && (
+                <>
+                  <div className='flex flex-col items-center justify-center w-[80%] min-h-[60%] max-h-[80%] border pt-6 pb-3 mb-6 overflow-auto'>
+                    { userCharacters.map ((character, index) => {
+                      const characterResponse = characterResponses.find(c => c.character_id === character.id);
+                      return(
+                        <CharacterResponseDisplay
+                          key={character.id}
+                          decisionCharacter={character}
+                          characterResponse={characterResponse!}
+                          conversationId={conversation!.id}
+                          userDecision={userDecision!}
+                          setUserDecision={setUserDecision}
+                          isResponse={isResponse} />
+                      );
+                    })}
+                  </div>
+                  <div className='flex flex-col w-full items-center justify-center'>
+                    <div className='flex flex-row w-full items-center justify-center'>
+                      <div className='flex w-[80%]'>
+                        { isSaveDecision ? <TagInputForm tags={tags} setTags={setTags} saveDecision={handleSaveDecision} /> : <QueryInputForm handleCreateConversation={handleCreateConversation} />}
+                      </div>
+                      <div className="flex flex-row h-10 items-center ml-3">
+                        <div className='flex h-[1.5rem]'>
+                          { !isClickInformation && <InformationIconOutline title='informationを開く'    onClick={handleClickInformation} /> }
+                          { isClickInformation  && <InformationIconSolid   title='informationを閉じる'  onClick={handleClickInformation} /> }
+                        </div>
+                      </div>
+                    </div>
+                    <div className='flex w-[75%] justify-between items-center mt-1'>
+                      <div className="flex flex-row items-center">
+                        <div className="flex h-[1.5rem] mr-1">{isSaveDecision ? <ChatIconOutline /> : <ChatIconSolid />}</div>
+                        <input type="checkbox" className="toggle theme-controller" onChange={() => setIsSaveDecision(current => !current)} />
+                        <div className="flex h-[1.5rem] ml-1">{isSaveDecision ? <BookIconSolid /> : <BookIconOutline />}</div>
+                      </div>
+                      <div className="form-control mr-6">
+                        <label className="cursor-pointer label flex flex-row items-center">
+                          <span className="label-text mr-1">公開設定</span>
+                          <input type="checkbox" className="checkbox checkbox-secondary" onChange={() => setIsPublic(current => !current)} />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+              { conversationCount === 3 && (
+                <>
+                  <div className='flex flex-col items-center justify-center w-[80%] min-h-[60%] max-h-[80%] border pt-6 pb-3 mb-6 overflow-auto'>
+                    { userCharacters.map ((character, index) => {
+                      const characterResponse = characterResponses.find(c => c.character_id === character.id);
+                      return(
+                        <CharacterResponseDisplay
+                          key={character.id}
+                          decisionCharacter={character}
+                          characterResponse={characterResponse!}
+                          conversationId={conversation!.id}
+                          userDecision={userDecision!}
+                          setUserDecision={setUserDecision}
+                          isResponse={isResponse} />
+                      );
+                    })}
+                  </div>
+                  <div className='flex flex-col w-full items-center justify-center'>
+                    <div className='flex flex-row w-full items-center justify-center'>
+                      <div className='flex w-[80%]'>
+                        <TagInputForm tags={tags} setTags={setTags} saveDecision={handleSaveDecision} />
+                      </div>
+                      <div className="flex flex-row h-10 items-center ml-3">
+                        <div className='flex h-[1.5rem]'>
+                          { !isClickInformation && <InformationIconOutline title='informationを開く'    onClick={handleClickInformation} /> }
+                          { isClickInformation  && <InformationIconSolid   title='informationを閉じる'  onClick={handleClickInformation} /> }
+                        </div>
+                      </div>
+                    </div>
+                    <div className='flex w-[75%] justify-end items-center mt-1'>
+                      <div className="form-control mr-6">
+                        <label className="cursor-pointer label flex flex-row items-center">
+                          <span className="label-text mr-1">公開設定</span>
+                          <input type="checkbox" className="checkbox checkbox-secondary" onChange={() => setIsPublic(current => !current)} />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

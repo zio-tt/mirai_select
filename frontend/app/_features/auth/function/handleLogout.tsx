@@ -1,8 +1,7 @@
 import { signOut } from 'next-auth/react';
 import axios from 'axios';
 
-export const handleLogout = async (e: React.MouseEvent<HTMLElement>) => {
-  e.preventDefault();
+export const handleLogout = async () => {
   sessionStorage.setItem('unAuthFlag', 'true');
   try {
     await signOut();

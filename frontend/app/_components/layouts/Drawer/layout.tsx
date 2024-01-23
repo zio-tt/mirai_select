@@ -12,6 +12,10 @@ const Drawer = () => {
   const { isHamburgerClick } = useDrawer();
   const { drawerWidth } = useDrawer();
 
+  // スマホサイズなどコンテンツが正常に表示されないサイズの場合、
+  // ハンバーガーメニューをクリックするまでDrawerを非表示にする
+  // ハンバーがーメニューがクリックされた時はdrawerWidthを100%にする
+  // つまりメインコンテンツが完全に画面外に押し出されるような形にする
   return (
     <>
       <div className={`fixed flex flex-col ${drawerWidth} min-h-[100%] overflow-auto justify-start ${ isHamburgerClick ? `items-start` : `items-center`} pt-10 mt-[3rem] border-r`}>
@@ -30,6 +34,11 @@ const Drawer = () => {
                       imageURL="/images/exit.png"
                       text='ログアウト' />
         </div>
+        {isHamburgerClick && isRoot == '/helper' && ( 
+          <div className='flex flex-col w-full items-start justify-start border-t pt-6 pl-6'>
+            <div className='text-sm underline-offset-4 underline'>残トークン数: <span className="text-lg">{remainingTokens}</span></div>
+          </div>
+        )}
       </div>
     </>
   );

@@ -34,7 +34,7 @@ const DecisionDetail = ({
 
   return (
     <>
-      <div className='flex flex-col w-[90%] h-[90%] items-center justify-start overflow-auto' data-theme="fantasy">
+      <div className='flex flex-col w-[90%] h-[90%] items-center justify-start overflow-auto' data-theme="pastel">
         {conversations && conversations.map((conversation, index) => {
           // conversationに対するcharacterResponsesを取得
           const conversationCharacterResponses = characterResponses ? characterResponses.filter((character_response) => character_response.conversation_id === conversation.id) : null;

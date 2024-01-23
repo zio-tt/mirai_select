@@ -29,7 +29,7 @@ export const DrawerProvider = ({ children }: ChildrenType) => {
   const [isDrawerClick,    setIsDrawerClick]    = useState<boolean>(false);
   const [drawerLink,       setDrawerLink]       = useState<string>('');
   const [isHamburgerClick, setIsHamburgerClick] = useState<boolean>(false);
-  const [drawerWidth,      setDrawerWidth]      = useState<string>('w-[5vw]');
+  const [drawerWidth,      setDrawerWidth]      = useState<string>('w-[4rem]');
 
   return (
     <DrawerContext.Provider 
