@@ -8,7 +8,7 @@ type InputFormProps = {
 
 const InputForm = ({ isLoading }: InputFormProps) => {
   const { textAreaRef } = useAutoResizeTextArea();
-  const { inputText, setInputText } = useHelper();
+  const { queryText, setQueryText } = useHelper();
 
   return (
     <div className="thought-bubble w-[30%] flex flex-col items-center justify-center mr-10">
@@ -17,8 +17,8 @@ const InputForm = ({ isLoading }: InputFormProps) => {
           ref={textAreaRef}
           placeholder="悩みごとを入力してください（最大50文字）"
           className="bg-white input resize-none p-2 w-full max-w-full h-8 text-base leading-normal"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
+          value={queryText}
+          onChange={(e) => setQueryText(e.target.value)}
         />
       </div>
       <div className="h-full items-start justify-start ml-4">
