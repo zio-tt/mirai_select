@@ -25,8 +25,8 @@ import { kiwimaru } from '@/app/_utils/font';
 import { Header }           from './Header/layout';
 import { Drawer }           from './Drawer/layout';
 import { Information }      from './Information/layout';
-import { Footer }           from './Footer/layout';
-import { Loading }          from './Loading/layout';
+import { Footer }           from './footer/layout';
+import { Loading }          from './loading/layout';
 import { FadeInAnimation }  from '../root/FadeInAnimation';
 import { OpeningAnimation } from '../root/OpeningAnimation';
 // Features
