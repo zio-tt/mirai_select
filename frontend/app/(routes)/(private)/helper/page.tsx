@@ -5,7 +5,7 @@ import axios from 'axios';
 // Components
 import { AlertMessage }             from '@/app/_components/helper/AlertMessage';
 import { CharacterResponseDisplay } from '@/app/_components/helper/Character/CharacterResponseDisplay';
-import { Loading }                  from '@/app/_components/layouts/Loading/layout';
+import { Loading }                  from '@/app/_components/layouts/loading/layout';
 import { useErrorHandling }         from '@/app/_hooks/_helper/useErrorHandling';
 import { QueryInputForm }           from '@/app/_components/helper/UserInterface/QueryInputForm';
 import { TagInputForm }             from '@/app/_components/helper/UserInterface/TagInputForm';

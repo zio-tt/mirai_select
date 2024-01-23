@@ -13,7 +13,7 @@ import { useSortDecisions } from '@/app/_hooks/_decisions/useSortDecisions';
 import { useDrawer } from '@/app/_contexts/DrawerContext';
 import { deleteDecision } from '@/app/_features/fetchAPI';
 import { TrashIcon } from '@heroicons/react/24/outline';
-import { Loading } from '@/app/_components/layouts/Loading/layout';
+import { Loading } from '@/app/_components/layouts/loading/layout';
 
 export default function DecisionIndex() {
   // initial state
