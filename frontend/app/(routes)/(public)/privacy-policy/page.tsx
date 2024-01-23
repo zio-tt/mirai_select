@@ -1,7 +1,7 @@
 export default function PrivacyPolicy() {
-  const h2Style = 'text-md md:text-lg lg:text-2xl underline';
-  const h3Style = 'text-sm md:text-md lg:text-xl ml-4';
-  const liStyle = 'text-xs md:text-sm lg:text-lg';
+  const h2Style = 'text-md md:text-md lg:text-lg underline';
+  const h3Style = 'text-sm md:text-sm lg:text-md ml-4';
+  const liStyle = 'text-xs md:text-xs lg:text-sm';
 
   type ContentsProps = {
     title?: string;

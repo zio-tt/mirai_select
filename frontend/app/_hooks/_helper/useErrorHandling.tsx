@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Error } from '../../(routes)/(private)/helper/_types/Error';
+import { Error } from '../../_types/Error';
 import { set } from 'zod';
 
 const useErrorHandling = () => {

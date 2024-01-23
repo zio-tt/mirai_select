@@ -1,5 +1,5 @@
 // types
-import { Error } from '../../(routes)/(private)/helper/_types/Error';
+import { Error } from '@/app/_types/Error';
 
 interface AlertMessageProps {
   errors: Error[];

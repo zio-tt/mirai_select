@@ -7,7 +7,7 @@ import DecisionIndex from '@/app/_components/decisions/DecisionIndex';
 import { getDecisions } from '@/app/_features/fetchAPI';
 import { HomeIcon } from '@heroicons/react/24/outline';
 import { HeartIcon } from '@heroicons/react/24/outline';
-import { Loading } from '@/app/_components/layouts/loading/layout';
+import { Loading } from '@/app/_components/layouts/Loading/layout';
 
 export default function MyPageDecisions() {
   const { setDecisions } = useDecisions();
@@ -43,7 +43,7 @@ export default function MyPageDecisions() {
 
   return (
     <>
-      <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[5vh]'>
+      <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[3rem]'>
         {/* マイページメニュー */}
         <div className="w-[70vw] h-[5vh] flex justify-start">
           <button id='private'

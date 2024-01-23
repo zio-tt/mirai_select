@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Loading }  from '@/app/_components/layouts/loading/layout';
+import { Loading }  from '@/app/_components/layouts/Loading/layout';
 import { useDecisions } from '@/app/_contexts/DecisionsContext';
 import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData';
 import DecisionIndex from '@/app/_components/decisions/DecisionIndex';
@@ -37,7 +37,7 @@ export default function MyPageDecisions() {
 
   return (
     <>
-      <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[5vh]'>
+      <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[3rem]'>
         <DecisionIndex />
       </div>
     </>
