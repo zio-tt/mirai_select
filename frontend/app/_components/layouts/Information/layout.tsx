@@ -82,7 +82,7 @@ const Information = () => {
                   <UserQueryDisplay decisionUser={currentUser} queryText={beforeQueryText} />
                   <SelectedResponse decisionCharacter={userCharacters.find((c)=> c.id == beforeUserDecision.character_id)} characterResponse={beforeUserDecision} />
                   <UserQueryDisplay decisionUser={currentUser} queryText={queryText} />
-                  <SelectedResponse decisionCharacter={userCharacters.find((c)=> c.id == userDecision.character_id)} characterResponse={beforeUserDecision} />
+                  <SelectedResponse decisionCharacter={userCharacters.find((c)=> c.id == userDecision.character_id)} characterResponse={userDecision} />
                 </div>
               </>
             )}
