@@ -13,6 +13,7 @@ class Admin::CharactersController < ApplicationController
 
   # キャラクターの更新
   def update
+    binding.pry
     character = Character.find(params[:id])
     character.update!(character_params)
     render json: character_attributes(character)
@@ -28,7 +29,7 @@ class Admin::CharactersController < ApplicationController
   private
 
   def character_params
-    params.require(:character).permit(:name, :mbti_type, :tone, :first_person, :second_person, :expression, :values, :empathy, :character1_welcome, :character2_welcome, :avatar)
+    params.require(:characters).permit(:name, :mbti_type, :tone, :first_person, :second_person, :expression, :values, :empathy, :character1_welcome, :character2_welcome, :avatar)
   end
 
   def character_attributes(character)
