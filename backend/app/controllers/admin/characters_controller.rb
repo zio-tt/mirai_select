@@ -13,7 +13,6 @@ class Admin::CharactersController < ApplicationController
 
   # キャラクターの更新
   def update
-    binding.pry
     character = Character.find(params[:id])
     character.update!(character_params)
     render json: character_attributes(character)
