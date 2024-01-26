@@ -1,4 +1,4 @@
-import { List, ListProps, Datagrid, TextField } from 'react-admin';
+import { List, ListProps, Datagrid, EditButton, TextField } from 'react-admin';
 
 const CharacterList = (props: ListProps) => {
   return (
@@ -18,6 +18,7 @@ const CharacterList = (props: ListProps) => {
         <TextField source="created_at" />
         <TextField source="updated_at" />
         <TextField source="avatar_url" />
+        <EditButton />
       </Datagrid>
     </List>
   );

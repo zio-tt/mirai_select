@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react"
 import { GoogleLoginButton } from "@/app/_components/ui"
 import { handleLogout } from "@/app/_features/auth/function"
 import { useHelper } from "@/app/_contexts/HelperContext"
+import { GuestMenu } from "@/app/_components/guest/GuestMenu"
 
 const Header = () => {
   const { isHamburgerClick, setIsHamburgerClick } = useDrawer();
@@ -52,7 +53,12 @@ const Header = () => {
         </Link>
       </div>
       <div className="flex-none mr-2">
-        { status === 'unauthenticated' && <GoogleLoginButton /> }
+        { status === 'unauthenticated' && (
+          <>
+            <GuestMenu />
+            <GoogleLoginButton />
+          </>
+        )}
         { status === 'authenticated' && (
           <>
             <div className="dropdown dropdown-end">

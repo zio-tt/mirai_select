@@ -368,7 +368,7 @@ export default function decisionHelper () {
       if (conversationCount === 1) {
         initializeState();
         setIsDrawerClick(false);
-      } else {
+      } else if (isResponse && conversationCount !== 1) {
         if (window.confirm('現在の相談内容はそのまま保存されます。\r\n後から相談内容の変更や深掘り・決断は行えません。\r\n消費したトークンは戻ってきませんがよろしいですか？')) {
           initializeState();
           setIsDrawerClick(false);
@@ -388,12 +388,12 @@ export default function decisionHelper () {
     if ( currentUser ) { setRemainingTokens(currentUser.token - queryTextLength) }
 
     // 入力テキストが50文字を超える場合
-    if (queryTextLength > 50) {
+    if (queryTextLength > 100) {
       addErrorMessages({
-        message: `文字数がオーバーしています。（現在の入力文字数：${queryTextLength}/50文字）`,
+        message: `文字数がオーバーしています。（現在の入力文字数：${queryTextLength}/100文字）`,
         kind: 'inputText'
       });
-    } else if (queryTextLength <= 50) {
+    } else if (queryTextLength <= 100) {
       removeErrorMessages('inputText');
     }
   }, [queryText, currentUser]);

@@ -16,7 +16,7 @@ const QueryInputForm = ({
         <div className="relative grid h-full w-full min-w-[80%]">
           <textarea
             rows={1}
-            placeholder={'相談文を入力してください（50文字以内）'}
+            placeholder={'相談文を入力してください（100文字以内）'}
             onChange={(e) => setQueryText(e.target.value)}
             value={queryText}
             className="peer h-full resize-none min-h-full w-full rounded-[7px] !border-0 border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder:text-blue-gray-300 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-gray-900 focus:border-transparent focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50" />

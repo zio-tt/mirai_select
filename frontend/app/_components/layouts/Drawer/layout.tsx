@@ -36,7 +36,7 @@ const Drawer = () => {
         </div>
         {isHamburgerClick && isRoot == '/helper' && ( 
           <div className='flex flex-col w-full items-start justify-start border-t pt-6 pl-6'>
-            <div className='text-sm underline-offset-4 underline'>残トークン数: <span className="text-lg">{remainingTokens}</span></div>
+            <div className='text-sm underline-offset-4 underline'>残ポイント: <span className="text-lg">{remainingTokens}</span></div>
           </div>
         )}
       </div>
