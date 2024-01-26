@@ -1,4 +1,4 @@
-import { Admin, Resource, DataProvider } from 'react-admin';
+import { Admin, Resource, DataProvider, EditGuesser } from 'react-admin';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
@@ -62,10 +62,79 @@ const App = () => {
         data: response.data
       };
     },
-  
+
+    getMany: async (resource, params) => {
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/admin/${resource}`;
+      const response = await axios.get(url, {
+        headers: {
+          'Authorization': `Bearer ${encryptedToken}`,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        withCredentials: true,
+      });
+      return {
+        data: response.data
+      };
+    },
+
+    getManyReference: async (resource, params) => {
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/admin/${resource}`;
+      const response = await axios.get(url, {
+        headers: {
+          'Authorization': `Bearer ${encryptedToken}`,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        withCredentials: true,
+      });
+      return {
+        data: response.data
+      };
+    },
+
     update: async (resource, params) => {
       const url = `${process.env.NEXT_PUBLIC_API_URL}/admin/${resource}/${params.id}`;
       const response = await axios.put(url, { [resource]: params.data }, {
+        headers: {
+          'Authorization': `Bearer ${encryptedToken}`,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        withCredentials: true,
+      });
+      return {
+        data: response.data
+      };
+    },
+
+    updateMany: async (resource, params) => {
+      await Promise.all(
+        params.ids.map(id => axios.put(`${process.env.NEXT_PUBLIC_API_URL}/admin/${resource}/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${encryptedToken}`,
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          withCredentials: true,
+        }))
+      );
+      return { data: params.ids };
+    },
+
+    create: async (resource, params) => {
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/admin/${resource}`;
+      const response = await axios.post(url, { [resource]: params.data }, {
+        headers: {
+          'Authorization': `Bearer ${encryptedToken}`,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        withCredentials: true,
+      });
+      return {
+        data: response.data
+      };
+    },
+
+    delete: async (resource, params) => {
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/admin/${resource}/${params.id}`;
+      const response = await axios.delete(url, {
         headers: {
           'Authorization': `Bearer ${encryptedToken}`,
           'X-Requested-With': 'XMLHttpRequest'
@@ -87,27 +156,20 @@ const App = () => {
           withCredentials: true,
         }))
       );
-    
       // 削除されたIDの配列を返す
       return { data: params.ids };
     },
-    // 他のメソッドのダミー実装
-    getMany: () => Promise.reject(),
-    getManyReference: () => Promise.reject(),
-    updateMany: () => Promise.reject(),
-    create: () => Promise.reject(),
-    delete: () => Promise.reject(),
   };
 
   return (
     <Admin dataProvider={dataProvider}>
-      <Resource name="users" list={UserList} />
-      <Resource name="characters" list={CharacterList} />
+      <Resource name="users"         list={UserList} />
+      <Resource name="characters"    list={CharacterList}    edit={EditGuesser} />
       <Resource name="conversations" list={ConversationList} />
-      <Resource name="decisions" list={DecisionList} />
-      <Resource name="bookmarks" list={BookmarkList} />
-      <Resource name="comments" list={CommentList} />
-      <Resource name="tags" list={TagList} />
+      <Resource name="decisions"     list={DecisionList} />
+      <Resource name="bookmarks"     list={BookmarkList} />
+      <Resource name="comments"      list={CommentList} />
+      <Resource name="tags"          list={TagList} />
     </Admin>
   );
 }

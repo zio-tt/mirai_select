@@ -7,7 +7,7 @@ import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData';
 import DecisionIndex from '@/app/_components/decisions/DecisionIndex';
 import { getDecisions } from '@/app/_features/fetchAPI';
 
-export default function Decisions() {
+export default function GuestDecisions() {
   const { setDecisions } = useDecisions();
   const { isResetDecisions, setIsResetDecisions } = useDecisions();
   const { isLoading, setIsLoading } = useDecisions();

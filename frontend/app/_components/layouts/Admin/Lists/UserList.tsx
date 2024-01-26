@@ -1,4 +1,4 @@
-import { List, ListProps, Datagrid, TextField, EmailField } from 'react-admin';
+import { List, ListProps, Datagrid, TextField, EmailField, EditButton } from 'react-admin';
 
 export const UserList = (props: ListProps) => (
   <List {...props}>
@@ -9,6 +9,7 @@ export const UserList = (props: ListProps) => (
       <TextField source="token" />
       <TextField source="created_at" />
       <TextField source="updated_at" />
+      <EditButton />
     </Datagrid>
   </List>
 );
