@@ -31,6 +31,8 @@ export default function DecisionIndex() {
           tags,
         } = useDecisionsData();
 
+  const [ isSetDecisions, setIsSetDecisions ] = useState(false);
+
   const { data: session } = useSession();
 
   // 検索結果,詳細表示用のstate
@@ -64,6 +66,17 @@ export default function DecisionIndex() {
 
   const { setIsModalOpen } = useDecisions();
   const { isResetDecisions, setIsResetDecisions } = useDecisions();
+
+  useEffect(() => {
+    setIsSetDecisions(false);
+    setCurrentDecisions([]);
+  }, []);
+
+  useEffect(() => {
+    if(currentDecisions && currentDecisions.length > 0 && !isSetDecisions) {
+      setIsSetDecisions(true);
+    }
+  }, [currentDecisions]);
 
   useEffect(() => {
     if(session) {
@@ -255,12 +268,12 @@ export default function DecisionIndex() {
       { !currentDecisions && (
         <div></div>
       )}
-      {isLoading && (
+      {isLoading && !isSetDecisions && (
         <div className='w-full min-h-screen'>
           <Loading />
         </div>
       )}
-      { !isLoading && currentDecisions && (
+      { !isLoading && currentDecisions && isSetDecisions && (
         <>
           <div className='w-[70vw] mb-[5vh] flex justify-start flex-col'>
             {currentDecisions.map((decision) => {
