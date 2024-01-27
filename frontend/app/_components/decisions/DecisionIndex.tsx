@@ -5,7 +5,6 @@
 // DecisionIndexから呼び出される
 
 import { useState, useEffect, useRef, use } from 'react';
-import { useSession } from 'next-auth/react';
 import { DecisionCard } from '@/app/_components/decisions/DecisionCard';
 import { DecisionModal } from '@/app/_components/decisions/Detail/DecisionModal';
 import { Decision } from '@/app/_types';
@@ -18,7 +17,6 @@ import { useDrawer } from '@/app/_contexts/DrawerContext';
 import { deleteDecision } from '@/app/_features/fetchAPI';
 import { Loading } from '@/app/_components/layouts/loading/layout';
 import { usePagination } from '@/app/_hooks/_decisions/usePagination';
-import { getDecisions } from '@/app/_features/fetchAPI';
 import { usePathname } from 'next/navigation';
 import { TrashIcon } from '@heroicons/react/24/solid';
 
