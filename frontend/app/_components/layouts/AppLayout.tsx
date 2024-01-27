@@ -47,7 +47,6 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
   const [ isLoading, setIsLoading ] = useState<boolean>(false); // ローディング画面
   const { data: session, status } = useSession();
   const { isModalOpen, setIsModalOpen } = useDecisions();
-  const { isResetDecisions, setIsResetDecisions } = useDecisions();
   const { isHamburgerClick } = useDrawer();
   const { isClickInformation, setIsClickInformation } = useHelper();
   const router = useRouter();
@@ -80,7 +79,6 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
 
   useEffect(() => {
     setIsLoading(false);
-    setIsResetDecisions(false);
     setIsModalOpen(false);
   }, []);
 

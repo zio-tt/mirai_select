@@ -1,5 +1,9 @@
 'use client';
 
+// PublicDecisions.tsx
+// /Decisionsの一覧を表示するコンポーネント
+// DecisionIndexから呼び出される
+
 import { useState, useEffect, useRef, use } from 'react';
 import { useSession } from 'next-auth/react';
 import { DecisionCard } from '@/app/_components/decisions/DecisionCard';
@@ -12,28 +16,35 @@ import { useSearchDecisions } from '@/app/_hooks/_decisions/useSearchDecisions';
 import { useSortDecisions } from '@/app/_hooks/_decisions/useSortDecisions';
 import { useDrawer } from '@/app/_contexts/DrawerContext';
 import { deleteDecision } from '@/app/_features/fetchAPI';
-import { TrashIcon } from '@heroicons/react/24/outline';
 import { Loading } from '@/app/_components/layouts/loading/layout';
+import { usePagination } from '@/app/_hooks/_decisions/usePagination';
+import { getDecisions } from '@/app/_features/fetchAPI';
+import { usePathname } from 'next/navigation';
+import { TrashIcon } from '@heroicons/react/24/solid';
 
-export default function DecisionIndex() {
-  // initial state
-  const { selectedDecision, setSelectedDecision } = useDecisions();
-  const { decisionsCondition } = useDecisions();
-  const { token, setToken } = useDecisionsData();
+interface DecisionIndexProps {
+  decisions: Decision[];
+  setDecisions: (decisions: Decision[]) => void;
+  getDecisionsData: (condition: string) => Promise<void>
+}
+
+const DecisionIndex = ({
+  decisions,
+  setDecisions,
+  getDecisionsData,
+}: DecisionIndexProps) => {
   const { isLoading, setIsLoading } = useDecisions();
-  const { setDecisions } = useDecisions();
 
-  const { decisions,
-          conversations,
+  const { token }         = useDecisionsData();
+  const isRoute           = usePathname();
+
+  const { conversations,
           comments,
           bookmarks,
           decisionTags,
-          tags,
-        } = useDecisionsData();
+          tags,           } = useDecisions();
 
-  const [ isSetDecisions, setIsSetDecisions ] = useState(false);
-
-  const { data: session } = useSession();
+  const [ selectedDecision, setSelectedDecision ] = useState<Decision | undefined>(undefined); // 詳細表示するDecision
 
   // 検索結果,詳細表示用のstate
   const [filteredDecisions, setFilteredDecisions] = useState<Decision[]>([]);
@@ -44,17 +55,24 @@ export default function DecisionIndex() {
   // 検索用State
   const [searchQuery, setSearchQuery] = useState(''); // 相談文の検索キーワード
   const [selectedTag, setSelectedTag] = useState(''); // 選択されたタグ
-  const [sortOrder, setSortOrder] = useState('date_new'); // 並べ替えの順序
+  const [sortOrder,   setSortOrder]   = useState('date_new'); // 並べ替えの順序
 
   // ページネーション
-  const pageNumbers  = [];
-  const itemsPerPage = 10; // 1ページあたりのアイテム数
-  const [currentPage,      setCurrentPage]      = useState(1);
-  const [indexOfLastItem,  setIndexOfLastItem]  = useState(0);
-  const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
-  const [currentDecisions, setCurrentDecisions] = useState<Decision[]>([]);
-
-  // ページ番号を設定する関数
+  const [ itemsPerPage, setItemsPerPage ] = useState(10); // 1ページに表示するDecisionの数
+  // カスタムフックを使用して、filteredDecision, currentPage, itemsPerPageが更新された時、
+  // 1. 現在のページに表示するDecisionを抜き出す
+  // 2. 必要なページ番号を再計算する
+  const { currentPage,
+          setCurrentPage,
+          currentItems,
+          pageNumbers } = usePagination({
+          initialData : filteredDecisions,
+          initialPage : 1,
+          itemsPerPage: itemsPerPage,
+        });
+  // ページネーションに関係するstate
+  // カスタムフックで提供されるsetCurrentPageを使用して、
+  // ページネーションの各ボタンがクリックされた時に、currentPageを更新する
   const paginate      = (pageNumber: number) => setCurrentPage(pageNumber)
   const paginateFirst = () => setCurrentPage(1);
   const paginateLast  = () => setCurrentPage(pageNumbers.length);
@@ -65,61 +83,36 @@ export default function DecisionIndex() {
   const blankTag = { id: 0, name: '' }
 
   const { setIsModalOpen } = useDecisions();
-  const { isResetDecisions, setIsResetDecisions } = useDecisions();
 
+  // DrawerかHeaderのメニュークリック時、あるいはページ更新時に全ての状態をリセットする
   useEffect(() => {
-    setIsSetDecisions(false);
-    setCurrentDecisions([]);
-  }, []);
+    setIsModalOpen(false);
+    setFilteredDecisions([]);
+    setSearchQuery('');
+    setSelectedTag('');
+    setSortOrder('date_new');
+    setCurrentPage(1);
+    setIsDrawerClick(false);
+  }, [isDrawerClick])
 
+  // 下記タイミングでAPIからDecisionsを取得し、stateを更新する
+  // 1. ページが更新された時
+  // 2. ドロワーがクリックされた時
+  // 3. モーダルを閉じた時
+  // 4. 検索キーワードが変更された時
+  // 5. 選択されたタグが変更された時
+  // 6. 並べ替えの順序が変更された時
   useEffect(() => {
-    if(currentDecisions && currentDecisions.length > 0 && !isSetDecisions) {
-      setIsSetDecisions(true);
+    if (isRoute === '/decisions') {
+      getDecisionsData('public');
+    } else if (isRoute === '/mypage/favorite') {
+      getDecisionsData('favorite');
+    } else if (isRoute === '/mypage/private') {
+      getDecisionsData('private');
     }
-  }, [currentDecisions]);
+  }, [isDrawerClick, isRoute ?? '', searchQuery, selectedTag, sortOrder]);
 
-  useEffect(() => {
-    if(session) {
-      setToken(session?.appAccessToken!);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    setFilteredDecisions(decisions!);
-  }, [decisions]);
-
-  useEffect(() => {
-    if (!isResetDecisions) {
-      setIsLoading(false);
-    }
-  }, [isResetDecisions]);
-
-  useEffect(() => {
-    if(isDrawerClick) {
-      // ページ内のすべてのstateを初期化
-      setSearchQuery('');
-      setSelectedTag('');
-      setSelectedDecision(undefined);
-      setSortOrder('date_new');
-      setCurrentPage(1);
-      setIsDrawerClick(false);
-    }
-  }, [isDrawerClick]);
-
-  useEffect(() => {
-    if (!filteredDecisions || !Array.isArray(filteredDecisions)) return;
-
-    // ページネーションのために、表示するdecisionsを計算
-    const indexOfLast     = currentPage * itemsPerPage;
-    const indexOfFirst    = indexOfLast - itemsPerPage;
-    const targetDecisions = filteredDecisions.slice(indexOfFirst, indexOfLast);
-
-    setIndexOfFirstItem(indexOfLast);
-    setIndexOfLastItem(indexOfFirst);
-    setCurrentDecisions(targetDecisions);
-    setIsResetDecisions(false);
-  }, [currentPage, filteredDecisions]);
-
+  // decisionsが更新されるか、各値が変更されるたびにfilteredDecisionsを更新する
   useEffect(() => {
     useSearchDecisions(
       decisions,
@@ -132,13 +125,7 @@ export default function DecisionIndex() {
       filteredDecisions,
       setFilteredDecisions
     );
-  }, [searchQuery, selectedTag, sortOrder]);
-
-  if (filteredDecisions && filteredDecisions.length > 0) {
-    for (let i = 1; i <= Math.ceil(filteredDecisions.length / itemsPerPage); i++) {
-      pageNumbers.push(i);
-    }
-  }
+  }, [decisions, searchQuery, selectedTag, sortOrder]);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     e.preventDefault();
@@ -265,18 +252,18 @@ export default function DecisionIndex() {
         </select>
       </div>
 
-      { !currentDecisions && (
+      { !currentItems && (
         <div></div>
       )}
-      {isLoading && !isSetDecisions && (
+      {isLoading &&  (
         <div className='w-full min-h-screen'>
           <Loading />
         </div>
       )}
-      { !isLoading && currentDecisions && isSetDecisions && (
+      { !isLoading && currentItems && (
         <>
           <div className='w-[70vw] mb-[5vh] flex justify-start flex-col'>
-            {currentDecisions.map((decision) => {
+            {currentItems.map((decision) => {
               // DecisionCardに渡すpropsを設定
               // targetTags: (decision.id == decisionTagsの各要素decisionTag.decision_id)
               //             の条件を満たすdecisionTagsの各要素のtag_idに対応するtagsの各要素
@@ -301,7 +288,7 @@ export default function DecisionIndex() {
                       decision_tags={targetTags!}
                     />
                   </div>
-                  { decisionsCondition === 'private' && (
+                  { isRoute === '/mypage/private' && (
                       <TrashIcon onClick={handleDeleteDecision(decision.id)} className='w-[3vw] flex text-black' />
                   )}
                 </div>
@@ -330,3 +317,5 @@ export default function DecisionIndex() {
     </>
   );
 }
+
+export { DecisionIndex }

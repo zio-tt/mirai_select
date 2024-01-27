@@ -72,9 +72,9 @@ const Header = () => {
                 </div>
               </div>
               <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li><Link href='/mypage' onClick={() => handleMenuClick('private')}>保存した決断</Link></li>
-                <li><Link href='/mypage' onClick={() => handleMenuClick('favorite')}>お気に入り</Link></li>
-                <li><Link href='#'       onClick={() => handleMenuClick('logout')}>ログアウト</Link></li>
+                <li><Link href='/mypage/private'>保存した決断</Link></li>
+                <li><Link href='/mypage/favorite'>お気に入り</Link></li>
+                <li><Link href='#' onClick={() => handleMenuClick('logout')}>ログアウト</Link></li>
               </ul>
             </div>
           </>
