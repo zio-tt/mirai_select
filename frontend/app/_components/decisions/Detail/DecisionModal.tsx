@@ -15,7 +15,6 @@ const DecisionModal = ({
   conversations: Conversation[],
   handleCloseDetail: () => void,
 }) => {
-  const { users, currentUser } = useDecisions();
   const { decisionCharacters, characterResponses } = useDetailData(decision);
 
   // モーダルのコンテンツをクリックしたときにイベントの伝播を止める
@@ -34,20 +33,18 @@ const DecisionModal = ({
             <div className="flex flex-col w-[50%] h-[80%] bg-white p-5 rounded-lg items-center mr-2" onClick={handleModalContentClick}>
               <div className='flex h-full w-full justify-center items-center'>
                 <DecisionDetail
-                  users={users!}
-                  currentUserId={currentUser!.id}
+                  decision={decision}
                   conversations={conversations!}
                   decisionCharacters={decisionCharacters}
                   characterResponses={characterResponses}
-                  decision={decision}
                 />
               </div>
             </div>
             <div className="flex flex-col w-[30%] h-[80%] bg-white py-5 rounded-lg items-center ml-4" onClick={handleModalContentClick}>
               <div className="flex flex-col w-full h-full justify-between">
-                <CommentsDisplay />
-                <CommentButton />
-                <CommentInputForm />
+                <CommentsDisplay decision={decision} />
+                <CommentButton decision={decision} />
+                <CommentInputForm decision={decision} />
               </div>
             </div>
           </div>

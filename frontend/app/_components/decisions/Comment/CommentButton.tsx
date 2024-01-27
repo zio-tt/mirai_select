@@ -4,23 +4,29 @@ import { useDecisions } from "@/app/_contexts/DecisionsContext";
 import { useEffect, useState } from "react";
 import { createBookmark, deleteBookmark } from "@/app/_features/fetchAPI";
 import { useDecisionsData } from "@/app/_hooks/_decisions/useDecisionsData";
+import { Decision } from "@/app/_types";
 
-const CommentButton = () => {
+interface CommentsButtonProps {
+  decision: Decision;
+}
+
+const CommentButton = ({
+  decision,
+}: CommentsButtonProps) => {
   const {token} = useDecisionsData();
   const { bookmarks, setBookmarks }   = useDecisions();
   const { currentUser } = useDecisions();
-  const { selectedDecision } = useDecisions();
   const [ isBookmarked, setIsBookmarked ] = useState<boolean>(false);
   const [ isOtherUsers, setIsOtherUsers ] = useState<boolean>(false);
 
   useEffect(() => {
     // selectedDecision.user_idがcurrentUser.idと一致するか
-    if (currentUser && selectedDecision) {
-      setIsOtherUsers(selectedDecision.user_id !== currentUser.id);
+    if (currentUser && decision) {
+      setIsOtherUsers(decision.user_id !== currentUser.id);
     }
     if (currentUser && bookmarks) {
       // bookmarksの中にselectedDecision.idとcurrentUser.idの組み合わせと合致するものがあるか
-      const bookmark = bookmarks.some(bookmark => bookmark.decision_id === selectedDecision!.id && bookmark.user_id === currentUser.id);
+      const bookmark = bookmarks.some(bookmark => bookmark.decision_id === decision!.id && bookmark.user_id === currentUser.id);
       setIsBookmarked(bookmark);
     }
   }, []);
@@ -41,12 +47,12 @@ const CommentButton = () => {
 
   const handleBookmark = () => {
     setIsBookmarked(true);
-    createBookmarkData(selectedDecision!.id);
+    createBookmarkData(decision!.id);
   }
 
   const handleNotBookmark = () => {
     setIsBookmarked(false);
-    deleteBookmarkData(selectedDecision!.id);
+    deleteBookmarkData(decision!.id);
   }
 
   return (

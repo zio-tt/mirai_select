@@ -5,6 +5,7 @@ import { useDecisions } from '@/app/_contexts/DecisionsContext';
 import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData';
 import { DecisionIndex } from '@/app/_components/decisions/DecisionIndex';
 import { getDecisions } from '@/app/_features/fetchAPI';
+import { MyPageMenu } from '@/app/_components/mypage/MyPageMenu';
 import { Decision } from '@/app/_types';
 
 export default function MyPageDecisions() {
@@ -25,13 +26,14 @@ export default function MyPageDecisions() {
   }, [decisions]);
 
   useEffect(() => {
-    getDecisionsData('public');
+    getDecisionsData('private');
   }, [token]);
 
 
   return (
     <>
       <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[3rem]'>
+        <MyPageMenu />
         <DecisionIndex
           decisions={decisions}
           setDecisions={setDecisions}

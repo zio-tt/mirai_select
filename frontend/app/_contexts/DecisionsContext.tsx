@@ -4,7 +4,6 @@ import { User, Decision, Conversation, Comment, Bookmark, DecisionTag, Tag } fro
 type DecisionsContextType = {
   users:                 User[];
   currentUser:           User;
-  decisions:             Decision[];
   conversations:         Conversation[];
   comments:              Comment[];
   bookmarks:             Bookmark[];
@@ -14,10 +13,8 @@ type DecisionsContextType = {
   decisionsCondition:    string;
   isModalOpen:           boolean;
   isLoading:             boolean;
-  isResetDecisions:      boolean;
   setUsers:              React.Dispatch<React.SetStateAction<User[]>>;
   setCurrentUser:        React.Dispatch<React.SetStateAction<User>>;
-  setDecisions:          React.Dispatch<React.SetStateAction<Decision[]>>;
   setConversations:      React.Dispatch<React.SetStateAction<Conversation[]>>;
   setComments:           React.Dispatch<React.SetStateAction<Comment[]>>;
   setBookmarks:          React.Dispatch<React.SetStateAction<Bookmark[]>>;
@@ -27,7 +24,6 @@ type DecisionsContextType = {
   setDecisionsCondition: React.Dispatch<React.SetStateAction<string>>;
   setIsModalOpen:        React.Dispatch<React.SetStateAction<boolean>>;
   setIsLoading:          React.Dispatch<React.SetStateAction<boolean>>;
-  setIsResetDecisions:   React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type ChildrenType = {
@@ -58,7 +54,6 @@ export const DecisionsProvider = ({ children }: ChildrenType) => {
   // APIから取得するデータ
   const [ currentUser,      setCurrentUser ]      = useState<User>(current_user);
   const [ users,            setUsers ]            = useState<User[]>([]);
-  const [ decisions,        setDecisions ]        = useState<Decision[]>([]);
   const [ conversations,    setConversations ]    = useState<Conversation[]>([]);
   const [ comments,         setComments ]         = useState<Comment[]>([]);
   const [ bookmarks,        setBookmarks ]        = useState<Bookmark[]>([]);
@@ -68,7 +63,6 @@ export const DecisionsProvider = ({ children }: ChildrenType) => {
   // Decisionsで選択されたDecision
   const [ selectedDecision, setSelectedDecision ] = useState<Decision | undefined>();
   const [ isModalOpen,      setIsModalOpen ]      = useState<boolean>(false);
-  const [ isResetDecisions, setIsResetDecisions ] = useState<boolean>(false);
 
   // Decisionsで選択された条件
   const [ decisionsCondition, setDecisionsCondition ] = useState<string>('public');
@@ -77,11 +71,10 @@ export const DecisionsProvider = ({ children }: ChildrenType) => {
   const [ isLoading, setIsLoading ]        = useState<boolean>(false);
 
   return (
-    <DecisionsContext.Provider 
-      value={{ 
+    <DecisionsContext.Provider
+      value={{
         currentUser,        setCurrentUser,
         users,              setUsers,
-        decisions,          setDecisions,
         conversations,      setConversations,
         comments,           setComments,
         bookmarks,          setBookmarks,
@@ -91,7 +84,6 @@ export const DecisionsProvider = ({ children }: ChildrenType) => {
         decisionsCondition, setDecisionsCondition,
         isLoading,          setIsLoading,
         isModalOpen,        setIsModalOpen,
-        isResetDecisions,   setIsResetDecisions
       }}>
       {children}
     </DecisionsContext.Provider>

@@ -2,15 +2,22 @@ import Image from "next/image";
 import { useDecisions } from "@/app/_contexts/DecisionsContext";
 import { useDecisionsData } from "@/app/_hooks/_decisions/useDecisionsData";
 import { deleteComment } from "@/app/_features/fetchAPI/fetchComment";
+import { Decision } from "@/app/_types";
 
-const CommentsDisplay = () => {
+interface CommentsDisplayProps {
+  decision: Decision;
+}
+
+const CommentsDisplay = ({
+  decision,
+}: CommentsDisplayProps) => {
   // initial state
   const { setComments } = useDecisions();
-  const { currentUser, users, comments, selectedDecision} = useDecisions();
+  const { currentUser, users, comments } = useDecisions();
   const { token } = useDecisionsData();
   if (!currentUser || !users || !comments) return null;
 
-  const decisionComments = comments.filter((comment) => comment.decision_id === selectedDecision!.id);
+  const decisionComments = comments.filter((comment) => comment.decision_id === decision!.id);
 
   const deleteCommentsData = async (id: number) => {
     if (token) {

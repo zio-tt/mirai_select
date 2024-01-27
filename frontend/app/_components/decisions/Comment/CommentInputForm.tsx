@@ -3,16 +3,22 @@ import { useState } from "react";
 import { useDecisions } from "@/app/_contexts/DecisionsContext";
 import { createComment } from "@/app/_features/fetchAPI/fetchComment";
 import { useDecisionsData } from "@/app/_hooks/_decisions/useDecisionsData";
+import { Decision } from "@/app/_types";
 
-const CommentInputForm = () => {
+interface CommentsInputFormProps {
+  decision: Decision;
+}
+
+const CommentInputForm = ({
+  decision,
+}: CommentsInputFormProps) => {
   const [comment,  setComment]  = useState<string>('');
   const {comments, setComments} = useDecisions();
-  const {selectedDecision}      = useDecisions();
   const {token}                 = useDecisionsData();
 
   const createCommentsData = async () => {
     if (token) {
-      const data = await createComment(token, comment, selectedDecision!.id);
+      const data = await createComment(token, comment, decision!.id);
       setComments(data);
     }
   }

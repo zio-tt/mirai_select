@@ -12,7 +12,6 @@ import { getBookmarks,
 export const useDecisionsData = () => {
   const { currentUser,        setCurrentUser,
           users,              setUsers,
-          decisions,          setDecisions,
           conversations,      setConversations,
           comments,           setComments,
           bookmarks,          setBookmarks,
@@ -42,7 +41,6 @@ export const useDecisionsData = () => {
     try {
       const currentUser       = await getUsers(token, "current_user");
       const userData          = await getUsers(token, "all");
-      const decisionsData     = await getDecisions({token: token, condition: decisionsCondition});
       const conversationsData = await getConversations({token: token, condition: "all"});
       const commentsData      = await getComments(token);
       const bookmarksData     = await getBookmarks(token);
@@ -51,7 +49,6 @@ export const useDecisionsData = () => {
 
       setUsers(userData.users);
       setCurrentUser(currentUser.current_user);
-      setDecisions(decisionsData);
       setConversations(conversationsData);
       setComments(commentsData);
       setBookmarks(bookmarksData);
@@ -69,7 +66,6 @@ export const useDecisionsData = () => {
     token, setToken,
     currentUser,
     users,
-    decisions,
     conversations,
     comments,
     bookmarks,
