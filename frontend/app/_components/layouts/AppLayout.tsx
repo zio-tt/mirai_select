@@ -106,7 +106,7 @@ const LayoutContent = ( {children}: AppLayoutProps ) => {
                       <Drawer />
                     </div>
                   )}
-                  <div className={`flex flex-col grow h-full ${status === 'authenticated' ? ( isHamburgerClick ? 'ml-[15rem]' : 'ml-[4rem]' ) : '' } ${isClickInformation ? 'mr-[30rem]' : ''} mt-[2rem]`}>
+                  <div className={`flex flex-col grow h-full ${status === 'authenticated' ? ( isHamburgerClick ? 'ml-[15rem]' : 'ml-[4rem]' ) : '' } ${isClickInformation ? 'mr-[30rem]' : ''} mt-[2rem] overflow-x-hidden`}>
                     <main className={`flex w-full min-h-[calc(100vh-4rem)] ${isModalOpen ? 'z-50' : 'z-20'} items-center`}>
                       <AuthGuard children={children} />
                     </main>
