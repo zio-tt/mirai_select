@@ -108,7 +108,7 @@ const DecisionIndex = ({
     } else if (isRoute === '/mypage/private') {
       getDecisionsData('private');
     }
-  }, [isDrawerClick, isRoute ?? '', searchQuery, selectedTag, sortOrder]);
+  }, [isDrawerClick, isRoute ?? '']);
 
   // decisionsが更新されるか、各値が変更されるたびにfilteredDecisionsを更新する
   useEffect(() => {
