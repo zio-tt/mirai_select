@@ -1,6 +1,11 @@
-compose.yaml
+node_modules/
+.husky/
+
 container/nginx/log/
 container/nginx/certs/
-.gitignore
+
 backend/.env
 frontend/.env
+
+.gitignore
+compose.yaml

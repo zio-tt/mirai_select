@@ -16,7 +16,6 @@ const DecisionModal = ({
   handleCloseDetail: () => void,
 }) => {
   const { decisionCharacters, characterResponses } = useDetailData(decision);
-
   // モーダルのコンテンツをクリックしたときにイベントの伝播を止める
   const handleModalContentClick = (event: React.MouseEvent) => {
     event.stopPropagation();
