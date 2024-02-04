@@ -6,10 +6,9 @@
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:import/errors",
     "plugin:import/warnings",
-    "plugin:@typescript-eslint/import",
+    "plugin:import/typescript",
     "next/core-web-vitals",
-    "prettier",
-    "next/babel"
+    "prettier"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
