@@ -1,9 +1,10 @@
 'use client'
 
-import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
-import { useState, useEffect } from 'react'
 import { SessionProvider } from 'next-auth/react'
+import { useState } from 'react'
+
+import type { NextPage } from 'next'
 
 const App = dynamic(() => import('@/app/_components/layouts/Admin/Admin'), { ssr: false })
 
@@ -11,10 +12,6 @@ const Home: NextPage = () => {
   const [isAuth, setIsAuth] = useState<boolean>(false) // 認証状態
   const [id, setId] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-
-  // eslintテスト
-  const a = 1
-  const a = 2
 
   const handleLogin = () => {
     if (

@@ -1,5 +1,4 @@
 node_modules/
-.husky/
 
 container/nginx/log/
 container/nginx/certs/

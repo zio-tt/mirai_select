@@ -1,63 +1,73 @@
-import Image from "next/image";
-import { useDecisions } from "@/app/_contexts/DecisionsContext";
-import { useDecisionsData } from "@/app/_hooks/_decisions/useDecisionsData";
-import { deleteComment } from "@/app/_features/fetchAPI/fetchComment";
-import { Decision } from "@/app/_types";
+import Image from 'next/image'
+
+import { useDecisions } from '@/app/_contexts/DecisionsContext'
+import { deleteComment } from '@/app/_features/fetchAPI/fetchComment'
+import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData'
+import { Decision } from '@/app/_types'
 
 interface CommentsDisplayProps {
-  decision: Decision;
+  decision: Decision
 }
 
-const CommentsDisplay = ({
-  decision,
-}: CommentsDisplayProps) => {
+const CommentsDisplay = ({ decision }: CommentsDisplayProps) => {
   // initial state
-  const { setComments } = useDecisions();
-  const { currentUser, users, comments } = useDecisions();
-  const { token } = useDecisionsData();
-  if (!currentUser || !users || !comments) return null;
+  const { setComments } = useDecisions()
+  const { currentUser, users, comments } = useDecisions()
+  const { token } = useDecisionsData()
+  if (!currentUser || !users || !comments) return null
 
-  const decisionComments = comments.filter((comment) => comment.decision_id === decision!.id);
+  const decisionComments = comments.filter(
+    (comment) => comment.decision_id === decision.id,
+  )
 
-  const deleteCommentsData = async (id: number) => {
-    if (token) {
-      const data = await deleteComment(token, id);
-      setComments(data);
+  const handleDeleteComment = (id: number) => {
+    if (!id) return
+    ;async () => {
+      if (!token) return
+      try {
+        const response = await deleteComment(token, id)
+        if (response) {
+          setComments(response)
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 
-  const handleDeleteComment = (id: number) => {
-    if (!id) return;
-    deleteCommentsData(id);
-  };
-
   return (
-    <div className="flex flex-col flex-grow w-full border overflow-auto h-[60%]">
+    <div className='flex flex-col flex-grow w-full border overflow-auto h-[60%]'>
       {decisionComments.map((comment, index) => {
-        const user = users?.find((user) => user.id === comment.user_id);
+        const user = users?.find((user) => user.id === comment.user_id)
         return (
-          <div key={index} className="flex flex-row border-b p-2 items-center">
-            <Image alt={user!.name}
-                  src={user!.avatar || '/images/logo.png'}
-                  width={30} height={30}
-                  className="flex rounded-full" />
-            <div className="overflow-y-auto">
-              <div className="p-4  border-gray-200">
+          <div key={index} className='flex flex-row border-b p-2 items-center'>
+            <Image
+              alt={user!.name}
+              src={user!.avatar || '/images/logo.png'}
+              width={30}
+              height={30}
+              className='flex rounded-full'
+            />
+            <div className='overflow-y-auto'>
+              <div className='p-4  border-gray-200'>
                 <span>{comment.content}</span>
               </div>
             </div>
-            { currentUser.id === comment.user_id && (
-              <Image alt="削除"
-                    src="/images/delete_button.png"
-                    width={20} height={20}
-                    onClick={() => handleDeleteComment(comment.id)}
-                    className="flex ml-2 opacity-20" />
+            {currentUser.id === comment.user_id && (
+              <Image
+                alt='削除'
+                src='/images/delete_button.png'
+                width={20}
+                height={20}
+                onClick={() => handleDeleteComment(comment.id)}
+                className='flex ml-2 opacity-20'
+              />
             )}
           </div>
-        )}
-      )}
+        )
+      })}
     </div>
   )
-};
+}
 
-export { CommentsDisplay };
+export { CommentsDisplay }
