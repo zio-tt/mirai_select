@@ -14,15 +14,7 @@ class Api::DecisionTagsController < ApplicationController
       )
     end
 
-    render json: { message: 'Success to create decision_tag' }
-  end
-
-  def update
-    
-  end
-
-  def destroy
-
+    render json: { decision_tags: DecisionTag.all }
   end
 
   private

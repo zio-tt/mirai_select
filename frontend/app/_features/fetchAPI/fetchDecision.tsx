@@ -23,6 +23,10 @@ interface DecisionsResponse {
   decisions: Decision[]
 }
 
+interface DecisionResponse {
+  decision: Decision
+}
+
 const getDecisions = async ({
   token,
   condition,
@@ -45,16 +49,20 @@ const getDecisions = async ({
   }
 }
 
+interface CreateDecisionResponse {
+  decision: Decision
+}
+
 const createDecision = async (token: string) => {
   try {
-    const response = await axios<DecisionsResponse>({
+    const response = await axios<CreateDecisionResponse>({
       method: 'post',
       url: `${process.env.NEXT_PUBLIC_API_URL}/api/decisions`,
       headers: defaultHeaders(token),
       withCredentials: true,
     })
     if (response.status === 200) {
-      return response.data.decisions
+      return response.data.decision
     } else {
       throw new Error('Failed to create decision')
     }
@@ -85,7 +93,7 @@ const deleteDecision = async ({ token, decisionId }: deleteDecisionProps) => {
 
 const updateDecision = async (token: string, decisionId: number, isPublic: boolean) => {
   try {
-    const response = await axios<DecisionsResponse>({
+    const response = await axios<DecisionResponse>({
       method: 'put',
       url: `${process.env.NEXT_PUBLIC_API_URL}/api/decisions/${decisionId}`,
       headers: defaultHeaders(token),
@@ -93,7 +101,7 @@ const updateDecision = async (token: string, decisionId: number, isPublic: boole
       withCredentials: true,
     })
     if (response.status === 200) {
-      return response.data.decisions
+      return response.data.decision
     } else {
       throw new Error('Failed to edit decision')
     }

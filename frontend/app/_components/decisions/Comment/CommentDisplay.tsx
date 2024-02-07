@@ -16,9 +16,10 @@ const CommentsDisplay = ({ decision }: CommentsDisplayProps) => {
   const { token } = useDecisionsData()
   if (!currentUser || !users || !comments) return null
 
-  const decisionComments = comments.filter(
-    (comment) => comment.decision_id === decision.id,
-  )
+  // idが大きい順に並び替え
+  const decisionComments = comments
+    .filter((comment) => comment.decision_id === decision.id)
+    .sort((a, b) => b.id - a.id)
 
   const handleDeleteComment = (id: number) => {
     if (!id) return
@@ -28,6 +29,8 @@ const CommentsDisplay = ({ decision }: CommentsDisplayProps) => {
         const response = await deleteComment(token, id)
         if (response) {
           setComments(response)
+        } else {
+          console.log('コメントの削除に失敗しました')
         }
       } catch (error) {
         console.error(error)

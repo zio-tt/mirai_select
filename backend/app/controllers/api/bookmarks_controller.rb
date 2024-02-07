@@ -26,6 +26,9 @@ class Api::BookmarksController < ApplicationController
   end
 
   def set_bookmark
-    @bookmark = Bookmark.find(params[:id])
+    @bookmark = Bookmark.find_by(
+      decision_id: params[:id],
+      user_id: current_user.id
+    )
   end
 end

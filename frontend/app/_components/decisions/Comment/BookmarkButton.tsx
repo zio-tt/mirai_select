@@ -35,32 +35,36 @@ const BookmarkButton = ({ decision }: BookmarksButtonProps) => {
 
   const handleBookmark = () => {
     setIsBookmarked(true)
-    ;async () => {
+    void (async () => {
       if (!token) return
       try {
         const response = await createBookmark(token, decision.id)
         if (response) {
           setBookmarks(response)
+        } else {
+          console.log('ブックマークの登録に失敗しました')
         }
       } catch (error) {
         console.error(error)
       }
-    }
+    })()
   }
 
   const handleNotBookmark = () => {
     setIsBookmarked(false)
-    ;async () => {
+    void (async () => {
       if (!token) return
       try {
         const response = await deleteBookmark(token, decision.id)
         if (response) {
           setBookmarks(response)
+        } else {
+          console.log('ブックマークの削除に失敗しました')
         }
       } catch (error) {
         console.error(error)
       }
-    }
+    })()
   }
 
   return (

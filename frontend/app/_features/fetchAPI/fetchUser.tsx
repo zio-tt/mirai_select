@@ -51,7 +51,7 @@ const updateUser = async (token: string, id: number, remainingTokens: number) =>
       withCredentials: true,
     })
     if (response.status === 200) {
-      return response.data.users
+      return response.data.current_user
     }
   } catch (error) {
     console.error('Error editing user', error)

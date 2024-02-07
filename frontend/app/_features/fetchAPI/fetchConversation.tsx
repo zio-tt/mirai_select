@@ -74,26 +74,6 @@ const createConversation = async (
   }
 }
 
-const deleteConversation = async (token: string, id: string) => {
-  try {
-    const response = await axios<ConversationsResponse>({
-      method: 'delete',
-      url: `${process.env.NEXT_PUBLIC_API_URL}/api/conversations/${id}`,
-      headers: defaultHeaders(token),
-      data: { id },
-      withCredentials: true,
-    })
-    if (response.status === 200) {
-      return response.data.conversations
-    } else {
-      throw new Error('Failed to delete conversation')
-    }
-  } catch (error) {
-    console.error('Error deleting conversation', error)
-    throw error
-  }
-}
-
 const updateConversation = async (
   token: string,
   id: number,
@@ -119,4 +99,4 @@ const updateConversation = async (
   }
 }
 
-export { getConversations, createConversation, deleteConversation, updateConversation }
+export { getConversations, createConversation, updateConversation }

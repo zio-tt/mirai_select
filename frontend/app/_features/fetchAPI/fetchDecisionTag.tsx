@@ -51,44 +51,4 @@ const createDecisionTags = async (token: string, decisionId: number, tags: strin
   }
 }
 
-const updateDecisionTags = async (token: string, decisionId: number, tags: string[]) => {
-  try {
-    const response = await axios<DecisionTagsResponse>({
-      method: 'put',
-      url: `${process.env.NEXT_PUBLIC_API_URL}/api/decision_tags`,
-      headers: defaultHeaders(token),
-      data: { decisionId, tags },
-      withCredentials: true,
-    })
-    if (response.status === 200) {
-      return response.data.decision_tags
-    } else {
-      throw new Error('Failed to update decision_tags')
-    }
-  } catch (error) {
-    console.error('Error updating decision_tag', error)
-    throw error
-  }
-}
-
-const deleteDecisionTags = async (token: string, id: string) => {
-  try {
-    const response = await axios<DecisionTagsResponse>({
-      method: 'delete',
-      url: `${process.env.NEXT_PUBLIC_API_URL}/api/decision_tags/${id}`,
-      headers: defaultHeaders(token),
-      data: { id },
-      withCredentials: true,
-    })
-    if (response.status === 200) {
-      return response.data.decision_tags
-    } else {
-      throw new Error('Failed to delete decision_tag')
-    }
-  } catch (error) {
-    console.error('Error deleting decision_tag', error)
-    throw error
-  }
-}
-
-export { getDecisionTags, createDecisionTags, updateDecisionTags, deleteDecisionTags }
+export { getDecisionTags, createDecisionTags }

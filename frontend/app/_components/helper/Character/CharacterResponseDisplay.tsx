@@ -45,7 +45,7 @@ const CharacterResponseDisplay = ({
         setAvatarURL(avatar)
       }
     }
-  }, [])
+  }, [decisionCharacter])
 
   useEffect(() => {
     if (isResponse && isSelected) {
@@ -53,7 +53,7 @@ const CharacterResponseDisplay = ({
     } else if (isResponse && !isSelected) {
       setChatStyle('chat-bubble chat-bubble-primary')
     }
-  }, [isSelected])
+  }, [isSelected, isResponse])
 
   useEffect(() => {
     if (isDrawerClick && conversationId) {
@@ -64,7 +64,8 @@ const CharacterResponseDisplay = ({
         response: '',
       })
     }
-  }, [isDrawerClick, setUserDecision])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDrawerClick])
 
   useEffect(() => {
     if (userDecision && characterResponse) {
