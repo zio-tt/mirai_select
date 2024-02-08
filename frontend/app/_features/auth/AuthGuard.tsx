@@ -5,7 +5,13 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
-const unAuthenticatedPaths = ['/', '/privacy-policy', '/terms-of-service', '/index']
+const unAuthenticatedPaths = [
+  '/',
+  '/privacy-policy',
+  '/terms-of-service',
+  '/index',
+  '/guest/decisions',
+]
 
 const AuthGuard = ({ children }: { children: React.ReactNode }): any => {
   const { status } = useSession()
@@ -17,6 +23,9 @@ const AuthGuard = ({ children }: { children: React.ReactNode }): any => {
   }
   useEffect(() => {
     if (status === 'unauthenticated' && !unAuthenticatedPaths.includes(isRoute)) {
+      router.replace('/')
+    }
+    if (status === 'authenticated' && isRoute === '/guest/decisions') {
       router.replace('/')
     }
   }, [router, status])

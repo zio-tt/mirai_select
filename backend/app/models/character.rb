@@ -1,6 +1,7 @@
 class Character < ApplicationRecord
   has_many :character_responses, dependent: :destroy
   has_many :user_characters, dependent: :destroy
+  has_many :decision_characters, dependent: :destroy
   has_one_attached :avatar
 
   scope :select_attribute, -> { select(:id, :name, :character1_welcome, :character2_welcome) }

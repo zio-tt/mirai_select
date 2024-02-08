@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_05_173855) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_08_025830) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -95,6 +95,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_05_173855) do
     t.index ["decision_id"], name: "index_conversations_on_decision_id"
   end
 
+  create_table "decision_characters", force: :cascade do |t|
+    t.bigint "decision_id", null: false
+    t.bigint "character_id", null: false
+    t.integer "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_decision_characters_on_character_id"
+    t.index ["decision_id"], name: "index_decision_characters_on_decision_id"
+  end
+
   create_table "decision_tags", force: :cascade do |t|
     t.bigint "decision_id", null: false
     t.bigint "tag_id", null: false
@@ -165,6 +175,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_05_173855) do
   add_foreign_key "comments", "decisions"
   add_foreign_key "comments", "users"
   add_foreign_key "conversations", "decisions"
+  add_foreign_key "decision_characters", "characters"
+  add_foreign_key "decision_characters", "decisions"
   add_foreign_key "decision_tags", "decisions"
   add_foreign_key "decision_tags", "tags"
   add_foreign_key "decisions", "users"

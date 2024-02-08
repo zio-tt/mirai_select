@@ -4,6 +4,7 @@ class Decision < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :decision_tags, dependent: :destroy
   has_many :tags, through: :decision_tags
+  has_many :decision_characters, dependent: :destroy
 
   belongs_to :user
 

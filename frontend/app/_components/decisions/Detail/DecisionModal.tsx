@@ -1,10 +1,9 @@
+import { BookmarkButton } from '@/app/_components/decisions/Comment/BookmarkButton'
 import { CommentsDisplay } from '@/app/_components/decisions/Comment/CommentDisplay'
 import { CommentInputForm } from '@/app/_components/decisions/Comment/CommentInputForm'
 import { DecisionDetail } from '@/app/_components/decisions/Detail/DecisionDetail'
 import { useDetailData } from '@/app/_hooks/_decisions/useDetailData'
 import { Decision, Conversation } from '@/app/_types'
-
-import { BookmarkButton } from '../Comment/BookmarkButton'
 
 const DecisionModal = ({
   decision,

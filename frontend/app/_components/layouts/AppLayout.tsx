@@ -42,6 +42,13 @@ const LayoutContent = ({ children }: AppLayoutProps) => {
   const { isClickInformation, setIsClickInformation } = useHelper()
   const router = useRouter()
   const isRoot = usePathname()
+  const unAuthenticatedPaths = [
+    '/',
+    '/privacy-policy',
+    '/terms-of-service',
+    '/index',
+    '/guest/decisions',
+  ]
 
   useEffect(() => {
     setIsAuth(sessionStorage.getItem('unAuthFlag'))
@@ -49,6 +56,8 @@ const LayoutContent = ({ children }: AppLayoutProps) => {
     if (isRoot == '/' && status == 'unauthenticated') {
       setIsViewed(false)
     } else if (status == 'authenticated') {
+      setIsViewed(true)
+    } else if (status == 'unauthenticated' && unAuthenticatedPaths.includes(isRoot)) {
       setIsViewed(true)
     }
     // 認証状態からサインアウトした場合、ルートにリダイレクトする

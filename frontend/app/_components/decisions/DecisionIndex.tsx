@@ -23,12 +23,14 @@ interface DecisionIndexProps {
   decisions: Decision[]
   setDecisions: (decisions: Decision[]) => void
   getDecisionsData: (condition: string) => Promise<void>
+  condition?: string
 }
 
 const DecisionIndex = ({
   decisions,
   setDecisions,
   getDecisionsData,
+  condition,
 }: DecisionIndexProps) => {
   const { isLoading, setIsLoading } = useDecisions()
 
