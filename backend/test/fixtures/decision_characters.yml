@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  decision: one
+  character: one
+  role: 1
+
+two:
+  decision: two
+  character: two
+  role: 1

@@ -1,7 +1,7 @@
 class Api::CharacterResponsesController < ApplicationController
   def index
     @character_responses = CharacterResponse.select_response
-    render json: @character_responses
+    render json: { character_responses: @character_responses }
   end
 
   def create
@@ -15,7 +15,9 @@ class Api::CharacterResponsesController < ApplicationController
       @character_response.save
     end
 
-    render json: { character_responses: @character_response }
+    @character_responses = CharacterResponse.find_by(conversation_id: parsed_response_params[0]["conversation_id"])
+
+    render json: { character_responses: @character_responses }
   end
 
   private

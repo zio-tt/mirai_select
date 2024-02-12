@@ -1,33 +1,37 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useDecisions } from '@/app/_contexts/DecisionsContext';
-import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData';
-import { DecisionIndex } from '@/app/_components/decisions/DecisionIndex';
-import { getDecisions } from '@/app/_features/fetchAPI';
-import { Decision } from '@/app/_types';
+import { useState, useEffect } from 'react'
+
+import { DecisionIndex } from '@/app/_components/decisions/DecisionIndex'
+import { useDecisions } from '@/app/_contexts/DecisionsContext'
+import { getDecisions } from '@/app/_features/fetchAPI'
+import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData'
+import { Decision } from '@/app/_types'
 
 export default function MyPageDecisions() {
-  const [ decisions, setDecisions ] = useState<Decision[]>([]);
-  const { isLoading, setIsLoading } = useDecisions();
-  const { token } = useDecisionsData();
+  const [decisions, setDecisions] = useState<Decision[]>([])
+  const { setIsLoading } = useDecisions()
+  const { token } = useDecisionsData()
 
   const getDecisionsData = async (condition: string) => {
-    setIsLoading(true);
-    if (token) {
-      const decisions = await getDecisions({ token: token, condition: condition });
-      setDecisions(decisions);
+    setIsLoading(true)
+    if (!token) return
+    try {
+      const decisions = await getDecisions({ token: token, condition: condition })
+      setDecisions(decisions)
+    } catch (error) {
+      console.error('Error fetching decisions:', error)
+    } finally {
+      setIsLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    setIsLoading(false);
-  }, [decisions]);
-
-  useEffect(() => {
-    getDecisionsData('public');
-  }, [token]);
-
+    void (async () => {
+      await getDecisionsData('public')
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token])
 
   return (
     <>
@@ -35,8 +39,9 @@ export default function MyPageDecisions() {
         <DecisionIndex
           decisions={decisions}
           setDecisions={setDecisions}
-          getDecisionsData={getDecisionsData} />
+          getDecisionsData={getDecisionsData}
+        />
       </div>
     </>
-  );
+  )
 }

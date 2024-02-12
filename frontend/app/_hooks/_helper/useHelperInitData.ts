@@ -1,46 +1,53 @@
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { getUserCharacters, getUsers } from '@/app/_features/fetchAPI';
-import { Character, User } from '@/app/_types';
+import { useSession } from 'next-auth/react'
+import { useState, useEffect } from 'react'
+
+import { getUserCharacters, getUsers } from '@/app/_features/fetchAPI'
+import { Character, User } from '@/app/_types'
 
 export const useHelperInitData = () => {
-  const { data: session } = useSession();
+  const { data: session } = useSession()
 
-  const [userCharacters, setUserCharacters]  = useState<Character[]>();
-  const [token,          setToken]           = useState<string>('');
-  const [isLoading,      setIsLoading]       = useState<boolean>(false);
-  const [currentUser,    setCurrentUser]     = useState<User>();
+  const [userCharacters, setUserCharacters] = useState<Character[]>()
+  const [token, setToken] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [currentUser, setCurrentUser] = useState<User>()
 
   useEffect(() => {
     if (session) {
-      setToken(session.appAccessToken);
+      setToken(session.appAccessToken)
     }
-  }, [session]);
+  }, [session])
 
   useEffect(() => {
-    fetchHelperInitData();
-  }, [token]);
+    void (async () => {
+      await fetchHelperInitData()
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token])
 
   const fetchHelperInitData = async () => {
     if (token) {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
-        const userCharactersData = await getUserCharacters(token, "user");
-        const userData           = await getUsers(token, "current_user");
-        setUserCharacters(userCharactersData.charactersData);
-        setCurrentUser(userData.current_user);
+        const userCharactersData = await getUserCharacters(token, 'user')
+        const userData = await getUsers(token, 'current_user')
+        setUserCharacters(userCharactersData.charactersData)
+        setCurrentUser(userData.current_user)
       } catch (error) {
-        console.error('Error fetching initial data', error);
+        console.error('Error fetching initial data', error)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
-  };
+  }
 
-  return { 
-    userCharacters, setUserCharacters,
-    currentUser, setCurrentUser,
+  return {
+    userCharacters,
+    setUserCharacters,
+    currentUser,
+    setCurrentUser,
     token,
     isLoading,
-    fetchHelperInitData };
-};
+    fetchHelperInitData,
+  }
+}

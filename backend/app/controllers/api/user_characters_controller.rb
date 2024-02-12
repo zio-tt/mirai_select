@@ -27,6 +27,11 @@ class Api::UserCharactersController < ApplicationController
       role:         role_params,
       character_id: new_character_id_params
     )
+
+    render json: {
+      user_characters: current_user.user_characters,
+      charactersData:  characters_data
+    }
   end
 
   private

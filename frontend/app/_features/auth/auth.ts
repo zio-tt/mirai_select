@@ -1,33 +1,41 @@
-import * as jose from 'jose';
-import type { DefaultSession, DefaultUser, NextAuthOptions, Session, User } from 'next-auth';
-import type { DefaultJWT, JWT } from 'next-auth/jwt';
-import GoogleProvider from 'next-auth/providers/google';
-import axios from 'axios';
-import { createUser } from '@/app/_features/fetchAPI'
+import * as https from 'https'
+
+import axios from 'axios'
+import * as jose from 'jose'
+import GoogleProvider from 'next-auth/providers/google'
+
+import type {
+  DefaultSession,
+  DefaultUser,
+  NextAuthOptions,
+  Session,
+  User,
+} from 'next-auth'
+import type { DefaultJWT, JWT } from 'next-auth/jwt'
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
-    appAccessToken: string;
+    appAccessToken: string
   }
   interface User {
-    id: string;
-    name?: string;
-    email?: string;
-    image?: string;
-    provider?: 'google';
+    id: string
+    name?: string
+    email?: string
+    image?: string
+    provider?: 'google'
   }
   interface Session {
-    user: User & DefaultUser;
+    user: User & DefaultUser
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT extends DefaultJWT {
-    iat: number;
-    exp: number;
-    jti: string;
-    id?: string;
-    provider?: 'google';
+    iat: number
+    exp: number
+    jti: string
+    id?: string
+    provider?: 'google'
   }
 }
 
@@ -40,53 +48,53 @@ export const options: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    session: async ({ session, token, }: { session: Session; token: JWT; }) => {
+    session: async ({ session, token }: { session: Session; token: JWT }) => {
       // session.userが存在することを確認する
       if (!session.user) {
-        session.user = { id: '', name: '', email: ''} as User;
+        session.user = { id: '', name: '', email: '' } as User
       }
 
       // 必要なプロパティをsession.userに割り当てる
-      session.user.id = token.id ?? session.user.id;
-      session.user.name = token.name ?? session.user.name;
-      session.user.email = token.email ?? session.user.email;
-      session.user.image = token.picture ?? session.user.image;
-      session.user.provider = token.provider;
+      session.user.id = token.id ?? session.user.id
+      session.user.name = token.name ?? session.user.name
+      session.user.email = token.email ?? session.user.email
+      session.user.image = token.picture ?? session.user.image
+      session.user.provider = token.provider
 
       if (token.sub != null && token.provider != null) {
         const payload = {
           sub: token.sub,
           provider: String(token.provider),
-        };
+        }
 
         const secret = new TextEncoder().encode(
           String(process.env.APP_ACCESS_TOKEN_SECRET),
-        );
+        )
 
-        const alg = 'HS256';
+        const alg = 'HS256'
 
         session.appAccessToken = await new jose.SignJWT(payload)
           .setProtectedHeader({ alg })
           .setExpirationTime('30d')
           .setJti(String(token.jti))
-          .sign(secret);
+          .sign(secret)
       }
 
-      return session;
+      return session
     },
     // eslint-disable-next-line @typescript-eslint/require-await
     jwt: async ({ token, user, account }) => {
       if (account && user) {
         if (account.provider === 'google') {
-          token.provider = account.provider;
+          token.provider = account.provider
         }
-        token.id = user.id; // profileから適切なプロパティを割り当てる
-        token.name = user.name; // 同上
-        token.email = user.email; // 同上
-        token.picture = user.image;
+        token.id = user.id // profileから適切なプロパティを割り当てる
+        token.name = user.name // 同上
+        token.email = user.email // 同上
+        token.picture = user.image
       }
 
-      return token;
+      return token
     },
     async signIn({ user, account }) {
       // JWTトークンを生成する
@@ -96,33 +104,36 @@ export const options: NextAuthOptions = {
         name: user?.name,
         email: user?.email,
         avatar: user?.image,
-      };
-      const secretKey = new TextEncoder().encode(process.env.APP_ACCESS_TOKEN_SECRET || '');
+      }
+      const secretKey = new TextEncoder().encode(
+        process.env.APP_ACCESS_TOKEN_SECRET || '',
+      )
       // JWTトークンを署名する
       const token = await new jose.SignJWT(tokenPayload)
-                                  .setProtectedHeader({ alg: 'HS256' })
-                                  .sign(secretKey);
-      const https = require('https');
-      const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+        .setProtectedHeader({ alg: 'HS256' })
+        .sign(secretKey)
+      const httpsAgent = new https.Agent({ rejectUnauthorized: false })
       try {
         // UsersController#createを呼び出し、ユーザー作成または確認
         const userCreateResponse = await axios({
           method: 'post',
           url: `${process.env.NEXT_PUBLIC_WEB_URL}/auth/${account?.provider}/callback/`,
-          headers: { 'X-Requested-With': 'XMLHttpRequest',
-                     'Authorization': `Bearer ${token}`,
-                     'Content-Type': 'application/json' },
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
           data: { token },
           withCredentials: true,
           httpsAgent,
-        });
+        })
 
         // ユーザー作成が成功した場合（ステータスコード200）
         return userCreateResponse.status === 200
       } catch (error) {
-        console.error('エラー', error);
-        return false;
+        console.error('エラー', error)
+        return false
       }
     },
   },
-};
+}

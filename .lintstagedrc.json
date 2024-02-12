@@ -1,0 +1,4 @@
+{
+  "frontend/**/*.ts": ["eslint --fix", "git add"],
+  "frontend/**/*.tsx": ["eslint --fix", "git add"]
+}

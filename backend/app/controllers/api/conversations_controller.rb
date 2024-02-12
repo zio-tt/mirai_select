@@ -22,6 +22,7 @@ class Api::ConversationsController < ApplicationController
       character_id: user_decision_params[:character_id]
     )
     @conversation.update!(user_decision: user_decision.id)
+    render json: { conversation: @conversation }
   end
 
   private

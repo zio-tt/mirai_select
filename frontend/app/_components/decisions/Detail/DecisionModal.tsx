@@ -1,49 +1,62 @@
-import { useDetailData }  from '../../../_hooks/_decisions/useDetailData';
-import { Decision, Conversation } from '@/app/_types';
-import { DecisionDetail } from '@/app/_components/decisions/Detail/DecisionDetail';
-import { useDecisions } from '@/app/_contexts/DecisionsContext';
-import { CommentInputForm } from '@/app/_components/decisions/Comment/CommentInputForm';
-import { CommentsDisplay } from '@/app/_components/decisions/Comment/CommentDisplay';
-import { CommentButton } from '../Comment/CommentButton';
+import { BookmarkButton } from '@/app/_components/decisions/Comment/BookmarkButton'
+import { CommentsDisplay } from '@/app/_components/decisions/Comment/CommentDisplay'
+import { CommentInputForm } from '@/app/_components/decisions/Comment/CommentInputForm'
+import { DecisionDetail } from '@/app/_components/decisions/Detail/DecisionDetail'
+import { useDetailData } from '@/app/_hooks/_decisions/useDetailData'
+import { Decision, Conversation } from '@/app/_types'
 
 const DecisionModal = ({
   decision,
   conversations,
+  firstQuery,
   handleCloseDetail,
 }: {
-  decision:    Decision,
-  conversations: Conversation[],
-  handleCloseDetail: () => void,
+  decision: Decision
+  conversations: Conversation[]
+  firstQuery: string
+  handleCloseDetail: () => void
 }) => {
-  const { decisionCharacters, characterResponses } = useDetailData(decision);
-
+  const { decisionCharacters, characterResponses } = useDetailData(decision)
   // モーダルのコンテンツをクリックしたときにイベントの伝播を止める
   const handleModalContentClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
-  };
+    event.stopPropagation()
+  }
 
   return (
     <>
-      { decisionCharacters && characterResponses && (
+      {decisionCharacters && characterResponses && (
         // モーダルの外側をクリックしたときにモーダルを閉じる
         <div className='fixed inset-0 flex items-center justify-center z-40'>
-          <div className='fixed inset-0 bg-black bg-opacity-50 z-60'/>
+          <div className='fixed inset-0 bg-black bg-opacity-50 z-60' />
           {/* ここをクリックしても何も起きないようにstopPropagationを呼び出す */}
-          <div className="fixed flex w-full h-full items-center justify-center z-50" onClick={handleCloseDetail}>
-            <div className="flex flex-col w-[50%] h-[80%] bg-white p-5 rounded-lg items-center mr-2" onClick={handleModalContentClick}>
+          <div
+            className='fixed flex w-full h-full items-center justify-center z-50'
+            onClick={handleCloseDetail}
+          >
+            <div
+              className='flex flex-col w-[50%] h-[80%] bg-white p-5 rounded-lg items-center mr-2'
+              onClick={handleModalContentClick}
+            >
               <div className='flex h-full w-full justify-center items-center'>
                 <DecisionDetail
                   decision={decision}
-                  conversations={conversations!}
+                  conversations={conversations}
                   decisionCharacters={decisionCharacters}
                   characterResponses={characterResponses}
                 />
               </div>
             </div>
-            <div className="flex flex-col w-[30%] h-[80%] bg-white py-5 rounded-lg items-center ml-4" onClick={handleModalContentClick}>
-              <div className="flex flex-col w-full h-full justify-between">
+            <div
+              className='flex flex-col w-[30%] h-[80%] bg-white py-5 rounded-lg items-center ml-4'
+              onClick={handleModalContentClick}
+            >
+              <div className='flex flex-col w-full h-full justify-between'>
                 <CommentsDisplay decision={decision} />
-                <CommentButton decision={decision} />
+                <BookmarkButton
+                  decision={decision}
+                  firstQuery={firstQuery}
+                  characters={decisionCharacters}
+                />
                 <CommentInputForm decision={decision} />
               </div>
             </div>
@@ -51,7 +64,7 @@ const DecisionModal = ({
         </div>
       )}
     </>
-  );
+  )
 }
 
 export { DecisionModal }

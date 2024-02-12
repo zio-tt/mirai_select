@@ -14,7 +14,7 @@ class Api::DecisionsController < ApplicationController
       @decisions = current_user.bookmarked_decisions.order(created_at: :desc)
     end
 
-    render json: @decisions
+    render json: { decisions: @decisions }
   end
 
   def create

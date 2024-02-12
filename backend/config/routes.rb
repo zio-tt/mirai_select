@@ -33,4 +33,17 @@ Rails.application.routes.draw do
     resources :comments, only: [:index, :show, :update, :destroy]
     resources :bookmarks, only: [:index, :show, :update, :destroy]
   end
+
+  namespace :guest do
+    resources :users, only: [:index]
+    resources :characters, only: [:index]
+    resources :decisions, only: [:index]
+    resources :conversations, only: [:index]
+    resources :tags, only: [:index]
+    resources :comments, only: [:index]
+    resources :bookmarks, only: [:index]
+    resources :decision_tags, only: [:index]
+    resources :decision_characters, only: [:index]
+    resources :character_responses, only: [:index]
+  end
 end

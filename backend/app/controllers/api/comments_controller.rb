@@ -12,7 +12,7 @@ class Api::CommentsController < ApplicationController
       content: content_params
     )
     if @comment.save
-      render json: Comment.all
+      render json: { comments: Comment.all }
     else
       render json: { error: 'Unable to create comment.' }
     end

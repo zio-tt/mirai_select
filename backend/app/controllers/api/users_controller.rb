@@ -39,7 +39,7 @@ class Api::UsersController < ApplicationController
     @user.update(token: remaining_tokens_params)
     @user = { id: @user.id, name: @user.name, avatar: @user.avatar, token: @user.token }
 
-    render json: { user: @user }
+    render json: {current_user: @user}
   end
 
   private

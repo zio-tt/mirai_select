@@ -8,7 +8,7 @@ class Api::TagsController < ApplicationController
       Tag.create(name: tag)
     end
 
-    render json: { message: 'Success to create tags' }
+    render json: { tags: Tag.all }
   end
 
   private

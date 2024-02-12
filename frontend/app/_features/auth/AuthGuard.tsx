@@ -1,26 +1,48 @@
-'use client';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client'
 
-import { usePathname, useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
-const unAuthenticatedPaths = ['/', '/privacy-policy', '/terms-of-service', '/index'];
+import { usePathname, useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import { useEffect } from 'react'
+const unAuthenticatedPaths = [
+  '/',
+  '/privacy-policy',
+  '/terms-of-service',
+  '/index',
+  '/guest/decisions',
+]
 
 const AuthGuard = ({ children }: { children: React.ReactNode }): any => {
-  const { status } = useSession();
-  const router = useRouter();
-  const isRoute = usePathname();
+  const { status } = useSession()
+  const router = useRouter()
+  const isRoute = usePathname()
 
-  {/* 非認証状態で認可されていないページにアクセスした場合 */}
+  {
+    /* 非認証状態で認可されていないページにアクセスした場合 */
+  }
   useEffect(() => {
-    if ((status === 'unauthenticated') && (!unAuthenticatedPaths.includes(isRoute)))
-        { router.replace('/'); }
-  }, [router, status]);
+    if (status === 'unauthenticated' && !unAuthenticatedPaths.includes(isRoute)) {
+      router.replace('/')
+    }
+    if (status === 'authenticated' && isRoute === '/guest/decisions') {
+      router.replace('/')
+    }
+  }, [router, status])
 
-  {/* 非認証状態で認可されているページにアクセスした場合 */}
-  if ((status === 'unauthenticated' || status === null) && (unAuthenticatedPaths.includes(isRoute)))
-      { return children; };
-  {/* 認証状態でページにアクセスした場合 */}
-  if (status === 'authenticated') return children;
-};
+  {
+    /* 非認証状態で認可されているページにアクセスした場合 */
+  }
+  if (
+    (status === 'unauthenticated' || status === null) &&
+    unAuthenticatedPaths.includes(isRoute)
+  ) {
+    return children
+  }
+  {
+    /* 認証状態でページにアクセスした場合 */
+  }
+  if (status === 'authenticated') return children
+}
 
-export default AuthGuard;
+export default AuthGuard

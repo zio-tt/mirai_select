@@ -1,93 +1,73 @@
-import axios from "axios";
-import { Comment } from "@/app/_types";
+import axios from 'axios'
+
+import { Comment } from '@/app/_types'
 
 const defaultHeaders = (token: string) => {
-  return (
-    {
-      'X-Requested-With': 'XMLHttpRequest',
-      'Authorization': `Bearer ${token}`
-    }
-  )
-};
+  return {
+    'X-Requested-With': 'XMLHttpRequest',
+    Authorization: `Bearer ${token}`,
+  }
+}
+
+interface CommentsResponse {
+  comments: Comment[]
+}
 
 const getComments = async (token: string): Promise<Comment[]> => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/comments`;
-    const response = await axios(url, {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/comments`
+    const response = await axios<CommentsResponse>(url, {
       headers: defaultHeaders(token),
       withCredentials: true,
-    });
+    })
     if (response.status === 200) {
-      return response.data.comments;
+      return response.data.comments
     } else {
-      throw new Error('Failed to fetch comments');
+      throw new Error('Failed to fetch comments')
     }
   } catch (error) {
-    console.error('Error fetching comments', error);
-    throw error;
+    console.error('Error fetching comments', error)
+    throw error
   }
-};
+}
 
-const createComment = async (
-  token: string,
-  content: string,
-  decisionId: number,
-) => {
+const createComment = async (token: string, content: string, decisionId: number) => {
   try {
-    const response = await axios({
+    const response = await axios<CommentsResponse>({
       method: 'post',
       url: `${process.env.NEXT_PUBLIC_API_URL}/api/comments`,
       headers: defaultHeaders(token),
       data: { content, decisionId },
       withCredentials: true,
-    });
+    })
     if (response.status === 200) {
-      return response.data;
+      return response.data.comments
+    } else {
+      throw new Error('Failed to create comment')
     }
   } catch (error) {
-    console.error('Error creating comment', error);
+    console.error('Error creating comment', error)
+    throw error
   }
 }
 
-const deleteComment = async (
-  token: string,
-  id: number,
-) => {
+const deleteComment = async (token: string, id: number) => {
   try {
-    const response = await axios({
+    const response = await axios<CommentsResponse>({
       method: 'delete',
       url: `${process.env.NEXT_PUBLIC_API_URL}/api/comments/${id}`,
       headers: defaultHeaders(token),
       withCredentials: true,
-    });
+    })
     if (response.status === 200) {
-      return response.data.comments;
+      return response.data.comments
+    } else {
+      throw new Error('Failed to delete comment')
     }
   } catch (error) {
-    console.error('Error deleting comment', error);
+    console.error('Error deleting comment', error)
+    throw error
   }
 }
 
-const editComment = async (
-  token: string,
-  id: string,
-  content: string,
-  handleEditComment: (data: any) => void
-) => {
-  try {
-    const response = await axios({
-      method: 'put',
-      url: `${process.env.NEXT_PUBLIC_API_URL}/api/comments/${id}`,
-      headers: defaultHeaders(token),
-      data: { content },
-      withCredentials: true,
-    });
-    if (response.status === 200) {
-      handleEditComment(response.data);
-    }
-  } catch (error) {
-    console.error('Error editing comment', error);
-  }
-}
-
-export { getComments, createComment, deleteComment, editComment }
+export { getComments, createComment, deleteComment }
