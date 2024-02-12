@@ -223,9 +223,9 @@ export default function MyPageDecisions() {
 
   return (
     <>
-      <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[3rem]'>
+      <div className='flex flex-col items-center justify-center w-screen min-h-screen pt-[3rem]'>
         {/* 検索フォーム */}
-        <div className='w-[70vw] mt-[2vh] mb-[3vh] flex relative'>
+        <div className='w-[90vw] mt-[2vh] mb-[3vh] flex relative justify-center'>
           <input
             id='searchText'
             type='text'
@@ -293,7 +293,7 @@ export default function MyPageDecisions() {
         )}
         {!isLoading && currentItems && (
           <>
-            <div className='w-[70vw] mb-[5vh] flex justify-start flex-col'>
+            <div className='w-[90vw] mb-[5vh] flex justify-center flex-col'>
               {currentItems.map((decision) => {
                 // DecisionCardに渡すpropsを設定
                 // targetTags: (decision.id == decisionTagsの各要素decisionTag.decision_id)
@@ -328,7 +328,7 @@ export default function MyPageDecisions() {
                 return (
                   <div key={decision.id} className='flex flex-row items-center'>
                     <div
-                      className='flex mb-4 mr-6 w-[80%] shadow-lg rounded-lg'
+                      className='flex mb-4 mr-6 w-[100%] shadow-lg rounded-lg'
                       onClick={() => handleDecisionClick(decision)}
                     >
                       <DecisionCard

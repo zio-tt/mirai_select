@@ -5,13 +5,17 @@ import { useEffect, useState } from 'react'
 import { useDecisions } from '@/app/_contexts/DecisionsContext'
 import { createBookmark, deleteBookmark } from '@/app/_features/fetchAPI'
 import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData'
-import { Decision } from '@/app/_types'
+import { Decision, Character } from '@/app/_types'
+
+import { TwitterShareButton } from './TwitterShareButton'
 
 interface BookmarksButtonProps {
   decision: Decision
+  firstQuery: string
+  characters: Character[]
 }
 
-const BookmarkButton = ({ decision }: BookmarksButtonProps) => {
+const BookmarkButton = ({ decision, firstQuery, characters }: BookmarksButtonProps) => {
   const { token } = useDecisionsData()
   const { currentUser } = useDecisions()
   const { bookmarks, setBookmarks } = useDecisions()
@@ -69,7 +73,7 @@ const BookmarkButton = ({ decision }: BookmarksButtonProps) => {
 
   return (
     <div className='flex justify-between items-center p-4 border-t border-gray-200'>
-      <div className='flex space-x-4'>
+      <div className='flex flex-row space-x-4'>
         {isOtherUsers && isBookmarked && (
           <div onClick={handleNotBookmark}>
             <SolidHeartIcon className='w-6 h-6 cursor-pointer text-red-500' />
@@ -80,6 +84,7 @@ const BookmarkButton = ({ decision }: BookmarksButtonProps) => {
             <HeartIcon className='w-6 h-6 cursor-pointer text-red-500' />
           </div>
         )}
+        <TwitterShareButton queryText={firstQuery} characters={characters} />
       </div>
     </div>
   )

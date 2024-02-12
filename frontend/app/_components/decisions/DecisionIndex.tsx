@@ -345,6 +345,20 @@ const DecisionIndex = ({
                   : []
               }
               handleCloseDetail={handleCloseDetail}
+              firstQuery={
+                conversations && conversations.length > 0 && selectedDecision
+                  ? conversations
+                      .filter(
+                        (conversation) =>
+                          conversation.decision_id === selectedDecision.id,
+                      )
+                      .sort(
+                        (a, b) =>
+                          new Date(a.created_at).getTime() -
+                          new Date(b.created_at).getTime(),
+                      )[0].query_text
+                  : ``
+              }
             />
           )}
         </>

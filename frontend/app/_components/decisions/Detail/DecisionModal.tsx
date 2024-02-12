@@ -8,10 +8,12 @@ import { Decision, Conversation } from '@/app/_types'
 const DecisionModal = ({
   decision,
   conversations,
+  firstQuery,
   handleCloseDetail,
 }: {
   decision: Decision
   conversations: Conversation[]
+  firstQuery: string
   handleCloseDetail: () => void
 }) => {
   const { decisionCharacters, characterResponses } = useDetailData(decision)
@@ -50,7 +52,11 @@ const DecisionModal = ({
             >
               <div className='flex flex-col w-full h-full justify-between'>
                 <CommentsDisplay decision={decision} />
-                <BookmarkButton decision={decision} />
+                <BookmarkButton
+                  decision={decision}
+                  firstQuery={firstQuery}
+                  characters={decisionCharacters}
+                />
                 <CommentInputForm decision={decision} />
               </div>
             </div>
