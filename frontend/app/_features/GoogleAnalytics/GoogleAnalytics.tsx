@@ -1,13 +1,14 @@
-"use client";
+'use client'
 
-import { usePathname, useSearchParams } from "next/navigation";
-import Script from "next/script";
-import { useEffect } from "react";
-import { IS_GATAG, GA_TAG_ID, pageview } from "@/app/_utils/gtag";
+import { usePathname, useSearchParams } from 'next/navigation'
+import Script from 'next/script'
+import { useEffect } from 'react'
+
+import { IS_GATAG, GA_TAG_ID, pageview } from '@/app/_utils/gtag'
 
 const GoogleAnalytics = () => {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     if (!IS_GATAG) {
@@ -20,10 +21,10 @@ const GoogleAnalytics = () => {
   return (
     <>
       <Script
-        strategy="lazyOnload"
+        strategy='lazyOnload'
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_TAG_ID}`}
       />
-      <Script id="gtag-init" strategy="afterInteractive">
+      <Script id='gtag-init' strategy='afterInteractive'>
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -34,7 +35,7 @@ const GoogleAnalytics = () => {
         `}
       </Script>
     </>
-  );
-};
+  )
+}
 
-export default GoogleAnalytics;
+export default GoogleAnalytics
