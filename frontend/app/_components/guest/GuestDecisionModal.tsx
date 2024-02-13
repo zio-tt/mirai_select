@@ -94,6 +94,7 @@ const GuestDecisionModal = ({
         console.error(error)
       }
     })()
+    
   }, [])
 
   // モーダルのコンテンツをクリックしたときにイベントの伝播を止める

@@ -49,7 +49,7 @@
     "import/resolver": {
       "typescript": {
         "alwaysTryTypes": true,
-        "project": "./frontend"
+        "project": "./frontend/tsconfig.json"
       }
     }
   }
