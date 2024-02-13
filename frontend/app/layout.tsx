@@ -9,6 +9,4 @@ export const metadata: Metadata = {
     'ミライセレクトはあなたの選択を助けるアプリです。AIがあなたの悩み事に対して2つの選択肢を提示します。',
 }
 
-export const dynamic = 'force-dynamic'
-
 export default AppLayout
