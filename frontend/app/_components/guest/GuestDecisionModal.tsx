@@ -94,7 +94,8 @@ const GuestDecisionModal = ({
         console.error(error)
       }
     })()
-    
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // モーダルのコンテンツをクリックしたときにイベントの伝播を止める
