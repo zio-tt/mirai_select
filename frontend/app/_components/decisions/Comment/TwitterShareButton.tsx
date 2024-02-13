@@ -27,7 +27,7 @@ const TwitterShareButton = ({ queryText, characters }: TwitterShareButtonProps) 
     <Link
       href='https://twitter.com/share?ref_src=twsrc%5Etfw'
       data-text={`「${queryText}」に「${characters[0].name}」と「${characters[1].name}」が答えたよ！`}
-      data-url='https://www.mirai-select.net'
+      data-url='https://www.mirai-select.net/'
       className='twitter-share-button'
       data-show-count='false'
     >
