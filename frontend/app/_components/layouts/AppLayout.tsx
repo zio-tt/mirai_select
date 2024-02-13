@@ -151,7 +151,6 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           href='https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&display=swap'
           rel='stylesheet'
         />
-        <meta name='twitter:image' content='https://mirai-select.net/twitter-image.jpg' />
       </head>
 
       <body className={inter.className}>
