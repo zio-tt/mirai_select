@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { SessionProvider, useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 
+import { CharacterListProvider } from '@/app/_contexts/CharacterListContext'
 import { DecisionsProvider, useDecisions } from '@/app/_contexts/DecisionsContext'
 import { DrawerProvider, useDrawer } from '@/app/_contexts/DrawerContext'
 import { HelperProvider, useHelper } from '@/app/_contexts/HelperContext'
@@ -159,7 +160,9 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             <HelperProvider>
               <DecisionsProvider>
                 <DrawerProvider>
-                  <LayoutContent>{children}</LayoutContent>
+                  <CharacterListProvider>
+                    <LayoutContent>{children}</LayoutContent>
+                  </CharacterListProvider>
                 </DrawerProvider>
               </DecisionsProvider>
             </HelperProvider>

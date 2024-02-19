@@ -4,40 +4,39 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
+import { Loading } from '@/app/_components/layouts/loading/layout'
 import { CharacterDetailModal } from '@/app/_components/mypage/CharacterDetailModal'
 import { CharacterList } from '@/app/_components/mypage/CharacterList'
 import { CreateCharacter } from '@/app/_components/mypage/CreateCharacter'
 import { MyPageMenu } from '@/app/_components/mypage/MyPageMenu'
+import { useCharacterList } from '@/app/_contexts/CharacterListContext'
 import { useDecisions } from '@/app/_contexts/DecisionsContext'
 import {
   getCharacters,
   getUserCharacters,
   getCustomCharacters,
+  editCharacter,
 } from '@/app/_features/fetchAPI'
 import { Character, CustomCharacter, UserCharacter } from '@/app/_types'
 
 export default function MyPageDecisions() {
   // CurrentUserが使用するキャラクターを選択する
   // APIから取得する情報
-  // characters: 全キャラクターの詳細情報リスト
-  // customCharactersList: ユーザーが使用可能なキャラクターの作成者リスト
-  // userCharactersList: ユーザーが現在使用するキャラクターに指定しているキャラクターリスト
-  const [characters, setCharacters] = useState<Character[]>([])
-  const [customCharactersList, setCustomCharactersList] = useState<CustomCharacter[]>([])
-  const [userCharactersList, setUserCharactersList] = useState<UserCharacter[]>([])
+  const { characters, setCharacters } = useCharacterList()
+  const { customCharactersList, setCustomCharactersList } = useCharacterList()
+  const { userCharactersList, setUserCharactersList } = useCharacterList()
+  const { customCharacters, setCustomCharacters } = useCharacterList()
+  const { userCharacters, setUserCharacters } = useCharacterList()
+  const { selectCharacter, setSelectCharacter } = useCharacterList()
+  const { avatarUrl, setAvatarUrl } = useCharacterList()
 
-  // 上記とは別でStateとして用意する情報
-  // selectCharacter: 情報を表示・編集するキャラクター
-  // customCharacters: ユーザーが使用可能なキャラクターのリスト
-  // userCharacters: ユーザーが現在使用するキャラクターのリスト
-  const [selectCharacter, setSelectCharacter] = useState<Character | null>(null)
-  const [customCharacters, setCustomCharacters] = useState<Character[]>([])
-  const [userCharacters, setUserCharacters] = useState<Character[]>([])
+  const { isCreate, setIsCreate } = useCharacterList()
+  const { isEdit, setIsEdit } = useCharacterList()
 
-  const [isCreateCharacter, setIsCreateCharacter] = useState<boolean>(false)
   const { setIsModalOpen } = useDecisions()
+  const { isLoading } = useDecisions()
   const { data: session } = useSession()
   const token = session?.appAccessToken
 
@@ -79,6 +78,13 @@ export default function MyPageDecisions() {
     }
   }
 
+  // ContextでStateを管理しているためコンポーネントがマウントされた時にStateを初期化する
+  useEffect(() => {
+    setSelectCharacter(null)
+    setAvatarUrl('')
+    setIsEdit(false)
+  }, [])
+
   useEffect(() => {
     if (token) {
       void (async () => {
@@ -101,13 +107,42 @@ export default function MyPageDecisions() {
   }, [characters, customCharactersList, userCharactersList])
 
   const handleCreateCharacter = () => {
-    setIsCreateCharacter(true)
+    setIsCreate(true)
     setIsModalOpen(true)
   }
 
   const handleCloseDetail = () => {
-    setIsCreateCharacter(false)
+    setIsCreate(false)
     setIsModalOpen(false)
+  }
+
+  const handleUpdateCharacter = (character: Character, avatar?: File) => {
+    // tokenが存在しない場合=ユーザーがログインしていない場合は何もしない
+    if (!token) return
+
+    void (async () => {
+      try {
+        const res = await editCharacter(token, character.id, character, avatar)
+        if (res) {
+          const replaceAvatarUrlCharacters = replaceAvatar(res.characters)
+          if (res.character.avatar.includes('localhost')) {
+            const replaceAvatarUrl = res.character.avatar.replace('localhost', 'web')
+            const replaceAvatarUrlCharacter = {
+              ...res.character,
+              avatar: replaceAvatarUrl,
+            }
+            setSelectCharacter(replaceAvatarUrlCharacter)
+          } else {
+            setSelectCharacter(res.character)
+          }
+          setCharacters(replaceAvatarUrlCharacters)
+        }
+      } catch (error) {
+        console.error('Error editing character', error)
+      } finally {
+        setIsEdit(false)
+      }
+    })()
   }
 
   {
@@ -129,27 +164,30 @@ export default function MyPageDecisions() {
   const handleSelectCharacter = (character: Character) => {
     setIsModalOpen(true)
     setSelectCharacter(character)
+    setAvatarUrl(character.avatar)
   }
 
   return (
     <>
       <div className='flex flex-col items-center justify-start w-screen min-h-screen pt-[3rem]'>
         <MyPageMenu />
-        <div className='flex items-start justify-start w-[70vw] h-full border'>
-          <CharacterList characters={customCharacters} onSelect={handleSelectCharacter} />
-          {selectCharacter && token && (
-            <CharacterDetailModal
-              token={token}
-              replaceAvatar={replaceAvatar}
-              character={selectCharacter}
-              characters={characters}
-              setCharacters={setCharacters}
-              onClose={() => setSelectCharacter(null)}
+        {isLoading && <Loading />}
+        {!isLoading && !isCreate && (
+          <div className='flex items-start justify-start w-[70vw] h-full border'>
+            <CharacterList
+              characters={customCharacters}
+              onSelect={handleSelectCharacter}
             />
-          )}
-        </div>
+            {selectCharacter && token && (
+              <CharacterDetailModal
+                onClose={() => setSelectCharacter(null)}
+                onUpdateCharacter={handleUpdateCharacter}
+              />
+            )}
+          </div>
+        )}
         {/* キャラクターを作成する画面 */}
-        {isCreateCharacter && <CreateCharacter handleCloseDetail={handleCloseDetail} />}
+        {isCreate && <CreateCharacter handleCloseDetail={handleCloseDetail} />}
       </div>
     </>
   )
