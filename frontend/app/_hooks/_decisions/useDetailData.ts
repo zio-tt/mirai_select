@@ -38,6 +38,7 @@ export const useDetailData = (decision: Decision) => {
       setIsLoading(true)
       try {
         const decisionCharactersData = await getCharacters(token, 'decision', decision.id)
+        console.log('decisionCharactersData', decisionCharactersData)
         const characterResponsesData = await getCharacterResponses(token, decision.id)
 
         setDecisionCharacters(decisionCharactersData)

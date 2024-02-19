@@ -27,7 +27,7 @@ const Drawer = () => {
             text='みんなの悩みごと'
           />
           <DrawerMenu
-            url='/mypage/private'
+            url='/mypage/character'
             imageURL='/images/human.png'
             text='マイページ'
           />

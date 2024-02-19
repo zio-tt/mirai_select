@@ -1,8 +1,8 @@
-export interface UserCharacter {
+export interface DecisionCharacter {
   id: number
-  user_id: number
+  decision_id: number
   character_id: number
-  role: string
+  role: number
   created_at: string
   updated_at: string
 }

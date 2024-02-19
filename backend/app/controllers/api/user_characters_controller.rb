@@ -8,11 +8,8 @@ class Api::UserCharactersController < ApplicationController
     when "user"
       characters = Character.where(id: current_user.user_characters.pluck(:character_id))
       characters_data = characters.map do |character|
-        # 必要な属性を取り出す
-        character_attributes = character.slice(:id, :name, :character1_welcome, :character2_welcome)
-        # avatarのURLを取得し、属性に追加する
-        avatar_url = url_for(character.avatar) if character.avatar.attached?
-        character_attributes.merge(avatar: avatar_url)
+        avatar_url = rails_blob_url(character.avatar) if character.avatar.attached?
+        character.attributes.merge(avatar: avatar_url)
       end
     end
 
