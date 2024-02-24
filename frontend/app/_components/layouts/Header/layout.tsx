@@ -5,8 +5,8 @@ import { useSession } from 'next-auth/react'
 
 import { GuestMenu } from '@/app/_components/guest/GuestMenu'
 import { GoogleLoginButton } from '@/app/_components/ui'
-import { useDecisions } from '@/app/_contexts/DecisionsContext'
-import { useDrawer } from '@/app/_contexts/DrawerContext'
+import { useDecisions } from '@/app/_contexts/_featureContexts/DecisionsContext'
+import { useDrawer } from '@/app/_contexts/_featureContexts/DrawerContext'
 import { handleLogout } from '@/app/_features/auth/function'
 
 const Header = () => {
@@ -36,7 +36,7 @@ const Header = () => {
   }
 
   return (
-    <div className='fixed navbar min-h-[3rem] border-b bg-[#F4A100]'>
+    <div className='fixed navbar max-h-[3rem] border-b bg-[#F4A100]'>
       <div className='flex-none'>
         {status === 'authenticated' && (
           <div className='btn btn-circle btn-ghost p-2' onClick={handleHamburgerClick}>

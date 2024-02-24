@@ -6,7 +6,7 @@ class Guest::CharactersController < ApplicationController
   def index
     if condition_params == "all"
       characters = Character.select_attribute.map do |character|
-        avatar_url = character.avatar.attached? ? url_for(character.avatar) : nil
+        avatar_url = rails_blob_url(character.avatar) if character.avatar.attached?
         character.attributes.merge(avatar: avatar_url)
       end
     elsif condition_params == "decision"
@@ -17,10 +17,8 @@ class Guest::CharactersController < ApplicationController
       .where(decisions: { id: decision_id_params })
 
       characters = raw_characters.map do |character|
-        character_attributes = character.slice(:id, :name, :character1_welcome, :character2_welcome)
-        # avatarのURLを取得し、属性に追加する
-        avatar_url = url_for(character.avatar) if character.avatar.attached?
-        character_attributes.merge(avatar: avatar_url)
+        avatar_url = rails_blob_url(character.avatar) if character.avatar.attached?
+        character.attributes.merge(avatar: avatar_url)
       end
     end
 

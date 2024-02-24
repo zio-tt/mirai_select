@@ -1,7 +1,7 @@
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
 import { useEffect } from 'react'
 
-import { useHelper } from '@/app/_contexts/HelperContext'
+import { useHelper } from '@/app/_contexts/_featureContexts/HelperContext'
 
 interface UserInterfaceProps {
   setTags: (tags: string[]) => void

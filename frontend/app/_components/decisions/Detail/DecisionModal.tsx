@@ -16,7 +16,8 @@ const DecisionModal = ({
   firstQuery: string
   handleCloseDetail: () => void
 }) => {
-  const { decisionCharacters, characterResponses } = useDetailData(decision)
+  const { decisionCharacters, characterResponses, decisionCharacterList } =
+    useDetailData(decision)
   // モーダルのコンテンツをクリックしたときにイベントの伝播を止める
   const handleModalContentClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -24,7 +25,7 @@ const DecisionModal = ({
 
   return (
     <>
-      {decisionCharacters && characterResponses && (
+      {decisionCharacters && characterResponses && decisionCharacterList && (
         // モーダルの外側をクリックしたときにモーダルを閉じる
         <div className='fixed inset-0 flex items-center justify-center z-40'>
           <div className='fixed inset-0 bg-black bg-opacity-50 z-60' />
@@ -42,6 +43,7 @@ const DecisionModal = ({
                   decision={decision}
                   conversations={conversations}
                   decisionCharacters={decisionCharacters}
+                  decisionCharacterList={decisionCharacterList}
                   characterResponses={characterResponses}
                 />
               </div>

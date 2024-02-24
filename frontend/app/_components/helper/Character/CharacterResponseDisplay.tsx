@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
-import { useDrawer } from '@/app/_contexts/DrawerContext'
+import { useDrawer } from '@/app/_contexts/_featureContexts/DrawerContext'
 import { Character } from '@/app/_types'
 
 interface CharacterResponse {

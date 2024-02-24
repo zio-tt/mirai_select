@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 
-import { useDrawer } from '@/app/_contexts/DrawerContext'
+import { useDrawer } from '@/app/_contexts/_featureContexts/DrawerContext'
 import { handleLogin, handleLogout } from '@/app/_features/auth/function'
 
 interface DrawerMenuProps {

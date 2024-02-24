@@ -2,7 +2,7 @@ import { HeartIcon } from '@heroicons/react/24/outline'
 import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid'
 import { useEffect, useState } from 'react'
 
-import { useDecisions } from '@/app/_contexts/DecisionsContext'
+import { useDecisions } from '@/app/_contexts/_featureContexts/DecisionsContext'
 import { createBookmark, deleteBookmark } from '@/app/_features/fetchAPI'
 import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData'
 import { Decision, Character } from '@/app/_types'

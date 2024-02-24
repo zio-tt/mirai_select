@@ -2,6 +2,7 @@ class ApplicationController < ActionController::API
   include ActionController::Cookies
   include ErrorHandler
   include Authentication
+  include Rails.application.routes.url_helpers
   before_action :check_xhr_header
 
   def check_xhr_header

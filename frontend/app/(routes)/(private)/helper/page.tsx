@@ -27,8 +27,12 @@ import { Steps } from '@/app/_components/helper/Information/Steps'
 import { QueryInputForm } from '@/app/_components/helper/UserInterface/QueryInputForm'
 import { TagInputForm } from '@/app/_components/helper/UserInterface/TagInputForm'
 import { Loading } from '@/app/_components/layouts/loading/layout'
-import { useDrawer } from '@/app/_contexts/DrawerContext'
-import { useHelper } from '@/app/_contexts/HelperContext'
+import { useCharacterList } from '@/app/_contexts/_featureContexts/CharacterListContext'
+import { useDrawer } from '@/app/_contexts/_featureContexts/DrawerContext'
+import { useHelper } from '@/app/_contexts/_featureContexts/HelperContext'
+import { useCharacter } from '@/app/_contexts/_globalContexts/CharacterContext'
+import { useUserInfo } from '@/app/_contexts/_globalContexts/UserInfoContext'
+import { InitializeHelperData } from '@/app/_features/InitializeHelperData'
 import {
   createConversation,
   updateConversation,
@@ -40,6 +44,7 @@ import {
   createTag,
   createDecisionTags,
 } from '@/app/_features/fetchAPI'
+import { createDecisionCharacter } from '@/app/_features/fetchAPI/fetchDecisionCharacter'
 import { useErrorHandling } from '@/app/_hooks/_helper/useErrorHandling'
 import { Conversation, Decision } from '@/app/_types'
 
@@ -55,7 +60,9 @@ export default function DecisionHelper() {
   const { setInputTags } = useHelper()
   const { setDisplayTags } = useHelper()
   // ページ読み込み時に取得する情報（キャラクター情報）
-  const { userCharacters, currentUser, setCurrentUser, fetchHelperInitData } = useHelper()
+  const { userCharacters, setUserCharacters } = useCharacter()
+  const { userCharactersList, setUserCharactersList } = useCharacterList()
+  const { currentUser, setCurrentUser } = useUserInfo()
   // ドロワーとの連携
   const { isDrawerClick, setIsDrawerClick } = useDrawer()
   const { drawerLink, setDrawerLink } = useDrawer()
@@ -103,17 +110,17 @@ export default function DecisionHelper() {
   }, [session])
 
   useEffect(() => {
-    void (async () => {
-      try {
-        if (token) {
-          initializeState()
-          await fetchHelperInitData(token)
-          resetErrorMessages()
-        }
-      } catch (error) {
-        console.error('Error initializing state or fetching helper data:', error)
-      }
-    })()
+    if (token) {
+      initializeState()
+      InitializeHelperData({
+        token,
+        setUserCharacters,
+        setUserCharactersList,
+        setCurrentUser,
+        setIsLoading,
+      })
+      resetErrorMessages()
+    }
   }, [token])
 
   useEffect(() => {
@@ -176,8 +183,10 @@ export default function DecisionHelper() {
       if (conversationCount === 1) {
         const response = await createDecision(token)
         currentDecision = assignCurrentDecision(response)
+        await createDecisionCharacter(token, currentDecision.id, userCharactersList)
         setDecision(currentDecision)
       }
+      console.log('errorここ？1')
 
       // 1. 深掘りの場合は既存のConversationに対してユーザーの決定を反映する
       if (conversationCount === 2) {
@@ -190,6 +199,7 @@ export default function DecisionHelper() {
         )
         setConversation(updatedConversation)
       }
+      console.log('errorここ？2')
 
       // OpenAI APIに送信するデータを作成する
       const fetchData: OpenAiRequest = {
@@ -199,6 +209,7 @@ export default function DecisionHelper() {
         beforeQueryText: conversationCount === 1 ? '' : beforeQueryText,
         userDecision: conversationCount === 1 ? null : userDecision!.response,
       }
+      console.log('errorここ？3')
 
       // 3. Decisionに紐づくConversationを作成する
       const createdConversation = await createConversation(
@@ -207,6 +218,7 @@ export default function DecisionHelper() {
         queryText,
       )
       setConversation(createdConversation)
+      console.log('errorここ？4')
 
       // 4. OpenAI APIを叩いてResponseを整形する
       const openAiResponse = await OpenAiRequest(fetchData)
@@ -214,6 +226,7 @@ export default function DecisionHelper() {
         openAiResponse.response.choices[0].message.content,
       )
       const parsedResponse = parseResponse(processedResponse, createdConversation)
+      console.log('errorここ？5')
 
       // 5. 4の結果を元にConversationに紐づく
       const currentCharacterResponses = await createCharacterResponses(
@@ -221,10 +234,12 @@ export default function DecisionHelper() {
         parsedResponse,
       )
       setCharacterResponses(parsedResponse)
+      console.log('errorここ？6')
 
-      const user = await updateUser(token, currentUser!.id, remainingTokens)
-      setCurrentUser(user)
+      const user = await updateUser(token, currentUser.id, remainingTokens)
+
       if (user) {
+        setCurrentUser(user)
         setRemainingTokens(user.token)
       }
 
@@ -249,6 +264,7 @@ export default function DecisionHelper() {
         setConversationCount(3)
       }
     } catch (error: any) {
+      setIsLoading(false)
       addErrorMessages({
         message: error.message,
         kind: 'openai',
@@ -355,7 +371,7 @@ export default function DecisionHelper() {
       await createDecisionTags(token, decision!.id, tags)
 
       // 5. remainingTokensをupdateUser関数に渡す = Userを更新する
-      await updateUser(token, currentUser!.id, remainingTokens)
+      await updateUser(token, currentUser.id, remainingTokens)
 
       // 6. 保存が完了したらページ内の状態を全てデフォルトに戻す
       initializeState()
@@ -365,9 +381,13 @@ export default function DecisionHelper() {
         kind: 'openai',
       })
     } finally {
-      void (async () => {
-        await fetchHelperInitData(token)
-      })()
+      InitializeHelperData({
+        token,
+        setUserCharacters,
+        setUserCharactersList,
+        setCurrentUser,
+        setIsLoading,
+      })
       setIsLoading(false)
     }
   }
@@ -461,19 +481,22 @@ export default function DecisionHelper() {
     setIsClickInformation(!isClickInformation)
   }
 
+  console.log('userCharacters', userCharacters)
+
   return (
     <>
-      {!userCharacters && (
-        <div className='w-full min-h-screen'>
-          <Loading />
-        </div>
-      )}
+      {!userCharacters ||
+        (userCharacters.length != 2 && (
+          <div className='w-full min-h-screen'>
+            <Loading />
+          </div>
+        ))}
       {isLoading && (
         <div className='w-full min-h-screen'>
           <Loading />
         </div>
       )}
-      {userCharacters && !isLoading && (
+      {userCharacters && userCharacters.length == 2 && !isLoading && (
         <div className='flex flex-col w-full min-h-screen items-center justify-start pt-3 mt-14'>
           {isError && <AlertMessage errors={errors} />}
           <div

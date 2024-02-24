@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-import { useHelper } from '@/app/_contexts/HelperContext'
+import { useHelper } from '@/app/_contexts/_featureContexts/HelperContext'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useAutoResizeTextArea = (initialValue: string = '') => {

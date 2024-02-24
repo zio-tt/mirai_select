@@ -1,6 +1,6 @@
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
 
-import { useHelper } from '@/app/_contexts/HelperContext'
+import { useHelper } from '@/app/_contexts/_featureContexts/HelperContext'
 
 interface QueryInputFormProps {
   handleCreateConversation: () => Promise<void>

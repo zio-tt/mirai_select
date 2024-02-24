@@ -1,6 +1,7 @@
 class Character < ApplicationRecord
   has_many :character_responses, dependent: :destroy
   has_many :user_characters, dependent: :destroy
+  has_many :custom_characters, dependent: :destroy
   has_many :decision_characters, dependent: :destroy
   has_one_attached :avatar
 
@@ -61,7 +62,7 @@ class Character < ApplicationRecord
   def create_welcome_system_message(character)
     message = "#{character.name}の口調で説明文を2つ作成してください。
     内容は元コメントのまま口調だけキャラクターに変更してください。
-    character1_welcomeの元コメント「相談内容を下記のフォームに50文字以内かつユーザーごとに所持しているポイント数以内で入力してください。」
+    character1_welcomeの元コメント「相談内容を下記のフォームに100文字以内かつユーザーごとに所持しているポイント数以内で入力してください。」
     character2_welcomeの元コメント「ポイントは毎週月曜日に100ポイント付与されます（最大300ポイント）。」
     回答はJSON形式で返してください。
     キャラクターのプロフィールは以下の通りです。"
