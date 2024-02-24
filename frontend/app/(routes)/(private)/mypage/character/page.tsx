@@ -229,6 +229,7 @@ const MyPageCharactersContent = () => {
       setIsError(true)
       setErrorMessage('全ての項目を入力してください')
       setIsLoading(false)
+      setIsCreate(true)
       return
     } else {
       setIsError(false)
@@ -480,7 +481,13 @@ const MyPageCharactersContent = () => {
             {/* ここから上を固定したい */}
             {/* スクロールした時にここから上のコンポーネントの裏に隠れる様にしたい */}
             <div className='w-full border mb-4 p-4'>
-              キャラ1、キャラ2に設定したいキャラクターを下のリストからドラッグ＆ドロップしてください
+              <span className='text-bold text-lg underline'>
+                キャラ1、キャラ2に設定したいキャラクターを下のリストからドラッグ＆ドロップしてください
+              </span>
+              <br />
+              キャラクターを作成したい場合は「新規作成」と書かれた枠内をクリックしてください
+              <br />
+              ※ユーザーが作成できるキャラクターは10体までです
             </div>
             <div className='flex flex-col items-center justify-between w-full p-4 border'>
               <div className='form-control'>
