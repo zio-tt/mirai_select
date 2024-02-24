@@ -3,86 +3,86 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 // components/CharacterDetailModal.tsx
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useRef, ChangeEvent, useCallback } from 'react'
 import Avatar from 'react-avatar'
 
-import { useCharacterList } from '@/app/_contexts/CharacterListContext'
-import { useDecisions } from '@/app/_contexts/DecisionsContext'
+import { useCharacterList } from '@/app/_contexts/_featureContexts/CharacterListContext'
+import { useDecisions } from '@/app/_contexts/_featureContexts/DecisionsContext'
 import { Character } from '@/app/_types'
 
-import { ResizeAvatar } from './ResizeAvatar'
+import { ResizeAvatar } from '../edit/ResizeAvatar'
 
-interface CharacterDetailModalProps {
-  onCancel: () => void
-  onUpdateCharacter: (character: Character, avatar?: File) => void
+interface CreateCharacterProps {
+  onClose: () => void
+  onCreateCharacter: (character: Character, avatar?: File) => void
   MBTI_Type: { [key: string]: string }[]
   Tone: { [key: string]: string }[]
   Expression: { [key: string]: string }[]
   Empathy: { [key: string]: string }[]
-  iconInputRef: React.RefObject<HTMLInputElement>
-  handleChangeAvatar: (iconFile: File | null) => void
-  handleClickChangeAvatar: () => void
-  handleChangePreviewAvatar: (e: React.ChangeEvent<HTMLInputElement>) => void
+  errorMessage: string
 }
 
-const EditCharacter = ({
-  onCancel,
-  onUpdateCharacter,
+const CreateCharacter = ({
+  onClose,
+  onCreateCharacter,
   MBTI_Type,
   Tone,
   Expression,
   Empathy,
-  iconInputRef,
-  handleChangeAvatar,
-  handleClickChangeAvatar,
-  handleChangePreviewAvatar,
-}: CharacterDetailModalProps) => {
-  const { selectCharacter } = useCharacterList()
+  errorMessage,
+}: CreateCharacterProps) => {
+  const [createCharacter, setCreateCharacter] = useState<Character>({
+    id: 0,
+    name: '',
+    mbti_type: 'ISTJ',
+    tone: 'polite',
+    expression: 'humorous',
+    values: '',
+    empathy: 'high',
+    first_person: '',
+    second_person: '',
+    character1_welcome: '',
+    character2_welcome: '',
+    avatar: '',
+  })
+
+  const { isEdit, setIsEdit } = useCharacterList()
   const { avatar, setAvatar } = useCharacterList()
   const { previewAvatar, setPreviewAvatar } = useCharacterList()
   const { avatarUrl, setAvatarUrl } = useCharacterList()
-  const [editedCharacter, setEditedCharacter] = useState<Character | null>(
-    selectCharacter ? selectCharacter : null,
-  )
 
-  console.log('previewAvatar:', previewAvatar)
+  const iconInputRef = useRef<HTMLInputElement | null>(null)
 
-  const { setIsEdit } = useCharacterList()
+  const handleClickChangeAvatar = useCallback(() => {
+    if (!iconInputRef || !iconInputRef.current) return
+    iconInputRef.current.click()
+  }, [])
 
-  const handleUpdateCharacter = () => {
-    if (!editedCharacter) return
-    onUpdateCharacter(editedCharacter, avatar!)
-  }
+  const handleChangePreviewAvatar = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return
+    setPreviewAvatar(e.target.files[0])
+    e.currentTarget.value = ''
+  }, [])
 
-  // selectCharacterが更新された場合、各stateを更新する
-  useEffect(() => {
-    if (!selectCharacter) return
-    setEditedCharacter(selectCharacter)
-    setAvatarUrl(selectCharacter.avatar ? selectCharacter.avatar : '')
-  }, [selectCharacter])
+  const handleChangeAvatar = useCallback((iconFile: File | null) => {
+    if (!iconFile) return
+    setAvatar(iconFile)
+  }, [])
 
   const changeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!editedCharacter) return
+    if (!createCharacter) return
     const target = e.target.id
     const value = e.target.value
-    setEditedCharacter({ ...editedCharacter, [target]: value })
+    setCreateCharacter({ ...createCharacter, [target]: value })
   }
 
   const changeSelectValue = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (!editedCharacter) return
+    if (!createCharacter) return
     const target = e.target.id
     const value = e.target.value
-    setEditedCharacter({ ...editedCharacter, [target]: value })
+    setCreateCharacter({ ...createCharacter, [target]: value })
   }
 
-  const changeTextAreaValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (!editedCharacter) return
-    const target = e.target.id
-    const value = e.target.value
-    setEditedCharacter({ ...editedCharacter, [target]: value })
-  }
-
-  if (!editedCharacter) return null
   return (
     <>
       {previewAvatar && (
@@ -94,7 +94,7 @@ const EditCharacter = ({
       <div className='modal modal-open'>
         <div className='modal-box'>
           <div className='modal-header'>
-            <h3 className='font-bold text-lg'>キャラクター情報を編集</h3>
+            {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
           </div>
           <div className='modal-body'>
             <div className='form-control'>
@@ -102,7 +102,7 @@ const EditCharacter = ({
               <input
                 type='text'
                 id='name'
-                value={editedCharacter.name}
+                value={createCharacter.name}
                 onChange={(e) => changeInputValue(e)}
               />
             </div>
@@ -161,7 +161,7 @@ const EditCharacter = ({
               <label htmlFor='mbti_type'>MBTIタイプ</label>
               <select
                 id='mbti_type'
-                value={editedCharacter.mbti_type}
+                value={createCharacter.mbti_type}
                 onChange={(e) => changeSelectValue(e)}
               >
                 {MBTI_Type.map((type, index) => (
@@ -175,7 +175,7 @@ const EditCharacter = ({
               <label htmlFor='tone'>話し方</label>
               <select
                 id='tone'
-                value={editedCharacter.tone}
+                value={createCharacter.tone}
                 onChange={(e) => changeSelectValue(e)}
               >
                 {Tone.map((tone, index) => (
@@ -189,7 +189,7 @@ const EditCharacter = ({
               <label htmlFor='expression'>表現</label>
               <select
                 id='expression'
-                value={editedCharacter.expression}
+                value={createCharacter.expression}
                 onChange={(e) => changeSelectValue(e)}
               >
                 {Expression.map((expression, index) => (
@@ -204,7 +204,7 @@ const EditCharacter = ({
               <input
                 type='text'
                 id='values'
-                value={editedCharacter.values}
+                value={createCharacter.values}
                 onChange={(e) => changeInputValue(e)}
               />
             </div>
@@ -212,7 +212,7 @@ const EditCharacter = ({
               <label htmlFor='empathy'>共感度</label>
               <select
                 id='empathy'
-                value={editedCharacter.empathy}
+                value={createCharacter.empathy}
                 onChange={(e) => changeSelectValue(e)}
               >
                 {Empathy.map((empathy, index) => (
@@ -222,28 +222,33 @@ const EditCharacter = ({
                 ))}
               </select>
             </div>
-            <div className='form-control'>
-              <label htmlFor='character1_welcome'>キャラクター1の挨拶</label>
-              <textarea
-                id='character1_welcome'
-                value={editedCharacter.character1_welcome}
-                onChange={(e) => changeTextAreaValue(e)}
-              />
-            </div>
-            <div className='form-control'>
-              <label htmlFor='character2_welcome'>キャラクター2の挨拶</label>
-              <textarea
-                id='character2_welcome'
-                value={editedCharacter.character2_welcome}
-                onChange={(e) => changeTextAreaValue(e)}
-              />
-            </div>
+          </div>
+          <div className='form-control'>
+            <label htmlFor='first_person'>一人称</label>
+            <input
+              type='text'
+              id='first_person'
+              value={createCharacter.first_person}
+              onChange={(e) => changeInputValue(e)}
+            />
+          </div>
+          <div className='form-control'>
+            <label htmlFor='second_person'>二人称</label>
+            <input
+              type='text'
+              id='second_person'
+              value={createCharacter.second_person}
+              onChange={(e) => changeInputValue(e)}
+            />
           </div>
           <div className='modal-action'>
-            <button className='btn' onClick={handleUpdateCharacter}>
+            <button
+              className='btn'
+              onClick={() => onCreateCharacter(createCharacter, avatar!)}
+            >
               保存する
             </button>
-            <button className='btn' onClick={onCancel}>
+            <button className='btn' onClick={onClose}>
               キャンセル
             </button>
           </div>
@@ -253,4 +258,4 @@ const EditCharacter = ({
   )
 }
 
-export { EditCharacter }
+export { CreateCharacter }

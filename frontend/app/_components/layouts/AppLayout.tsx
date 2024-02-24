@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-page-custom-font */
 'use client' // useEffectはクライアントサイドでのみ実行される
 
@@ -7,13 +8,33 @@ import { usePathname, useRouter } from 'next/navigation'
 import { SessionProvider, useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 
-import { CharacterListProvider } from '@/app/_contexts/CharacterListContext'
-import { DecisionsProvider, useDecisions } from '@/app/_contexts/DecisionsContext'
-import { DrawerProvider, useDrawer } from '@/app/_contexts/DrawerContext'
-import { HelperProvider, useHelper } from '@/app/_contexts/HelperContext'
-import { TopPageProvider, useTopPage } from '@/app/_contexts/TopPageContext'
+import {
+  CharacterListProvider,
+  useCharacterList,
+} from '@/app/_contexts/_featureContexts/CharacterListContext'
+import { DecisionsProvider } from '@/app/_contexts/_featureContexts/DecisionsContext'
+import { DrawerProvider, useDrawer } from '@/app/_contexts/_featureContexts/DrawerContext'
+import { HelperProvider, useHelper } from '@/app/_contexts/_featureContexts/HelperContext'
+import {
+  TopPageProvider,
+  useTopPage,
+} from '@/app/_contexts/_featureContexts/TopPageContext'
+import {
+  CharacterProvider,
+  useCharacter,
+} from '@/app/_contexts/_globalContexts/CharacterContext'
+import {
+  GlobalStateProvider,
+  useGlobalState,
+} from '@/app/_contexts/_globalContexts/GlobalStateContext'
+import {
+  UserInfoProvider,
+  useUserInfo,
+} from '@/app/_contexts/_globalContexts/UserInfoContext'
 import GoogleAnalytics from '@/app/_features/GoogleAnalytics/GoogleAnalytics'
 import AuthGuard from '@/app/_features/auth/AuthGuard'
+import { getUsers, getUserCharacters } from '@/app/_features/fetchAPI'
+import buildProvidersTree from '@/app/_utils/buildProvidersTree'
 import { kiwimaru } from '@/app/_utils/font'
 
 import { Drawer } from './Drawer/layout'
@@ -31,6 +52,17 @@ export type AppLayoutProps = {
   children: React.ReactNode
 }
 
+const ProviderTree = buildProvidersTree([
+  CharacterListProvider,
+  DecisionsProvider,
+  DrawerProvider,
+  HelperProvider,
+  TopPageProvider,
+  CharacterProvider,
+  GlobalStateProvider,
+  UserInfoProvider,
+])
+
 const LayoutContent = ({ children }: AppLayoutProps) => {
   const { isViewed, setIsViewed } = useTopPage() // Opening Animation Flag
   const [isAuth, setIsAuth] = useState<string | null>(null) // 認証状態
@@ -38,9 +70,12 @@ const LayoutContent = ({ children }: AppLayoutProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState<boolean>(false) // ローディング画面
   const { data: session, status } = useSession()
-  const { isModalOpen, setIsModalOpen } = useDecisions()
+  const { isModalOpen, setIsModalOpen } = useGlobalState()
   const { isHamburgerClick } = useDrawer()
   const { isClickInformation, setIsClickInformation } = useHelper()
+  const { setCurrentUser } = useUserInfo()
+  const { userCharacters, setUserCharacters } = useCharacter()
+  const { userCharactersList, setUserCharactersList } = useCharacterList()
   const router = useRouter()
   const isRoot = usePathname()
   const unAuthenticatedPaths = [
@@ -78,6 +113,28 @@ const LayoutContent = ({ children }: AppLayoutProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, isRoot, isAuth, session, router])
+
+  useEffect(() => {
+    // 認証状態になった場合、currentUserとuserCharactersを取得する
+    if (status == 'authenticated' && session.appAccessToken) {
+      void (async () => {
+        const currentUserData = await getUsers(session.appAccessToken, 'current_user')
+        if (!userCharacters || !userCharactersList) {
+          const userCharactersData = await getUserCharacters(
+            session.appAccessToken,
+            'user_characters',
+          )
+          if (userCharactersData) {
+            setUserCharacters(userCharactersData.charactersData)
+            setUserCharactersList(userCharactersData.user_characters)
+          }
+        }
+        if (currentUserData) {
+          setCurrentUser(currentUserData.current_user)
+        }
+      })()
+    }
+  }, [status])
 
   useEffect(() => {
     setIsLoading(false)
@@ -156,17 +213,9 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 
       <body className={inter.className}>
         <SessionProvider>
-          <TopPageProvider>
-            <HelperProvider>
-              <DecisionsProvider>
-                <DrawerProvider>
-                  <CharacterListProvider>
-                    <LayoutContent>{children}</LayoutContent>
-                  </CharacterListProvider>
-                </DrawerProvider>
-              </DecisionsProvider>
-            </HelperProvider>
-          </TopPageProvider>
+          <ProviderTree>
+            <LayoutContent>{children}</LayoutContent>
+          </ProviderTree>
         </SessionProvider>
       </body>
     </html>

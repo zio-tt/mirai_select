@@ -5,7 +5,7 @@ import AvatarEditor from 'react-avatar-editor'
 import Modal from 'react-modal'
 import 'rc-slider/assets/index.css'
 
-import { useCharacterList } from '@/app/_contexts/CharacterListContext'
+import { useCharacterList } from '@/app/_contexts/_featureContexts/CharacterListContext'
 
 interface Props {
   onChangePreviewAvatar: (iconFile: File | null) => void

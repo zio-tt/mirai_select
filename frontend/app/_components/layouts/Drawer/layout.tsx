@@ -1,8 +1,8 @@
 // hooks
 import { usePathname } from 'next/navigation'
 
-import { useDrawer } from '@/app/_contexts/DrawerContext'
-import { useHelper } from '@/app/_contexts/HelperContext'
+import { useDrawer } from '@/app/_contexts/_featureContexts/DrawerContext'
+import { useHelper } from '@/app/_contexts/_featureContexts/HelperContext'
 
 // contexts
 // components

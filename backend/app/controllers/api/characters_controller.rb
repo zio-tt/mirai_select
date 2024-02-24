@@ -21,6 +21,7 @@ class Api::CharactersController < ApplicationController
     # avatarの更新
     # avatarがnil出ない場合、binaryデータをActiveStorageに保存する
     # @characterにhas_one_attachedで紐づけることで、avatarを更新することができる
+
     if avatar_params
       @character.avatar.attach(avatar_params)
     end
@@ -32,6 +33,31 @@ class Api::CharactersController < ApplicationController
       render json: { character: character, characters: characters }
     else
       # 更新に失敗した場合、エラーメッセージを返す
+      render json: { error: @character.errors.full_messages }
+    end
+  end
+
+  # ほぼ同様の処理でcreateメソッドを実装
+  def create
+    @character = Character.new(character_params)
+    if @character.save
+      if @character.avatar.attach(avatar_params)
+        character = @character.attributes.merge(avatar: rails_blob_url(@character.avatar))
+      else
+        character = @character.attributes
+      end
+      CustomCharacter.create(user_id: current_user.id, character_id: @character.id, public: true, role: :user)
+      characters = add_avatar_url(Character.all)
+      render json: { character: character, characters: characters }
+    else
+      render json: { error: @character.errors.full_messages }
+    end
+  end
+
+  def destroy
+    if @character.destroy
+      render json: { characters: add_avatar_url(Character.all) }
+    else
       render json: { error: @character.errors.full_messages }
     end
   end
@@ -59,6 +85,8 @@ class Api::CharactersController < ApplicationController
       :expression,
       :values,
       :empathy,
+      :first_person,
+      :second_person,
       :character1_welcome,
       :character2_welcome,
     )

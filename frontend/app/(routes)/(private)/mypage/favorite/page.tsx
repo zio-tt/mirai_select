@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 
 import { DecisionIndex } from '@/app/_components/decisions/DecisionIndex'
 import { MyPageMenu } from '@/app/_components/mypage/MyPageMenu'
-import { useDecisions } from '@/app/_contexts/DecisionsContext'
+import { useDecisions } from '@/app/_contexts/_featureContexts/DecisionsContext'
 import { getDecisions } from '@/app/_features/fetchAPI'
 import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData'
 import { Decision } from '@/app/_types'

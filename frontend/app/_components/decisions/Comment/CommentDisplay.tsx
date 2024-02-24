@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import { useDecisions } from '@/app/_contexts/DecisionsContext'
+import { useDecisions } from '@/app/_contexts/_featureContexts/DecisionsContext'
 import { deleteComment } from '@/app/_features/fetchAPI/fetchComment'
 import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData'
 import { Decision } from '@/app/_types'

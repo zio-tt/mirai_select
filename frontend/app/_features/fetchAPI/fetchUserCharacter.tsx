@@ -39,25 +39,23 @@ const getUserCharacters = async (
   }
 }
 
-const updateUserCharacter = async (
-  token: string,
-  id: number,
-  role: number,
-  oldCharacterId: number,
-  newCharacterId: number,
-) => {
+interface UpdateProps {
+  user_character: UserCharacter
+}
+
+const updateUserCharacter = async (token: string, userCharacter: UserCharacter) => {
   try {
-    const response = await axios<UserCharacterProps>({
+    const id = userCharacter.id
+    const response = await axios<UpdateProps>({
       method: 'put',
       url: `${process.env.NEXT_PUBLIC_API_URL}/api/user_characters/${id}`,
       headers: defaultHeaders(token),
-      data: { role, oldCharacterId, newCharacterId },
+      data: { user_character: userCharacter },
       withCredentials: true,
     })
     if (response.status === 200) {
       return {
-        user_characters: response.data.user_characters,
-        charactersData: response.data.charactersData,
+        user_character: response.data.user_character,
       }
     } else {
       throw new Error('Failed to update user_character')

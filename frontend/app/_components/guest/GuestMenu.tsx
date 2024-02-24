@@ -3,7 +3,7 @@
 import { UserCircleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
-import { useDecisions } from '@/app/_contexts/DecisionsContext'
+import { useDecisions } from '@/app/_contexts/_featureContexts/DecisionsContext'
 
 import type { JSX } from 'react'
 

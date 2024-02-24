@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
-import { useTopPage } from '@/app/_contexts/TopPageContext'
+import { useTopPage } from '@/app/_contexts/_featureContexts/TopPageContext'
 
 const fadeInVariants = {
   hidden: { opacity: 0 },

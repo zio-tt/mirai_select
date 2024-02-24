@@ -37,16 +37,32 @@ const getCharacters = async (
   }
 }
 
-const createCharacter = async (token: string) => {
+const createCharacter = async (token: string, character: Character, avatar?: File) => {
+  const formData = new FormData()
+  formData.append('character[name]', character.name)
+  formData.append('character[mbti_type]', character.mbti_type)
+  formData.append('character[tone]', character.tone)
+  formData.append('character[first_person]', character.first_person)
+  formData.append('character[second_person]', character.second_person)
+  formData.append('character[expression]', character.expression)
+  formData.append('character[values]', character.values)
+  formData.append('character[empathy]', character.empathy)
+  if (avatar) {
+    formData.append('avatar', avatar)
+  }
   try {
     const response = await axios<CharacterResponse>({
       method: 'post',
       url: `${process.env.NEXT_PUBLIC_API_URL}/api/characters`,
       headers: defaultHeaders(token),
+      data: formData,
       withCredentials: true,
     })
     if (response.status === 200) {
-      return response.data.characters
+      return {
+        character: response.data.character,
+        characters: response.data.characters,
+      }
     } else {
       throw new Error('Failed to create character')
     }
@@ -56,7 +72,7 @@ const createCharacter = async (token: string) => {
   }
 }
 
-const deleteCharacter = async (token: string, id: string) => {
+const deleteCharacter = async (token: string, id: number) => {
   try {
     const response = await axios<CharacterResponse>({
       method: 'delete',
@@ -65,7 +81,10 @@ const deleteCharacter = async (token: string, id: string) => {
       withCredentials: true,
     })
     if (response.status === 200) {
-      return response.data.characters
+      return {
+        character: response.data.character,
+        characters: response.data.characters,
+      }
     } else {
       throw new Error('Failed to delete character')
     }

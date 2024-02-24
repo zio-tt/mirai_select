@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import { useHelper } from '@/app/_contexts/HelperContext'
+import { useHelper } from '@/app/_contexts/_featureContexts/HelperContext'
 
 const Steps = () => {
   const [explanatoryText, setExplanatoryText] = useState<string[]>([''])

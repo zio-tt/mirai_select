@@ -8,7 +8,7 @@ import {
   Bookmark,
   DecisionTag,
   Tag,
-} from '../_types'
+} from '../../_types'
 
 type DecisionsContextType = {
   users: User[]

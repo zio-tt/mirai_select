@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     resources :character_responses, only: [:index, :create]
     resources :custom_characters,   only: [:index, :create, :update, :destroy]
     resources :decisions,           only: [:index, :create, :update, :destroy]
-    resources :decision_characters, only: [:index, :create, :update, :destroy]
+    resources :decision_characters, only: [:index, :create]
     resources :decision_tags,       only: [:index, :create, :update, :destroy]
     resources :tags,                only: [:index, :create, :update, :destroy]
     resources :users,               only: [:index, :update, :destroy]

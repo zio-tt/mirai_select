@@ -1,5 +1,7 @@
-import { useDecisions } from '@/app/_contexts/DecisionsContext'
-import { Decision, Conversation, Character } from '@/app/_types'
+import { useState, useEffect } from 'react'
+
+import { useDecisions } from '@/app/_contexts/_featureContexts/DecisionsContext'
+import { Decision, Conversation, Character, DecisionCharacter } from '@/app/_types'
 
 import { CharacterResponseDisplay } from './CharacterResponseDisplay'
 import { UserQueryDisplay } from './UserQueryDisplay'
@@ -15,6 +17,7 @@ interface DecisionDetailProps {
   decision: Decision
   conversations: Conversation[] | null
   decisionCharacters: Character[] | null
+  decisionCharacterList: DecisionCharacter[]
   characterResponses: CharacterResponse[] | null
 }
 
@@ -22,9 +25,35 @@ const DecisionDetail = ({
   decision,
   conversations,
   decisionCharacters,
+  decisionCharacterList,
   characterResponses,
 }: DecisionDetailProps) => {
   const { users } = useDecisions()
+  const [sortedDecisionCharacters, setSortedDecisionCharacters] = useState<
+    Character[] | null
+  >(null)
+
+  useEffect(() => {
+    // decisionCharactersとdecisionCharacterListが存在し、
+    // かつdecisionCharactersのidがすべてdecisionCharacterListのcharacter_listに存在し、
+    // decisionCharacterListのroleが全て存在する場合
+    // decisionCharacterListのroleの順番に並び替えてsetSortedDecisionCharactersにセットする
+    const sortedDecisionCharacterList = decisionCharacterList.sort(
+      (a, b) => a.role - b.role,
+    )
+    if (decisionCharacters && sortedDecisionCharacterList) {
+      const sortedCharacters = sortedDecisionCharacterList
+        .map((decisionCharacter) => {
+          const character = decisionCharacters.find(
+            (character) => character.id === decisionCharacter.character_id,
+          )
+          return character
+        })
+        .filter((character) => character)
+      setSortedDecisionCharacters(sortedCharacters as Character[])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [decisionCharacters])
 
   return (
     <>
@@ -51,8 +80,8 @@ const DecisionDetail = ({
                     decisionUser={users.find((user) => user.id === decision.user_id)!}
                     queryText={conversation.query_text}
                   />
-                  {decisionCharacters &&
-                    decisionCharacters.map((character) => {
+                  {sortedDecisionCharacters &&
+                    sortedDecisionCharacters.map((character) => {
                       const characterResponse = conversationCharacterResponses
                         ? conversationCharacterResponses.find(
                             (character_response) =>

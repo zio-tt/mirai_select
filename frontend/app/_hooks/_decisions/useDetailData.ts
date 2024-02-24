@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 
-import { getCharacters, getCharacterResponses } from '@/app/_features/fetchAPI'
-import { Decision, Character } from '@/app/_types'
+import { getDecisionCharacters, getCharacterResponses } from '@/app/_features/fetchAPI'
+import { Decision, Character, DecisionCharacter } from '@/app/_types'
 
 interface CharacterResponse {
   id: number
@@ -15,6 +16,8 @@ export const useDetailData = (decision: Decision) => {
   const { data: session } = useSession()
 
   const [decisionCharacters, setDecisionCharacters] = useState<Character[]>()
+  const [decisionCharacterList, setDecisionCharacterList] =
+    useState<DecisionCharacter[]>()
   const [characterResponses, setCharacterResponses] = useState<CharacterResponse[]>()
 
   const [token, setToken] = useState<string>('')
@@ -37,11 +40,10 @@ export const useDetailData = (decision: Decision) => {
     if (token) {
       setIsLoading(true)
       try {
-        const decisionCharactersData = await getCharacters(token, 'decision', decision.id)
-        console.log('decisionCharactersData', decisionCharactersData)
+        const decisionCharactersData = await getDecisionCharacters(token, decision.id)
         const characterResponsesData = await getCharacterResponses(token, decision.id)
-
-        setDecisionCharacters(decisionCharactersData)
+        setDecisionCharacterList(decisionCharactersData.decisionCharacters)
+        setDecisionCharacters(decisionCharactersData.characterData)
         setCharacterResponses(characterResponsesData)
       } catch (error) {
         console.error('Error fetching initial data', error)
@@ -54,6 +56,7 @@ export const useDetailData = (decision: Decision) => {
   return {
     decisionCharacters,
     characterResponses,
+    decisionCharacterList,
     isLoading,
   }
 }

@@ -1,9 +1,5 @@
 import { useState, createContext, useContext } from 'react'
 
-import { User, Character } from '@/app/_types'
-
-import { useHelperInitData } from '../_hooks/_helper/useHelperInitData'
-
 interface CharacterResponse {
   id: number
   conversation_id: number
@@ -12,10 +8,6 @@ interface CharacterResponse {
 }
 
 type HelperContextType = {
-  currentUser: User | undefined
-  setCurrentUser: React.Dispatch<React.SetStateAction<User | undefined>>
-  userCharacters: Character[] | undefined
-  setUserCharacters: React.Dispatch<React.SetStateAction<Character[] | undefined>>
   queryText: string
   setQueryText: React.Dispatch<React.SetStateAction<string>>
   beforeQueryText: string
@@ -44,7 +36,6 @@ type HelperContextType = {
   setIsClickInformation: React.Dispatch<React.SetStateAction<boolean>>
   isSaveDecision: boolean
   setIsSaveDecision: React.Dispatch<React.SetStateAction<boolean>>
-  fetchHelperInitData: (token: string) => Promise<void>
 }
 
 type ChildrenType = {
@@ -62,8 +53,6 @@ export const useHelper = () => {
 }
 
 export const HelperProvider = ({ children }: ChildrenType) => {
-  const { currentUser, setCurrentUser } = useHelperInitData()
-  const { userCharacters, setUserCharacters } = useHelperInitData()
   const [queryText, setQueryText] = useState<string>('')
   const [beforeQueryText, setBeforeQueryText] = useState<string>('')
   const [userDecision, setUserDecision] = useState<CharacterResponse>()
@@ -77,15 +66,10 @@ export const HelperProvider = ({ children }: ChildrenType) => {
   const [tagAlert, setTagAlert] = useState<string[]>([])
   const [isClickInformation, setIsClickInformation] = useState(false)
   const [isSaveDecision, setIsSaveDecision] = useState<boolean>(false)
-  const { fetchHelperInitData } = useHelperInitData()
 
   return (
     <HelperContext.Provider
       value={{
-        currentUser,
-        setCurrentUser,
-        userCharacters,
-        setUserCharacters,
         queryText,
         setQueryText,
         beforeQueryText,
@@ -112,7 +96,6 @@ export const HelperProvider = ({ children }: ChildrenType) => {
         setIsClickInformation,
         isSaveDecision,
         setIsSaveDecision,
-        fetchHelperInitData,
       }}
     >
       {children}

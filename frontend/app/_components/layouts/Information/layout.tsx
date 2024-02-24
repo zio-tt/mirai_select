@@ -2,13 +2,15 @@
 // contexts
 import { SelectedResponse } from '@/app/_components/helper/Information/SelectedResponse'
 import { UserQueryDisplay } from '@/app/_components/helper/Information/UserQueryDisplay'
-import { useHelper } from '@/app/_contexts/HelperContext'
+import { useHelper } from '@/app/_contexts/_featureContexts/HelperContext'
+import { useCharacter } from '@/app/_contexts/_globalContexts/CharacterContext'
+import { useUserInfo } from '@/app/_contexts/_globalContexts/UserInfoContext'
 // components
 
 const Information = () => {
   const { conversationCount } = useHelper()
-  const { currentUser } = useHelper()
-  const { userCharacters } = useHelper()
+  const { currentUser } = useUserInfo()
+  const { userCharacters } = useCharacter()
   const { queryText } = useHelper()
   const { beforeQueryText } = useHelper()
   const { userDecision } = useHelper()

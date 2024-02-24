@@ -36,7 +36,7 @@ const CharacterListContext = createContext<CharacterListContextType | null>(null
 export const useCharacterList = () => {
   const context = useContext(CharacterListContext)
   if (!context) {
-    throw new Error('useCharacterList must be used within a DecisionsProvider')
+    throw new Error('useCharacterList must be used within a CharacterListProvider')
   }
   return context
 }

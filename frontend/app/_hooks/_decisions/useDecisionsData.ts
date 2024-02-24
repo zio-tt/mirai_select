@@ -2,7 +2,7 @@
 import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 
-import { useDecisions } from '@/app/_contexts/DecisionsContext'
+import { useDecisions } from '@/app/_contexts/_featureContexts/DecisionsContext'
 import {
   getBookmarks,
   getComments,
