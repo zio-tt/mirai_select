@@ -32,6 +32,8 @@ export const CharacterList = ({
     .filter((character) => character.user_id === currentUser?.id)
     .map((character) => character.character_id)
 
+  const isUserCharacterUnder10 = userCharacterIds.length <= 10
+
   interface DeleteModalProps {
     character: Character | null
   }
@@ -81,19 +83,21 @@ export const CharacterList = ({
   return (
     <>
       <div className='grid grid-cols-2 lg:grid-cols-7 md:grid-cols-4 sm:grid-cols-3 gap-4 p-4'>
-        <div
-          className='cursor-pointer flex flex-col items-center justify-center p-2 border rounded w-max-[20%]'
-          onClick={onCreate}
-        >
-          <Image
-            src='/edit-icon.png'
-            alt='character_create'
-            width={100}
-            height={100}
-            className='flex rounded-full'
-          />
-          <p className='flex text-center mt-2'>新規作成</p>
-        </div>
+        {isUserCharacterUnder10 && (
+          <div
+            className='cursor-pointer flex flex-col items-center justify-center p-2 border rounded w-max-[20%]'
+            onClick={onCreate}
+          >
+            <Image
+              src='/edit-icon.png'
+              alt='character_create'
+              width={100}
+              height={100}
+              className='flex rounded-full'
+            />
+            <p className='flex text-center mt-2'>新規作成</p>
+          </div>
+        )}
         {characters
           .sort((a, b) => b.id - a.id)
           .map((character) => (
