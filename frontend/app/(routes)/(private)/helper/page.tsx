@@ -186,7 +186,6 @@ export default function DecisionHelper() {
         await createDecisionCharacter(token, currentDecision.id, userCharactersList)
         setDecision(currentDecision)
       }
-      console.log('errorここ？1')
 
       // 1. 深掘りの場合は既存のConversationに対してユーザーの決定を反映する
       if (conversationCount === 2) {
@@ -199,7 +198,6 @@ export default function DecisionHelper() {
         )
         setConversation(updatedConversation)
       }
-      console.log('errorここ？2')
 
       // OpenAI APIに送信するデータを作成する
       const fetchData: OpenAiRequest = {
@@ -209,7 +207,6 @@ export default function DecisionHelper() {
         beforeQueryText: conversationCount === 1 ? '' : beforeQueryText,
         userDecision: conversationCount === 1 ? null : userDecision!.response,
       }
-      console.log('errorここ？3')
 
       // 3. Decisionに紐づくConversationを作成する
       const createdConversation = await createConversation(
@@ -218,7 +215,6 @@ export default function DecisionHelper() {
         queryText,
       )
       setConversation(createdConversation)
-      console.log('errorここ？4')
 
       // 4. OpenAI APIを叩いてResponseを整形する
       const openAiResponse = await OpenAiRequest(fetchData)
@@ -226,7 +222,6 @@ export default function DecisionHelper() {
         openAiResponse.response.choices[0].message.content,
       )
       const parsedResponse = parseResponse(processedResponse, createdConversation)
-      console.log('errorここ？5')
 
       // 5. 4の結果を元にConversationに紐づく
       const currentCharacterResponses = await createCharacterResponses(
@@ -234,7 +229,6 @@ export default function DecisionHelper() {
         parsedResponse,
       )
       setCharacterResponses(parsedResponse)
-      console.log('errorここ？6')
 
       const user = await updateUser(token, currentUser.id, remainingTokens)
 
@@ -277,6 +271,7 @@ export default function DecisionHelper() {
         })
       }
     } finally {
+      setUserDecision(undefined)
       setIsLoading(false)
     }
   }
@@ -408,6 +403,8 @@ export default function DecisionHelper() {
     setIsSaveDecision(false)
     setInputTags('')
     setDisplayTags([])
+    setIsDrawerClick(false)
+    setDrawerLink('')
 
     return
   }
@@ -415,10 +412,12 @@ export default function DecisionHelper() {
   useEffect(() => {
     if (isDrawerClick && drawerLink != '/helper') {
       setIsDrawerClick(false)
+      setDrawerLink('')
     } else if (isDrawerClick && drawerLink == '/helper') {
       if (conversationCount === 1) {
         initializeState()
         setIsDrawerClick(false)
+        setDrawerLink('')
       } else if (isResponse && conversationCount !== 1) {
         if (
           window.confirm(
@@ -427,8 +426,10 @@ export default function DecisionHelper() {
         ) {
           initializeState()
           setIsDrawerClick(false)
+          setDrawerLink('')
         } else {
           setIsDrawerClick(false)
+          setDrawerLink('')
         }
       }
     }
@@ -480,8 +481,6 @@ export default function DecisionHelper() {
   const handleClickInformation = () => {
     setIsClickInformation(!isClickInformation)
   }
-
-  console.log('userCharacters', userCharacters)
 
   return (
     <>
