@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 // components/CharacterDetailModal.tsx
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Avatar from 'react-avatar'
 
 import { useCharacterList } from '@/app/_contexts/_featureContexts/CharacterListContext'
@@ -20,6 +20,7 @@ interface CharacterDetailModalProps {
   Expression: { [key: string]: string }[]
   Empathy: { [key: string]: string }[]
   iconInputRef: React.RefObject<HTMLInputElement>
+  errorMessage: string
   handleChangeAvatar: (iconFile: File | null) => void
   handleClickChangeAvatar: () => void
   handleChangePreviewAvatar: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -33,6 +34,7 @@ const EditCharacter = ({
   Expression,
   Empathy,
   iconInputRef,
+  errorMessage,
   handleChangeAvatar,
   handleClickChangeAvatar,
   handleChangePreviewAvatar,
@@ -45,14 +47,21 @@ const EditCharacter = ({
     selectCharacter ? selectCharacter : null,
   )
 
-  console.log('previewAvatar:', previewAvatar)
-
   const { setIsEdit } = useCharacterList()
+
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const handleUpdateCharacter = () => {
     if (!editedCharacter) return
     onUpdateCharacter(editedCharacter, avatar!)
   }
+
+  // errorMessageが""でない場合、一番上にスクロールする
+  useEffect(() => {
+    if (errorMessage && scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [errorMessage])
 
   // selectCharacterが更新された場合、各stateを更新する
   useEffect(() => {
@@ -95,6 +104,11 @@ const EditCharacter = ({
         <div className='modal-box'>
           <div className='modal-header'>
             <h3 className='font-bold text-lg'>キャラクター情報を編集</h3>
+            {errorMessage && (
+              <p className='text-red-500' ref={scrollRef}>
+                {errorMessage}
+              </p>
+            )}
             <table className='table-auto border-separate border-spacing-1 w-full'>
               <thead>
                 <tr>

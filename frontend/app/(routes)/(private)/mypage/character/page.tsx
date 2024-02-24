@@ -537,6 +537,8 @@ const MyPageCharactersContent = () => {
               <CharacterDetailModal
                 onClose={handleCancelSelectCharacter}
                 onUpdateCharacter={handleUpdateCharacter}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
                 MBTI_Type={MBTI_Type}
                 Tone={Tone}
                 Expression={Expression}
