@@ -11,6 +11,7 @@ import { Pagination } from '@/app/_components/decisions/Pagination/Pagination'
 import { Loading } from '@/app/_components/layouts/loading/layout'
 import { useDecisions } from '@/app/_contexts/_featureContexts/DecisionsContext'
 import { useDrawer } from '@/app/_contexts/_featureContexts/DrawerContext'
+import { useGlobalState } from '@/app/_contexts/_globalContexts/GlobalStateContext'
 import { deleteDecision } from '@/app/_features/fetchAPI'
 import { useDecisionsData } from '@/app/_hooks/_decisions/useDecisionsData'
 import { usePagination } from '@/app/_hooks/_decisions/usePagination'
@@ -76,7 +77,7 @@ const DecisionIndex = ({
   const autoCompleteTagsRef = useRef<HTMLDivElement>(null)
   const blankTag = { id: 0, name: '' }
 
-  const { isModalOpen, setIsModalOpen } = useDecisions()
+  const { setIsModalOpen } = useGlobalState()
 
   // DrawerかHeaderのメニュークリック時、あるいはページ更新時に全ての状態をリセットする
   useEffect(() => {
