@@ -1,7 +1,7 @@
 // components/CharacterList.tsx
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { DraggableCharacter } from '@/app/_components/mypage/character/drag/DraggableCharacter'
 import { useDecisions } from '@/app/_contexts/_featureContexts/DecisionsContext'
@@ -32,7 +32,13 @@ export const CharacterList = ({
     .filter((character) => character.user_id === currentUser?.id)
     .map((character) => character.character_id)
 
-  const isUserCharacterUnder10 = userCharacterIds.length <= 10
+  const [isUserCharacterUnder10, setIsUserCharacterUnder10] = useState<boolean>(
+    userCharacterIds.length < 10,
+  )
+
+  useEffect(() => {
+    setIsUserCharacterUnder10(userCharacterIds.length < 10)
+  }, [userCharacterIds])
 
   interface DeleteModalProps {
     character: Character | null

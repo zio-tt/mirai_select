@@ -276,6 +276,29 @@ const MyPageCharactersContent = () => {
     setIsLoading(true)
     setIsEdit(false)
 
+    if (
+      !character.name ||
+      !character.mbti_type ||
+      !character.tone ||
+      !character.expression ||
+      !character.values ||
+      !character.empathy ||
+      !character.first_person ||
+      !character.second_person ||
+      !character.character1_welcome ||
+      !character.character2_welcome ||
+      !avatar
+    ) {
+      setIsError(true)
+      setErrorMessage('全ての項目を入力してください')
+      setIsLoading(false)
+      setIsEdit(true)
+      return
+    } else {
+      setIsError(false)
+      setErrorMessage('')
+    }
+
     void (async () => {
       try {
         const res = await editCharacter(token, character.id, character, avatar)
@@ -514,6 +537,8 @@ const MyPageCharactersContent = () => {
               <CharacterDetailModal
                 onClose={handleCancelSelectCharacter}
                 onUpdateCharacter={handleUpdateCharacter}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
                 MBTI_Type={MBTI_Type}
                 Tone={Tone}
                 Expression={Expression}

@@ -13,6 +13,8 @@ import { EditCharacter } from './edit/EditCharacter'
 interface CharacterDetailModalProps {
   onClose: () => void
   onUpdateCharacter: (character: Character, avatar?: File) => void
+  errorMessage: string
+  setErrorMessage: (message: string) => void
   MBTI_Type: { [key: string]: string }[]
   Tone: { [key: string]: string }[]
   Expression: { [key: string]: string }[]
@@ -22,6 +24,8 @@ interface CharacterDetailModalProps {
 const CharacterDetailModal = ({
   onClose,
   onUpdateCharacter,
+  errorMessage,
+  setErrorMessage,
   MBTI_Type,
   Tone,
   Expression,
@@ -36,10 +40,12 @@ const CharacterDetailModal = ({
   // 編集するボタンを押すと各値を編集できるようにする
   const onEdit = () => {
     setIsEdit(true)
+    setErrorMessage('')
   }
 
   const onCancel = () => {
     setIsEdit(false)
+    setErrorMessage('')
   }
 
   const handleClickChangeAvatar = useCallback(() => {
@@ -67,6 +73,7 @@ const CharacterDetailModal = ({
         Tone={Tone}
         Expression={Expression}
         Empathy={Empathy}
+        errorMessage={errorMessage}
         iconInputRef={iconInputRef}
         handleChangeAvatar={handleChangeAvatar}
         handleClickChangeAvatar={handleClickChangeAvatar}
