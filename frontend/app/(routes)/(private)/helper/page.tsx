@@ -268,6 +268,7 @@ export default function DecisionHelper() {
         await deleteDecision({
           token: token,
           decisionId: decision.id,
+          condition: 'private',
         })
       }
     } finally {
