@@ -192,13 +192,19 @@ const DecisionIndex = ({
     }, 200) // 100ミリ秒の遅延
   }
 
-  const handleDeleteDecision = (decisionId: number) => async () => {
+  const onDeleteDecision = async (decisionId: number) => {
+    const response = await deleteDecision({ token: token, decisionId: decisionId })
+    setDecisions(response)
+    setFilteredDecisions(response)
+    setIsLoading(false)
+  }
+
+  const handleDeleteDecision = (decisionId: number) => {
     if (confirm('本当に削除しますか？')) {
       setIsLoading(true)
-      const response = await deleteDecision({ token: token, decisionId: decisionId })
-      setDecisions(response)
-      setFilteredDecisions(response)
-      setIsLoading(false)
+      void (async () => {
+        await onDeleteDecision(decisionId)
+      })()
     }
   }
 
@@ -316,10 +322,9 @@ const DecisionIndex = ({
                     />
                   </div>
                   {isRoute === '/mypage/private' && (
-                    <TrashIcon
-                      onClick={() => handleDeleteDecision(decision.id)}
-                      className='w-[3vw] flex text-black'
-                    />
+                    <button onClick={() => handleDeleteDecision(decision.id)}>
+                      <TrashIcon className='w-[3vw] flex text-black' />
+                    </button>
                   )}
                 </div>
               )
