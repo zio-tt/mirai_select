@@ -482,6 +482,10 @@ export default function DecisionHelper() {
     setIsClickInformation(!isClickInformation)
   }
 
+  const handleCheckIsPublic = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsPublic(e.target.checked)
+  }
+
   return (
     <>
       {!userCharacters ||
@@ -668,7 +672,7 @@ export default function DecisionHelper() {
                           <input
                             type='checkbox'
                             className='checkbox checkbox-secondary'
-                            onChange={() => setIsPublic((current) => !current)}
+                            onChange={(e) => handleCheckIsPublic(e)}
                           />
                         </label>
                       </div>
