@@ -6,6 +6,8 @@ class Character < ApplicationRecord
   has_one_attached :avatar
 
   scope :select_attribute, -> { select(:id, :name, :character1_welcome, :character2_welcome) }
+  # is_deletedがfalseのものを取得
+  scope :active, -> { where(is_deleted: false) }
 
   # 性格(MBTI)
   enum mbti_type: {

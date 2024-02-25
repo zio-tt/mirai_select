@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_15_052605) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_25_071612) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -74,6 +74,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_15_052605) do
     t.integer "empathy", default: 0, null: false
     t.text "character1_welcome"
     t.text "character2_welcome"
+    t.boolean "is_deleted", default: false
   end
 
   create_table "comments", force: :cascade do |t|

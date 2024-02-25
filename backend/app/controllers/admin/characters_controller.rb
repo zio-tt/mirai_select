@@ -21,7 +21,7 @@ class Admin::CharactersController < ApplicationController
   # キャラクターの削除
   def destroy
     character = Character.find(params[:id])
-    character.destroy
+    character.update(is_deleted: true)
     head :no_content
   end
 
