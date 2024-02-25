@@ -192,8 +192,12 @@ const DecisionIndex = ({
     }, 200) // 100ミリ秒の遅延
   }
 
-  const onDeleteDecision = async (decisionId: number) => {
-    const response = await deleteDecision({ token: token, decisionId: decisionId })
+  const onDeleteDecision = async (decisionId: number, condition: string) => {
+    const response = await deleteDecision({
+      token: token,
+      decisionId: decisionId,
+      condition: condition,
+    })
     setDecisions(response)
     setFilteredDecisions(response)
     setIsLoading(false)
@@ -203,7 +207,13 @@ const DecisionIndex = ({
     if (confirm('本当に削除しますか？')) {
       setIsLoading(true)
       void (async () => {
-        await onDeleteDecision(decisionId)
+        if (isRoute === '/decisions') {
+          await onDeleteDecision(decisionId, 'public')
+        } else if (isRoute === '/mypage/favorite') {
+          await onDeleteDecision(decisionId, 'favorite')
+        } else if (isRoute === '/mypage/private') {
+          await onDeleteDecision(decisionId, 'private')
+        }
       })()
     }
   }
