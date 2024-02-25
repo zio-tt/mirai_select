@@ -361,8 +361,6 @@ const MyPageCharactersContent = () => {
               userCharacter.character_id === customCharacter.character_id,
           ),
       )
-      console.log('userCharactersList', userCharactersList)
-      console.log('addCharacterCandidates', addCharacterCandidates)
       const addCharacterData =
         addCharacterCandidates[Math.floor(Math.random() * addCharacterCandidates.length)]
       const addCharacter = characters.find(
@@ -378,7 +376,6 @@ const MyPageCharactersContent = () => {
           }
           return userCharacter
         })
-        console.log('updatedUserCharacterList', updatedUserCharacterList)
         setUserCharactersList(updatedUserCharacterList)
         handleUpdateUserCharacter(updatedUserCharacterList)
       }
