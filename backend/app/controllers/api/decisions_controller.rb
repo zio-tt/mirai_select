@@ -41,7 +41,15 @@ class Api::DecisionsController < ApplicationController
 
   def destroy
     @decision.destroy!
-    render json: { decisions: Decision.all }
+    case decisions_condition
+    when "public"
+      @decisions = Decision.public_decisions
+    when "private"
+      @decisions = current_user.decisions.order(created_at: :desc)
+    when "favorite"
+      @decisions = current_user.bookmarked_decisions.order(created_at: :desc)
+    end
+    render json: { decisions: @decisions }
   end
 
   def update

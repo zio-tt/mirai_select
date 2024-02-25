@@ -17,6 +17,7 @@ interface getDecisionProps {
 interface deleteDecisionProps {
   token: string
   decisionId: number
+  condition: string
 }
 
 interface DecisionsResponse {
@@ -72,12 +73,13 @@ const createDecision = async (token: string) => {
   }
 }
 
-const deleteDecision = async ({ token, decisionId }: deleteDecisionProps) => {
+const deleteDecision = async ({ token, decisionId, condition }: deleteDecisionProps) => {
   try {
     const response = await axios<DecisionsResponse>({
       method: 'delete',
       url: `${process.env.NEXT_PUBLIC_API_URL}/api/decisions/${decisionId}`,
       headers: defaultHeaders(token),
+      params: { condition },
       withCredentials: true,
     })
     if (response.status === 200) {
