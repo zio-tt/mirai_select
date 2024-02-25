@@ -184,6 +184,8 @@ const MyPageCharactersContent = () => {
       const customCharactersData = await getCustomCharacters(token)
       const userCharactersData = await getUserCharacters(token, 'user')
 
+      console.log(customCharactersData)
+
       if (charactersData && customCharactersData && userCharactersData) {
         setCharacters(replaceAvatar(charactersData))
         setCustomCharactersList(customCharactersData)

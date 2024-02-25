@@ -3,7 +3,7 @@ class Api::CharactersController < ApplicationController
 
   def index
     if condition_params == "all"
-      characters = add_avatar_url(Character.all)
+      characters = add_avatar_url(Character.all.active)
     elsif condition_params == "decision"
       # decision_id_paramsからdecision_idを取得
       # 必要なデータを取得するためのクエリ
@@ -29,7 +29,7 @@ class Api::CharactersController < ApplicationController
     if @character.update(character_params)
       # 更新に成功した場合、更新したcharacterを返す
       character = @character.attributes.merge(avatar: rails_blob_url(@character.avatar)) if @character.avatar.attached?
-      characters = add_avatar_url(Character.all)
+      characters = add_avatar_url(Character.all.active)
       render json: { character: character, characters: characters }
     else
       # 更新に失敗した場合、エラーメッセージを返す
@@ -47,7 +47,7 @@ class Api::CharactersController < ApplicationController
         character = @character.attributes
       end
       CustomCharacter.create(user_id: current_user.id, character_id: @character.id, public: true, role: :user)
-      characters = add_avatar_url(Character.all)
+      characters = add_avatar_url(Character.all.active)
       render json: { character: character, characters: characters }
     else
       render json: { error: @character.errors.full_messages }
@@ -55,8 +55,8 @@ class Api::CharactersController < ApplicationController
   end
 
   def destroy
-    if @character.destroy
-      render json: { characters: add_avatar_url(Character.all) }
+    if @character.update(is_deleted: true)
+      render json: { characters: add_avatar_url(Character.active) }
     else
       render json: { error: @character.errors.full_messages }
     end
