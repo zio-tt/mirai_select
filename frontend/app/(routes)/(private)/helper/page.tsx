@@ -485,7 +485,7 @@ export default function DecisionHelper() {
   return (
     <>
       {!userCharacters ||
-        (userCharacters.length != 2 && (
+        (userCharacters.length != 2 && !isLoading && (
           <div className='w-full min-h-screen'>
             <Loading />
           </div>
