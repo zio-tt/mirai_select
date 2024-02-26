@@ -11,6 +11,11 @@ import { Character } from '@/app/_types'
 
 import { ResizeAvatar } from '../edit/ResizeAvatar'
 
+interface ErrorMessage {
+  kind: string
+  message: string
+}
+
 interface CreateCharacterProps {
   onClose: () => void
   onCreateCharacter: (character: Character, avatar?: File) => void
@@ -18,7 +23,7 @@ interface CreateCharacterProps {
   Tone: { [key: string]: string }[]
   Expression: { [key: string]: string }[]
   Empathy: { [key: string]: string }[]
-  errorMessage: string
+  errorMessages: ErrorMessage[]
 }
 
 const CreateCharacter = ({
@@ -28,7 +33,7 @@ const CreateCharacter = ({
   Tone,
   Expression,
   Empathy,
-  errorMessage,
+  errorMessages,
 }: CreateCharacterProps) => {
   const [createCharacter, setCreateCharacter] = useState<Character>({
     id: 0,
@@ -93,7 +98,17 @@ const CreateCharacter = ({
       <div className='modal modal-open'>
         <div className='modal-box'>
           <div className='modal-header'>
-            {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
+            {errorMessages && (
+              <>
+                {errorMessages.map((error, index) => {
+                  return (
+                    <div key={index} className='text-red-500'>
+                      {error.message}
+                    </div>
+                  )
+                })}
+              </>
+            )}
           </div>
           <div className='modal-body'>
             <div className='flex flex-col gap-4 w-full'>
@@ -153,6 +168,7 @@ const CreateCharacter = ({
                       type='text'
                       id='name'
                       value={createCharacter.name}
+                      placeholder='名前（10文字以内）'
                       onChange={(e) => changeInputValue(e)}
                     />
                   </div>
@@ -217,12 +233,13 @@ const CreateCharacter = ({
                     </td>
                   </tr>
                   <tr>
-                    <td className='border text-center'>価値観</td>
+                    <td className='border text-center'>好物・価値観</td>
                     <td className='border'>
                       <input
                         type='text'
                         id='values'
                         value={createCharacter.values}
+                        placeholder='好物・価値観（50文字以内）'
                         onChange={(e) => changeInputValue(e)}
                       />
                     </td>
@@ -249,6 +266,7 @@ const CreateCharacter = ({
                       <input
                         type='text'
                         id='first_person'
+                        placeholder='一人称（10文字以内）'
                         value={createCharacter.first_person}
                         onChange={(e) => changeInputValue(e)}
                       />
@@ -260,6 +278,7 @@ const CreateCharacter = ({
                       <input
                         type='text'
                         id='second_person'
+                        placeholder='二人称（10文字以内）'
                         value={createCharacter.second_person}
                         onChange={(e) => changeInputValue(e)}
                       />

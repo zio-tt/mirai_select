@@ -103,7 +103,7 @@ const CharacterInfoDisplay = ({
                         </td>
                       </tr>
                       <tr>
-                        <td className='border text-center'>価値観</td>
+                        <td className='border text-center'>好物・価値観</td>
                         <td className='border'>{selectCharacter.values}</td>
                       </tr>
                       <tr>
