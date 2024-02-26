@@ -5,6 +5,14 @@ class Character < ApplicationRecord
   has_many :decision_characters, dependent: :destroy
   has_one_attached :avatar
 
+  validates :name, presence: true, length: { maximum: 10 }
+  validates :first_person, presence: true, length: { maximum: 10 }
+  validates :second_person, presence: true, length: { maximum: 10 }
+  validates :values, length: { maximum: 50 }
+  # キャラクター作成時にAIが生成するまでnilのため、nilを許可
+  validates :character1_welcome, length: { maximum: 400 }, allow_nil: true
+  validates :character2_welcome, length: { maximum: 400 }, allow_nil: true
+
   scope :select_attribute, -> { select(:id, :name, :character1_welcome, :character2_welcome) }
   # is_deletedがfalseのものを取得
   scope :active, -> { where(is_deleted: false) }

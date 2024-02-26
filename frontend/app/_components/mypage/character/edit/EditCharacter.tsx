@@ -12,6 +12,11 @@ import { Character } from '@/app/_types'
 
 import { ResizeAvatar } from './ResizeAvatar'
 
+interface ErrorMessage {
+  kind: string
+  message: string
+}
+
 interface CharacterDetailModalProps {
   onCancel: () => void
   onUpdateCharacter: (character: Character, avatar?: File) => void
@@ -20,7 +25,7 @@ interface CharacterDetailModalProps {
   Expression: { [key: string]: string }[]
   Empathy: { [key: string]: string }[]
   iconInputRef: React.RefObject<HTMLInputElement>
-  errorMessage: string
+  errorMessages: ErrorMessage[]
   handleChangeAvatar: (iconFile: File | null) => void
   handleClickChangeAvatar: () => void
   handleChangePreviewAvatar: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -34,7 +39,7 @@ const EditCharacter = ({
   Expression,
   Empathy,
   iconInputRef,
-  errorMessage,
+  errorMessages,
   handleChangeAvatar,
   handleClickChangeAvatar,
   handleChangePreviewAvatar,
@@ -58,10 +63,10 @@ const EditCharacter = ({
 
   // errorMessageが""でない場合、一番上にスクロールする
   useEffect(() => {
-    if (errorMessage && scrollRef.current) {
+    if (errorMessages.length > 0 && scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [errorMessage])
+  }, [errorMessages])
 
   // selectCharacterが更新された場合、各stateを更新する
   useEffect(() => {
@@ -104,10 +109,16 @@ const EditCharacter = ({
         <div className='modal-box'>
           <div className='modal-header'>
             <h3 className='font-bold text-lg'>キャラクター情報を編集</h3>
-            {errorMessage && (
-              <p className='text-red-500' ref={scrollRef}>
-                {errorMessage}
-              </p>
+            {errorMessages && (
+              <>
+                {errorMessages.map((error, index) => {
+                  return (
+                    <div key={index} className='text-red-500'>
+                      {error.message}
+                    </div>
+                  )
+                })}
+              </>
             )}
             <table className='table-auto border-separate border-spacing-1 w-full'>
               <thead>
@@ -197,6 +208,7 @@ const EditCharacter = ({
                       type='text'
                       id='name'
                       value={editedCharacter.name}
+                      placeholder='名前（10文字以内）'
                       onChange={(e) => changeInputValue(e)}
                     />
                   </div>
@@ -261,12 +273,13 @@ const EditCharacter = ({
                     </td>
                   </tr>
                   <tr>
-                    <td className='border text-center'>価値観</td>
+                    <td className='border text-center'>好物・価値観</td>
                     <td className='border'>
                       <input
                         type='text'
                         id='values'
                         value={editedCharacter.values}
+                        placeholder='好物・価値観（50文字以内）'
                         onChange={(e) => changeInputValue(e)}
                       />
                     </td>
@@ -294,6 +307,7 @@ const EditCharacter = ({
                         type='text'
                         id='first_person'
                         value={editedCharacter.first_person}
+                        placeholder='一人称（10文字以内）'
                         onChange={(e) => changeInputValue(e)}
                       />
                     </td>
@@ -305,6 +319,7 @@ const EditCharacter = ({
                         type='text'
                         id='second_person'
                         value={editedCharacter.second_person}
+                        placeholder='二人称（10文字以内）'
                         onChange={(e) => changeInputValue(e)}
                       />
                     </td>
@@ -321,6 +336,7 @@ const EditCharacter = ({
                   id='character1_welcome'
                   value={editedCharacter.character1_welcome}
                   onChange={(e) => changeTextAreaValue(e)}
+                  placeholder='キャラ1に設定した時の挨拶（400文字以内）'
                   className='border m-1 p-1'
                 />
               </div>
@@ -332,6 +348,7 @@ const EditCharacter = ({
                   id='character2_welcome'
                   value={editedCharacter.character2_welcome}
                   onChange={(e) => changeTextAreaValue(e)}
+                  placeholder='キャラ2に設定した時の挨拶（400文字以内）'
                   className='border m-1 p-1'
                 />
               </div>

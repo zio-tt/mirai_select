@@ -54,8 +54,13 @@ const MyPageCharactersContent = () => {
   const { data: session } = useSession()
   const token = session?.appAccessToken
 
-  const [isError, setIsError] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  interface ErrorMessage {
+    kind: string
+    message: string
+  }
+
+  const [isError, setIsError] = useState<boolean>(false)
+  const [errorMessages, setErrorMessages] = useState<ErrorMessage[]>([])
 
   // 編集画面においてプルダウンで表示する内容を配列で作成しておく
   // バックエンドに送る内容は英語だが、表示する内容は日本語にしたいのでオブジェクト型の配列で作成する
@@ -184,8 +189,6 @@ const MyPageCharactersContent = () => {
       const customCharactersData = await getCustomCharacters(token)
       const userCharactersData = await getUserCharacters(token, 'user')
 
-      console.log(customCharactersData)
-
       if (charactersData && customCharactersData && userCharactersData) {
         setCharacters(replaceAvatar(charactersData))
         setCustomCharactersList(customCharactersData)
@@ -217,28 +220,12 @@ const MyPageCharactersContent = () => {
     setIsLoading(true)
     setIsCreate(false)
 
-    if (
-      !character.name ||
-      !character.mbti_type ||
-      !character.tone ||
-      !character.expression ||
-      !character.values ||
-      !character.empathy ||
-      !character.first_person ||
-      !character.second_person ||
-      !avatar
-    ) {
-      setIsError(true)
-      setErrorMessage('全ての項目を入力してください')
+    const isError = handleCharacterParamsValidates(character, avatar)
+    if (isError) {
       setIsLoading(false)
       setIsCreate(true)
       return
-    } else {
-      setIsError(false)
-      setErrorMessage('')
     }
-
-    if (isError) return
 
     void (async () => {
       try {
@@ -272,33 +259,85 @@ const MyPageCharactersContent = () => {
     avatarReset()
   }
 
+  const handleCharacterParamsValidates = (character: Character, avatar?: File) => {
+    const newErrorMessages: ErrorMessage[] = []
+    const validations = [
+      {
+        condition: () => !character.name,
+        error: { kind: 'name_blank', message: '名前を入力してください' },
+      },
+      {
+        condition: () => character.name && character.name.length > 10,
+        error: { kind: 'name_over', message: '名前は10文字以内にしてください' },
+      },
+      {
+        condition: () => !character.first_person,
+        error: { kind: 'first_person_blank', message: '一人称を入力してください' },
+      },
+      {
+        condition: () => character.first_person && character.first_person.length >= 10,
+        error: { kind: 'first_person_over', message: '一人称は10文字以内にしてください' },
+      },
+      {
+        condition: () => !character.second_person,
+        error: { kind: 'second_person_blank', message: '二人称を入力してください' },
+      },
+      {
+        condition: () => character.second_person && character.second_person.length >= 10,
+        error: {
+          kind: 'second_person_over',
+          message: '二人称は10文字以内にしてください',
+        },
+      },
+      {
+        condition: () => character.values && character.values.length >= 50,
+        error: { kind: 'values_over', message: '価値観は50文字以内にしてください' },
+      },
+      {
+        condition: () =>
+          character.character1_welcome && character.character1_welcome.length >= 400,
+        error: {
+          kind: 'character1_welcome_over',
+          message: 'キャラ1の挨拶は400文字以内にしてください',
+        },
+      },
+      {
+        condition: () =>
+          character.character2_welcome && character.character2_welcome.length >= 400,
+        error: {
+          kind: 'character2_welcome_over',
+          message: 'キャラ2の挨拶は400文字以内にしてください',
+        },
+      },
+      {
+        condition: () => !avatar && !character.avatar,
+        error: { kind: 'avatar_blank', message: 'キャラクター画像が選択されていません' },
+      },
+    ]
+
+    validations.forEach((validation) => {
+      if (validation.condition()) {
+        newErrorMessages.push(validation.error)
+      }
+    })
+
+    setErrorMessages(newErrorMessages)
+    setIsError(newErrorMessages.length > 0)
+
+    return newErrorMessages.length > 0
+  }
+
   const handleUpdateCharacter = (character: Character, avatar?: File) => {
     // tokenが存在しない場合=ユーザーがログインしていない場合は何もしない
     if (!token) return
     setIsLoading(true)
     setIsEdit(false)
 
-    if (
-      !character.name ||
-      !character.mbti_type ||
-      !character.tone ||
-      !character.expression ||
-      !character.values ||
-      !character.empathy ||
-      !character.first_person ||
-      !character.second_person ||
-      !character.character1_welcome ||
-      !character.character2_welcome ||
-      !avatar
-    ) {
-      setIsError(true)
-      setErrorMessage('全ての項目を入力してください')
+    const isError = handleCharacterParamsValidates(character, avatar)
+    if (isError) {
       setIsLoading(false)
       setIsEdit(true)
       return
-    } else {
-      setIsError(false)
-      setErrorMessage('')
     }
 
     void (async () => {
@@ -406,16 +445,20 @@ const MyPageCharactersContent = () => {
   const handleSelectCharacter = (character: Character) => {
     setIsModalOpen(true)
     setSelectCharacter(character)
+    setErrorMessages([])
     setAvatarUrl(character.avatar)
   }
 
   const handleSelectCreateCharacter = () => {
     setIsCreate(true)
+    setAvatarUrl('')
+    setErrorMessages([])
     setIsModalOpen(true)
   }
 
   const handleCancelSelectCharacter = () => {
     setIsModalOpen(false)
+    setErrorMessages([])
     setSelectCharacter(null)
   }
 
@@ -536,8 +579,8 @@ const MyPageCharactersContent = () => {
               <CharacterDetailModal
                 onClose={handleCancelSelectCharacter}
                 onUpdateCharacter={handleUpdateCharacter}
-                errorMessage={errorMessage}
-                setErrorMessage={setErrorMessage}
+                errorMessages={errorMessages}
+                setErrorMessages={setErrorMessages}
                 MBTI_Type={MBTI_Type}
                 Tone={Tone}
                 Expression={Expression}
@@ -555,7 +598,7 @@ const MyPageCharactersContent = () => {
             Tone={Tone}
             Expression={Expression}
             Empathy={Empathy}
-            errorMessage={errorMessage}
+            errorMessages={errorMessages}
           />
         )}
       </div>
